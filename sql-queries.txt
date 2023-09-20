@@ -1,0 +1,35 @@
+CREATE TABLE brand(
+  name VARCHAR(20) PRIMARY KEY NOT NULL
+);
+INSERT INTO brand VALUES ('Samsung');
+
+CREATE TABLE products(
+  name VARCHAR(15) NOT NULL,
+  brand VARCHAR(20) NOT NULL REFERENCES brand(name) ON UPDATE CASCADE,
+  color VARCHAR(15) NOT NULL,
+  price DECIMAL NOT NULL,
+  amount INT NOT NULL,
+  screen_diagonal DECIMAL NOT NULL,
+  RAM INT NOT NULL,
+  accumulator_capacity INT NOT NULL,
+  internal_storage INT NOT NULL,
+  processor VARCHAR(35) NOT NULL,
+  matrix_type VARCHAR(20) NOT NULL,
+  OS VARCHAR(12) NOT NULL,
+  image_name VARCHAR(20),
+  CONSTRAINT product_pk PRIMARY KEY (name, brand)
+);
+*INSERT INTO products VALUES
+(name, brand, color, price, amount, Діагональ , Оперативна , Ємність , Вбудована , процесора , матриці , Операційна ),
+2INSERT INTO products VALUES
+('Galaxy A54', 'Samsung', 'Green', 17999, 17, 6.4, 8, 5000, 256, 'Samsung Exynos 1380', 'Super AMOLED', 'Android'),
+('Galaxy A34', 'Samsung', 'Light Green', 13299, 21, 6.6, 6, 5000, 128, 'MediaTek Dimensity 1080', 'Super AMOLED', 'Android');
+1INSERT INTO products VALUES
+('Galaxy A24', 'Samsung', 'Black', 8999, 12, 6.5, 6, 5000, 128, 'MediaTek Helio G99', 'Super AMOLED', 'Android');
+
+CREATE TABLE customer(
+  phone_num VARCHAR(15) PRIMARY KEY NOT NULL,
+  name VARCHAR(20) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  password VARCHAR(20) NOT NULL
+);

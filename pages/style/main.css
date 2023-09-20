@@ -1,0 +1,341 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:focus, :active {
+  outline: none;
+}
+
+a:focus, a:active {
+  outline: none;
+}
+
+nav, footer, header, aside {
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 14px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a, a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: 400;
+}
+
+.background {
+  z-index: 100;
+  background-color: rgba(74, 38, 38, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.modal-window {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: -moz-max-content;
+  width: max-content;
+  max-width: 88%;
+  background-color: white;
+  box-shadow: 0 0 15px gray;
+  border-radius: 5px;
+  font: 20px "Calibri", sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.modal-window > .modal-window-cross {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  background: red;
+  border-radius: 50%;
+}
+.modal-window > .modal-window-cross > img {
+  max-width: 100%;
+}
+.modal-window .warning {
+  max-width: 100%;
+  display: inline-block;
+  font-size: 14px;
+  color: red;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.modal-window {
+  padding: 7px;
+}
+.modal-window header {
+  text-align: center;
+  margin: 3px auto;
+}
+.modal-window header:first-of-type {
+  margin-top: 0;
+}
+.modal-window input:not([type=checkbox]) {
+  font: inherit;
+  display: inline-block;
+  width: 150px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 0 3px;
+}
+.modal-window input[type=checkbox] {
+  margin-right: 3px;
+}
+.modal-window button {
+  background-color: limegreen;
+  color: white;
+  margin-top: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+  font: inherit;
+}
+.modal-window form.password-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.modal-window.create-account {
+  font-size: 18px;
+}
+.modal-window.create-account header:first-of-type {
+  margin-bottom: 0;
+}
+.modal-window.create-account .warning {
+  max-width: 250px;
+}
+.modal-window.confirm header {
+  margin-bottom: 5px;
+  border-bottom: 2px solid gray;
+  border-radius: 5px;
+}
+.modal-window.confirm section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.modal-window.confirm section + div {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.modal-window.confirm label {
+  margin-bottom: 5px;
+  white-space: nowrap;
+}
+.modal-window.registration button.create-account-btn {
+  background-color: dodgerblue;
+}
+.modal-window.registration button.enter-as-employee-btn {
+  background-color: dimgray;
+}
+.modal-window.profile {
+  min-width: 200px;
+}
+.modal-window.profile > section {
+  text-align: center;
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 3px;
+}
+.modal-window.profile > section > div:nth-child(2) {
+  font-size: 14px;
+}
+.modal-window.profile .exit-btn {
+  background-color: red;
+}
+.modal-window.profile .enter-as-employee-btn {
+  background-color: dimgray;
+}
+.modal-window.basket .current-customer-label {
+  border: 1px solid gray;
+  border-radius: 14px;
+  margin-bottom: 5px;
+  padding: 3px;
+}
+.modal-window.basket section {
+  max-height: 60vh;
+  overflow: auto;
+  padding: 3px;
+  margin-bottom: 3px;
+}
+.modal-window.basket section > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 0 3px 1px gray;
+  border-radius: 5px;
+  padding: 3px;
+  margin-bottom: 10px;
+}
+.modal-window.basket section > div:last-of-type {
+  margin-bottom: 0;
+}
+.modal-window.basket section > div > .del-from-basket-btn {
+  background-color: red;
+  font-size: 18px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+}
+.modal-window.basket .total-cost {
+  text-align: center;
+}
+
+html,
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
+button {
+  background-color: limegreen;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font: inherit;
+  text-align: center;
+}
+
+.wrapper {
+  width: 100%;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  min-height: 100vh;
+  font: 20px "Calibri";
+}
+
+.wrapper > header {
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  padding: 7px;
+  color: white;
+  background-color: gray;
+}
+.wrapper > header > #account-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: lightgray;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.wrapper > header > #account-btn > img {
+  max-width: 100%;
+}
+.wrapper > header > .view-basket-btn {
+  grid-column-start: 4;
+}
+
+main {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+section.phone {
+  display: grid;
+  grid-auto-rows: auto;
+  grid-template-columns: 300px;
+  grid-template-areas: "image" "name" "price";
+  background-color: white;
+  box-shadow: 0 0 3px 1px gray;
+  border-radius: 5px;
+  margin: 10px;
+}
+section.phone > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  padding: 3px 5px;
+}
+section.phone > .phone__name {
+  grid-area: name;
+  width: 100%;
+  white-space: normal;
+}
+section.phone > .phone__price {
+  grid-area: price;
+}
+section.phone > .image {
+  grid-area: image;
+  width: 300px;
+  height: 150px;
+  display: flex;
+  background-color: #eee;
+  margin: 0;
+}
+section.phone > .image > img {
+  margin: auto;
+  max-width: 100%;
+}

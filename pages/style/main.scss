@@ -1,0 +1,100 @@
+@import "./null-style.scss";
+@import "./modal-window.scss";
+html,
+body {
+  display: flex;
+  // min-width: fit-content;
+  // height: fit-content;
+  min-height: 100vh;
+}
+button {
+  background-color: limegreen;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font: inherit;
+  text-align: center;
+}
+.wrapper {
+  width: 100%;
+  min-width: fit-content;
+  // height: fit-content;
+  min-height: 100vh;
+  font: 20px "Calibri";
+}
+.wrapper > header {
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  padding: 7px;
+  color: white;
+  background-color: gray;
+  & > #account-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: lightgray;
+    margin-right: 5px;
+    cursor: pointer;
+    & > img {
+      max-width: 100%;
+    }
+  }
+  & > .view-basket-btn {
+    grid-column-start: 4;
+  }
+}
+main {
+  width: 100%;
+  padding: 10px;
+  // min-width: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+section.phone {
+  // width: 300px;
+  display: grid;
+  grid-auto-rows: auto;
+  // grid-template-rows: auto max-content auto;
+  grid-template-columns: 300px;
+  grid-template-areas:
+    "image"
+    "name"
+    "price";
+  background-color: white;
+  box-shadow: 0 0 3px 1px gray;
+  border-radius: 5px;
+  margin: 10px;
+  & > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    padding: 3px 5px;
+  }
+  & > .phone__name {
+    grid-area: name;
+    width: 100%;
+    white-space: normal;
+  }
+  & > .phone__price {
+    grid-area: price;
+  }
+  & > .image {
+    grid-area: image;
+    width: 300px;
+    height: 150px;
+    display: flex;
+    background-color: #eee;
+    margin: 0;
+    & > img {
+      margin: auto;
+      max-width: 100%;
+    }
+  }
+}

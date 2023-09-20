@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phone shop</title>
+    <link rel="stylesheet" href="/style/main.css" />
+    <meta name="Author" content="Nazar Zavrin" />
+    <meta name="Copyright" content="Nazar Zavrin" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <div id="account-btn">
+                <img src="/img/avatar.png"
+                    onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;">
+            </div>
+            <span id="customer-name"></span>
+            <button class="view-basket-btn">Кошик</button>
+        </header>
+        <main>
+            <% for(const phone of phones){ %>
+                <section class="phone">
+                    <div class="image">
+                        <img src="<%= phone.image_name %>" onerror="event.target.setAttribute('src', 
+                        '/img/1x1-transparent.png'); event.target.onerror = null;">
+                    </div>
+                    <div class="phone__name" data-phone_name="<%= phone.brand + "&" + phone.name %>">
+                        Мобільний телефон <%= phone.brand %>
+                            <%= phone.name %>
+                    </div>
+                    <div class="phone__price">
+                        Ціна: <%= phone.price %> грн.
+                    </div>
+                </section>
+                <% }%>
+        </main>
+    </div>
+    <script type="module" src="/script/main.js"></script>
+</body>
+
+</html>
