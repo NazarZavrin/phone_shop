@@ -13,10 +13,30 @@ app.use("/customers", customersRouter);
 
 app.get('/', async (req, res) => {
     try {
-        let result = await pool.query(`SELECT * FROM products`);
+        let result = await pool.query(`SELECT name, brand, price FROM products`);
         // console.log(result.rows);
         res.render('main', {
             phones: result.rows
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.send("<pre>Server error</pre>");
+    }
+})
+
+app.get("/products/:product_info", async (req, res, next) => {
+    const productInfo = req.params.product_info.match(/^(?<brand>.{1,20})\|(?<name>.{1,15})$/)?.groups;
+    if (!productInfo) {
+        res.send("<pre>Такого продукту не існує!</pre>");
+        return;
+    }
+    try {
+        let result = await pool.query(`SELECT * FROM products 
+        WHERE brand = $1 AND name = $2`,
+        [productInfo.brand, productInfo.name]);
+        // console.log(result.rows);
+        res.render('product', {
+            productInfo: result.rows[0]
         });
     } catch (error) {
         console.log(error.message);

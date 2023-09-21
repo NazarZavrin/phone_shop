@@ -27,7 +27,7 @@
                         <img src="<%= phone.image_name %>" onerror="event.target.setAttribute('src', 
                         '/img/1x1-transparent.png'); event.target.onerror = null;">
                     </div>
-                    <div class="phone__name" data-phone_name="<%= phone.brand + "&" + phone.name %>">
+                    <div class="phone__name" data-phone_name="<%= phone.brand + "|" + phone.name %>">
                         Мобільний телефон <%= phone.brand %>
                             <%= phone.name %>
                     </div>

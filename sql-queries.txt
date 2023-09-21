@@ -27,9 +27,27 @@ CREATE TABLE products(
 1INSERT INTO products VALUES
 ('Galaxy A24', 'Samsung', 'Black', 8999, 12, 6.5, 6, 5000, 128, 'MediaTek Helio G99', 'Super AMOLED', 'Android');
 
-CREATE TABLE customer(
-  phone_num VARCHAR(15) PRIMARY KEY NOT NULL,
-  name VARCHAR(20) NOT NULL,
+CREATE TABLE customers(
+  phone_num VARCHAR(20) PRIMARY KEY NOT NULL,
+  name VARCHAR(50) NOT NULL,
   email VARCHAR(50) NOT NULL,
   password VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE orders(
+  num BIGSERIAL PRIMARY KEY NOT NULL,
+  datetime TIMESTAMP NOT NULL,
+  cost INT NOT NULL,
+  customer_phone_num VARCHAR(20) NOT NULL REFERENCES customers(phone_num) ON UPDATE CASCADE,
+  issuance_datetime TIMESTAMP NULL,
+  paid INT
+);
+
+CREATE TABLE order_items(
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  product_name VARCHAR(15) NOT NULL,
+  product_brand VARCHAR(20) NOT NULL,
+  order_num BIGINT NOT NULL REFERENCES orders(num) ON UPDATE CASCADE,
+  amount INT NOT NULL,
+  FOREIGN KEY (product_name, product_brand) REFERENCES products(name, brand) ON UPDATE CASCADE
 );

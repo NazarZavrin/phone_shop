@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phone shop</title>
+    <link rel="stylesheet" href="/style/product.css" />
+    <meta name="Author" content="Nazar Zavrin" />
+    <meta name="Copyright" content="Nazar Zavrin" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <div id="account-btn">
+          <img
+            src="/img/avatar.png"
+            onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;"
+          />
+        </div>
+        <span id="customer-name"></span>
+        <button class="view-basket-btn">Кошик</button>
+      </header>
+      <main>
+        <section class="photo">
+          <img
+            src="/img/<%= productInfo.image_name %>"
+            onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;"
+          />
+        </section>
+        <section class="main-info">
+          <div class="name_and_brand">
+            Мобільний телефон <%= productInfo.brand %> <%= productInfo.name %>
+          </div>
+          <div class="color">Колір: <%= productInfo.color %></div>
+          <div class="price">Ціна: <%= productInfo.price %></div>
+          <button type="button" id="buy-btn">Купити</button>
+        </section>
+        <header id="other-info-header">Інші характеристики</header>
+        <section class="other-info">
+          <div class="screen_diagonal">
+            Діагональ екрана: 
+          </div>
+          <div><%= productInfo.screen_diagonal %></div>
+          <div class="RAM">Оперативна пам'ять: </div>
+          <div><%= productInfo.ram %> ГБ</div>
+          <div class="accumulator_capacity">Ємність акумулятора:</div>
+          <div><%= productInfo.accumulator_capacity %> мА·год</div>
+          <div class="internal_storage">Вбудована пам'ять: </div>
+          <div><%= productInfo.internal_storage %> ГБ</div>
+          <div class="processor">Процесор: </div>
+          <div><%= productInfo.processor %></div>
+          <div class="matrix_type">Тип матриці: </div>
+          <div><%= productInfo.matrix_type %></div>
+          <div class="OS">Операційна система: </div>
+          <div style="margin-bottom: 0;"><%= productInfo.os %></div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/script/product.js"></script>
+  </body>
+</html>

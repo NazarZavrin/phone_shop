@@ -161,11 +161,11 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.create-account {
   font-size: 18px;
 }
-.modal-window.create-account header:first-of-type {
-  margin-bottom: 0;
-}
 .modal-window.create-account .warning {
   max-width: 250px;
+}
+.modal-window.create-account header:first-of-type {
+  margin-bottom: 0;
 }
 .modal-window.confirm header {
   margin-bottom: 5px;
@@ -185,11 +185,11 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 5px;
   white-space: nowrap;
 }
+.modal-window.registration .warning {
+  max-width: 250px;
+}
 .modal-window.registration button.create-account-btn {
   background-color: dodgerblue;
-}
-.modal-window.registration button.enter-as-employee-btn {
-  background-color: dimgray;
 }
 .modal-window.profile {
   min-width: 200px;
@@ -200,14 +200,8 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid gray;
   border-radius: 3px;
 }
-.modal-window.profile > section > div:nth-child(2) {
-  font-size: 14px;
-}
 .modal-window.profile .exit-btn {
   background-color: red;
-}
-.modal-window.profile .enter-as-employee-btn {
-  background-color: dimgray;
 }
 .modal-window.basket .current-customer-label {
   border: 1px solid gray;
@@ -313,16 +307,11 @@ section.phone {
   margin: 10px;
 }
 section.phone > div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  white-space: nowrap;
-  padding: 3px 5px;
+  padding: 3px 7px;
 }
 section.phone > .phone__name {
   grid-area: name;
   width: 100%;
-  white-space: normal;
 }
 section.phone > .phone__price {
   grid-area: price;

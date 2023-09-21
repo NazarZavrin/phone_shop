@@ -3,8 +3,6 @@
 html,
 body {
   display: flex;
-  // min-width: fit-content;
-  // height: fit-content;
   min-height: 100vh;
 }
 button {
@@ -18,7 +16,6 @@ button {
 .wrapper {
   width: 100%;
   min-width: fit-content;
-  // height: fit-content;
   min-height: 100vh;
   font: 20px "Calibri";
 }
@@ -50,36 +47,15 @@ button {
 main {
   width: 100%;
   padding: 10px;
-  // min-width: fit-content;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-section.phone {
   display: grid;
   grid-auto-rows: auto;
-  grid-template-columns: 300px;
+  grid-template-columns: auto 1fr;
   grid-template-areas:
-    "image"
-    "name"
-    "price";
-  background-color: white;
-  box-shadow: 0 0 3px 1px gray;
-  border-radius: 5px;
-  margin: 10px;
-  & > div {
-    padding: 3px 7px;
-  }
-  & > .phone__name {
-    grid-area: name;
-    width: 100%;
-  }
-  & > .phone__price {
-    grid-area: price;
-  }
-  & > .image {
-    grid-area: image;
+    "photo main_info"
+    "other_info_header other_info_header"
+    "other_info other_info";
+  & > .photo {
+    grid-area: photo;
     width: 300px;
     height: 150px;
     display: flex;
@@ -88,6 +64,36 @@ section.phone {
     & > img {
       margin: auto;
       max-width: 100%;
+    }
+  }
+  & > .main-info {
+    grid-area: main_info;
+    width: fit-content;
+    // border: 1px solid #000;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    & #buy-btn {
+      margin: 3px auto;
+    }
+  }
+  & > header#other-info-header {
+    grid-area: other_info_header;
+    text-align: center;
+    color: royalblue;
+    font-size: 125%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+  & > .other-info {
+    grid-area: other_info;
+    padding: 10px;
+    display: grid;
+    grid-auto-rows: auto;
+    grid-template-columns: 1fr max-content;
+    & > div:not([class]){
+      text-align: right;
+      margin-bottom: 7px;
     }
   }
 }

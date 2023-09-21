@@ -1,3 +1,74 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:focus, :active {
+  outline: none;
+}
+
+a:focus, a:active {
+  outline: none;
+}
+
+nav, footer, header, aside {
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 14px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a, a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: 400;
+}
+
 .background {
   z-index: 100;
   background-color: rgba(74, 38, 38, 0.3);
@@ -165,4 +236,104 @@
 }
 .modal-window.basket .total-cost {
   text-align: center;
+}
+
+html,
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
+button {
+  background-color: limegreen;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font: inherit;
+  text-align: center;
+}
+
+.wrapper {
+  width: 100%;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  min-height: 100vh;
+  font: 20px "Calibri";
+}
+
+.wrapper > header {
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  padding: 7px;
+  color: white;
+  background-color: gray;
+}
+.wrapper > header > #account-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: lightgray;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.wrapper > header > #account-btn > img {
+  max-width: 100%;
+}
+.wrapper > header > .view-basket-btn {
+  grid-column-start: 4;
+}
+
+main {
+  width: 100%;
+  padding: 10px;
+  display: grid;
+  grid-auto-rows: auto;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "photo main_info" "other_info_header other_info_header" "other_info other_info";
+}
+main > .photo {
+  grid-area: photo;
+  width: 300px;
+  height: 150px;
+  display: flex;
+  background-color: #eee;
+  margin: 0;
+}
+main > .photo > img {
+  margin: auto;
+  max-width: 100%;
+}
+main > .main-info {
+  grid-area: main_info;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+main > .main-info #buy-btn {
+  margin: 3px auto;
+}
+main > header#other-info-header {
+  grid-area: other_info_header;
+  text-align: center;
+  color: royalblue;
+  font-size: 125%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+main > .other-info {
+  grid-area: other_info;
+  padding: 10px;
+  display: grid;
+  grid-auto-rows: auto;
+  grid-template-columns: 1fr max-content;
+}
+main > .other-info > div:not([class]) {
+  text-align: right;
+  margin-bottom: 7px;
 }
