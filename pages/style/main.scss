@@ -2,7 +2,7 @@
 @import "./modal-window.scss";
 html,
 body {
-  display: flex;
+  // display: flex;
   // min-width: fit-content;
   // height: fit-content;
   min-height: 100vh;
@@ -71,7 +71,7 @@ section.phone {
   & > div {
     padding: 3px 7px;
   }
-  & > .phone__name {
+  & > .phone_main_info {
     grid-area: name;
     width: 100%;
   }

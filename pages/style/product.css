@@ -240,7 +240,6 @@ h1, h2, h3, h4, h5, h6 {
 
 html,
 body {
-  display: flex;
   min-height: 100vh;
 }
 
@@ -315,7 +314,7 @@ main > .main-info {
   display: flex;
   flex-direction: column;
 }
-main > .main-info #buy-btn {
+main > .main-info #add-to-basket-btn {
   margin: 3px auto;
 }
 main > header#other-info-header {

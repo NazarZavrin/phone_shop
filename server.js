@@ -2,6 +2,7 @@ import express from 'express';
 import pool from './connect-to-PostgreSQL.js';
 import path from 'path';
 import { customersRouter } from './routers/customers-router.js';
+import { ordersRouter } from './routers/orders-router.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,6 +11,7 @@ app.set('views', path.join(path.resolve(), 'pages'));
 app.use(express.static(path.join(path.resolve(), 'pages')));
 
 app.use("/customers", customersRouter);
+app.use("/orders", ordersRouter);
 
 app.get('/', async (req, res) => {
     try {

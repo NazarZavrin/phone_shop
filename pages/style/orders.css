@@ -262,68 +262,165 @@ button {
 
 .wrapper > header {
   width: 100%;
-  min-height: 50px;
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: auto auto 1fr auto;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 7px;
+  padding: 7px 0;
   color: white;
+  font-weight: bold;
+  font-size: 125%;
   background-color: gray;
-}
-.wrapper > header > #account-btn {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background-color: lightgray;
-  margin-right: 5px;
-  cursor: pointer;
-}
-.wrapper > header > #account-btn > img {
-  max-width: 100%;
-}
-.wrapper > header > .view-basket-btn {
-  grid-column-start: 4;
 }
 
 main {
   width: 100%;
-  padding: 10px;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+main > header {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border: 1.5px solid dimgray;
+  box-shadow: 0 1px 3px 1px gray;
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+  /*& .warning {
+    max-width: 100%;
+    // width: 200px;
+    display: inline-block;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+    word-wrap: break-word;
+  }*/
+}
+main > header > .search-section {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 7px;
+  margin-bottom: 5px;
+}
+main > header > .search-section > header {
+  text-align: center;
+}
+main > header > .search-section input {
+  font: inherit;
+  width: 150px;
+  flex-grow: 1;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 0 3px;
+  margin: 3px;
+}
+main > header > .search-section input[name=customer_phone_num] {
+  min-width: 230px;
+}
+main > header > .search-section > .search-inputs {
+  width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+  align-items: center;
+}
+main > header > .search-section > div:has(#search-btn) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+main > header #search-btn {
+  background-color: dodgerblue;
+  margin-top: 3px;
+}
+main > header > .refresh-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
-section.phone {
+main > #orders {
+  width: 100%;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main > #orders > .order {
+  width: 100%;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  padding: 10px;
+  text-align: left;
   display: grid;
-  grid-auto-rows: auto;
-  grid-template-columns: 300px;
-  grid-template-areas: "image" "name" "price";
-  background-color: white;
+  grid-template-rows: repeat(6, auto);
+  grid-template-columns: auto min-content;
+  grid-template-areas: "receipt_num issuance_btn" "cost delete_order_btn" "order_items order_items" "customer_name customer_name" "customer_phone_num customer_phone_num" "datetime datetime";
   box-shadow: 0 0 3px 1px gray;
   border-radius: 5px;
-  margin: 10px;
+  margin-bottom: 15px;
 }
-section.phone > div {
-  padding: 3px 7px;
+main > #orders > .order:last-of-type {
+  margin-bottom: 0;
 }
-section.phone > .phone_main_info {
-  grid-area: name;
-  width: 100%;
-}
-section.phone > .phone__price {
-  grid-area: price;
-}
-section.phone > .image {
-  grid-area: image;
-  width: 300px;
-  height: 150px;
+main > #orders > .order > div {
   display: flex;
-  background-color: #eee;
-  margin: 0;
+  align-items: center;
 }
-section.phone > .image > img {
-  margin: auto;
-  max-width: 100%;
+main > #orders > .order > div.receipt_num {
+  grid-area: receipt_num;
+}
+main > #orders > .order > div.customer_name {
+  grid-area: customer_name;
+}
+main > #orders > .order > div.customer_phone_num {
+  grid-area: customer_phone_num;
+}
+main > #orders > .order > div.datetime {
+  grid-area: datetime;
+}
+main > #orders > .order > div.cost {
+  grid-area: cost;
+}
+main > #orders > .order > div.order-items {
+  grid-area: order_items;
+  flex-direction: column;
+  align-items: start;
+}
+main > #orders > .order > .issuance-btn {
+  grid-area: issuance_btn;
+  white-space: nowrap;
+  margin-left: 5px;
+  padding: 3px;
+  justify-self: end;
+  align-self: center;
+}
+main > #orders > .order > .delete-order-btn {
+  grid-area: delete_order_btn;
+  display: none;
+  background-color: red;
+  white-space: nowrap;
+  margin: 5px 0 0 5px;
+  padding: 3px;
+  justify-self: end;
+  align-self: center;
+}
+
+@media (min-width: 550px) {
+  main > header {
+    flex-direction: row;
+    align-items: center;
+  }
+  main > header > .search-section {
+    flex-grow: 1;
+    margin-bottom: 0;
+  }
 }

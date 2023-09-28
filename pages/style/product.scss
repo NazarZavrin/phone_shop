@@ -2,7 +2,7 @@
 @import "./modal-window.scss";
 html,
 body {
-  display: flex;
+  // display: flex;
   min-height: 100vh;
 }
 button {
@@ -73,7 +73,7 @@ main {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    & #buy-btn {
+    & #add-to-basket-btn {
       margin: 3px auto;
     }
   }

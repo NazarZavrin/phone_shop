@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone shop orders</title>
+    <link rel="stylesheet" href="./style/orders.css" />
+</head>
+<body>
+    <div class="wrapper">
+        <header>Замовлення</header>
+        <main>
+            <header>
+                <section class="search-section">
+                    <header>Фільтри для пошуку:</header>
+                    <div class="search-inputs">
+                        <input name="num" type="tel" placeholder="Номер чеку" autocomplete="off">
+                        <input name="customer_phone_num" type="tel" placeholder="Номер телефону покупця" autocomplete="off">
+                    </div>
+                    <div>
+                        <button id="search-btn">Шукати</button>
+                    </div>
+                </section>
+                <section class="refresh-section">
+                    <button id="refresh-btn">Оновити дані</button>
+                </section>
+            </header>
+            <section id="orders"></section>
+        </main>
+    </div>
+    <script src="./script/orders.js" type="module"></script>
+</body>
+</html>

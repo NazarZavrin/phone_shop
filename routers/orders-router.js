@@ -69,26 +69,22 @@ ordersRouter.post("/create-order", (req, res, next) => {
     }
 })
 
-ordersRouter.propfind("/get-orders", (req, res, next) => {
-    express.json({
-        limit: req.get('content-length'),
-    })(req, res, next);
-}, async (req, res) => {
+ordersRouter.propfind("/get-orders", async (req, res) => {
     try {
-        if (!req.body.employeeName) {
-            throw new Error("Orders receiving: req.body doesn't contain employee name: " + JSON.stringify(req.body));
-        }
         await pool.query(`
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
         BEGIN;
         `);
         // ↓ Task 1: get all orders that weren't issued yet
         let result = await pool.query(`
-        SELECT num, receipt_num, pizza, datetime, order_items.cost,
-        customer_name, customer_phone_num
-        FROM order_items 
-        WHERE employee_name IS NULL AND customer_deleted_id = 0
-        ORDER BY datetime DESC, pizza ASC;`);
+        SELECT order.num, datetime, cost, customer_phone_num, 
+        product_name, product_brand, amount, SUM(products.price) 
+        FROM orders INNER JOIN order_items ON num = order_num 
+        INNER JOIN products ON product_name = name AND product_brand = brand
+        WHERE issuance_datetime IS NULL 
+        ORDER BY datetime DESC;`);
+        console.log(result.rows);
+        throw new Error("finish");
         // ↓ add array of extraToppings to each order item
         let orderItems = result.rows.map(orderItem => {
             orderItem.extra_toppings = [];

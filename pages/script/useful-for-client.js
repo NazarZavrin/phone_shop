@@ -122,3 +122,26 @@ export function passwordIsCorrect(inputElement, elementForWarning = null) {
     setWarningAfterElement(elementForWarning, warningText);
     return warningText.length > 0 ? false : true;
 }
+
+export function isInt(source) {
+    let text = source;
+    // console.log(source?.tagName === "INPUT", source?.value);
+    if (source?.tagName === "INPUT" && typeof source?.value === 'string') {
+        // console.log("+");
+        text = source.value;
+        source.style.borderColor = '';
+    }
+    for (const symbol of text) {
+        if (Number.isNaN(Number(symbol))) {
+            // console.log(source);
+            if (source?.style) {
+                source.style.borderColor = 'red';
+            }
+            if (symbol === "." || symbol === ",") {
+                return "Decimal point can't be present in integer.";
+            }
+            return "Incorrect symbol.";
+        }
+    }
+    return "";
+}
