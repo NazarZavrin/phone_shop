@@ -228,6 +228,29 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.basket section > div:last-of-type {
   margin-bottom: 0;
 }
+.modal-window.basket section > div > .order-item_amount {
+  display: flex;
+  flex-direction: row;
+  width: 90px;
+  height: 30px;
+}
+.modal-window.basket section > div > .order-item_amount > * {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  width: 33.3333333333%;
+  height: 100%;
+}
+.modal-window.basket section > div > .order-item_amount > button {
+  background-color: royalblue;
+  color: white;
+  margin: 0;
+  font-size: 125%;
+}
+.modal-window.basket section > div > .order-item_amount > button:disabled {
+  background-color: gray;
+}
 .modal-window.basket section > div > .del-from-basket-btn {
   background-color: red;
   font-size: 18px;
@@ -315,7 +338,8 @@ main > .main-info {
   flex-direction: column;
 }
 main > .main-info #add-to-basket-btn {
-  margin: 3px auto;
+  margin: auto;
+  margin-top: 5px;
 }
 main > header#other-info-header {
   grid-area: other_info_header;

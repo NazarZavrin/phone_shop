@@ -228,6 +228,20 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.basket section > div:last-of-type {
   margin-bottom: 0;
 }
+.modal-window.basket section > div > .product_amount {
+  display: flex;
+  flex-direction: row;
+}
+.modal-window.basket section > div > .product_amount > * {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+.modal-window.basket section > div > .product_amount > button {
+  background-color: royalblue;
+  color: white;
+}
 .modal-window.basket section > div > .del-from-basket-btn {
   background-color: red;
   font-size: 18px;

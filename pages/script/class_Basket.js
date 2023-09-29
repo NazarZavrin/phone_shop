@@ -6,11 +6,14 @@ import { createElement, showModalWindow } from "./useful-for-client.js";
 export default class Basket {
     static #storageLabel = "product: ";
     constructor() { }
-    addProduct(brand, name, price) {
+    setProductInfo(brand, name, price, amount) {
         localStorage.setItem(`${Basket.#storageLabel}${brand}|${name}`, JSON.stringify({
             price: price,
-            amount: 1
+            amount: amount
         }));
+    }
+    addProduct(brand, name, price) {
+        this.setProductInfo(brand, name, price, 1);
     }
     getProducts() {
         const products = [];
@@ -53,17 +56,6 @@ export default class Basket {
             currentCustomerLabel.classList.add("current-customer-label");
         }
         let orderItems = createElement({ name: 'section' });
-        products.forEach(orderItem => {
-            const nameBrandElem = createElement({ class: 'phone_name_and_brand', content: `${orderItem.brand + " " + orderItem.name}` });
-            const amountElem = createElement({ class: 'phone_amount', content: `${orderItem.amount}` });
-            const orderItemElement = createElement();
-            orderItemElement.append(nameBrandElem);
-            orderItemElement.append(amountElem);
-            orderItem.cost = orderItem.price * orderItem.amount;
-            orderItemElement.insertAdjacentHTML('beforeend', `<div class='order-item-cost'>${orderItem.cost} грн.</div>
-            <button type="button" class="del-from-basket-btn">Видалити з кошику</button>`);
-            orderItems.append(orderItemElement);
-        });
         const totalCostElem = createElement({ class: 'total-cost' });
         const orderBtn = createElement({ name: 'button', content: "Замовити", class: "order-btn" });
         function updateTotalCost() {
@@ -79,6 +71,44 @@ export default class Basket {
             }
         }
         updateTotalCost();
+        products.forEach(orderItem => {
+            const nameBrandElem = createElement({ class: 'order-item_name_and_brand', content: `${orderItem.brand + " " + orderItem.name}` });
+            const amountElem = createElement({ class: 'order-item_amount' });
+            const costElem = createElement({ class: 'order-item_cost' });
+            amountElem.addEventListener('click', event => {
+                if (amountElem.innerHTML.length > 0) {
+                    const pressedButton = event.target.closest('button');
+                    if (!pressedButton) {
+                        return;
+                    }
+                    if (pressedButton?.classList?.contains('decrease')) {
+                        
+                        if (orderItem.amount > 1) {
+                            --orderItem.amount;
+                        }
+                    } else if (pressedButton?.classList?.contains('increase')) {
+                        ++orderItem.amount;
+                    }
+
+                }
+                amountElem.innerHTML = `<button class="decrease"${orderItem.amount <= 1 ? " disabled" : ""}>-</button>
+                <div class="order-item_amount__num">${orderItem.amount}</div>
+                <button class="increase">+</button>`;
+                orderItem.cost = orderItem.price * orderItem.amount;
+                costElem.innerHTML = `<div class='order-item-cost'>${orderItem.cost} грн.</div>`;
+                this.setProductInfo(orderItem.brand, orderItem.name, orderItem.price, orderItem.amount);
+                updateTotalCost();
+            });
+            amountElem.click();// update amount output
+            const orderItemElement = createElement();
+            orderItemElement.append(nameBrandElem);
+            orderItemElement.append(amountElem);
+            orderItemElement.append(costElem);
+            orderItemElement.insertAdjacentHTML('beforeend', `<button type="button" class="del-from-basket-btn">Видалити з кошику</button>`);
+            orderItems.append(orderItemElement);
+        });
+        
+        
         orderItems.addEventListener('click', event => {
             // deletion from the basket
             const delFromBasketBtn = event.target.closest('.del-from-basket-btn');
@@ -86,11 +116,11 @@ export default class Basket {
                 return;
             }
             let orderItemIndex = [...orderItems.querySelectorAll('.del-from-basket-btn')].findIndex(btn => btn === delFromBasketBtn);
-            console.log(products);
+            // console.log(products);
             this.deleteProduct(products[orderItemIndex].brand, products[orderItemIndex].name);
-            // products = this.getProducts();
-            console.log(products);
-            this.updateAddToBasketBtn(products[orderItemIndex].brand, products[orderItemIndex].name, addToBasketBtn);
+            products = this.getProducts();
+            // console.log(products);
+            Basket.updateAddToBasketBtn(products[orderItemIndex]?.brand, products[orderItemIndex]?.name, addToBasketBtn);
             const orderItemElement = delFromBasketBtn.closest('section > div');
             orderItemElement.remove();
             updateTotalCost();

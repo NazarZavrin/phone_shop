@@ -182,6 +182,32 @@
       &:last-of-type {
         margin-bottom: 0;
       }
+      & > .order-item_amount {
+        display: flex;
+        flex-direction: row;
+        width: 90px;
+        height: 30px;
+        & > * {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 5px;
+          width: calc(1/3 * 100%);
+          height: 100%;
+        }
+        & > button {
+          background-color: royalblue;
+          color: white;
+          margin: 0;
+          font-size: 125%;
+          &:disabled {
+            background-color: gray;
+          }
+        }
+      }
+      // .decrease
+      // .order-item_amount__num
+      // .increase
 
       & > .del-from-basket-btn {
         background-color: red;

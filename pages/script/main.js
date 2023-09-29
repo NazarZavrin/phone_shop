@@ -26,12 +26,12 @@ accountBtn.addEventListener("click", event => {
 });
 
 content.addEventListener("click", async event => {
-    // view detail info about phone
-    const phoneContainer = event.target.closest("section.phone");
-    if (!phoneContainer) {
+    // view detail info about product
+    const productContainer = event.target.closest("section.product");
+    if (!productContainer) {
         return;
     }
-    const productInfo = phoneContainer.querySelector(".phone_main_info")?.dataset.phone_main_info || "";
+    const productInfo = productContainer.querySelector(".product_main_info")?.dataset.product_main_info || "";
     if (productInfo) {
         location.href = location.origin + "/products/" + encodeURIComponent(productInfo);
     }

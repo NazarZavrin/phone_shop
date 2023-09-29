@@ -29,9 +29,10 @@ viewBasketBtn.addEventListener('click', event => {
     basket.show(customerName, addToBasketBtn);
 });
 
-Basket.updateAddToBasketBtn(productMainInfo[0], productMainInfo[1], addToBasketBtn)
+Basket.updateAddToBasketBtn(productMainInfo[0], productMainInfo[1], addToBasketBtn);
 
 addToBasketBtn.addEventListener("click", event => {
     basket.addProduct(...productMainInfo);
+    Basket.updateAddToBasketBtn(productMainInfo[0], productMainInfo[1], addToBasketBtn);
     console.log(basket.getProducts());
 })

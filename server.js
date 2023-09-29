@@ -18,7 +18,7 @@ app.get('/', async (req, res) => {
         let result = await pool.query(`SELECT name, brand, price FROM products`);
         // console.log(result.rows);
         res.render('main', {
-            phones: result.rows
+            products: result.rows
         });
     } catch (error) {
         console.log(error.message);

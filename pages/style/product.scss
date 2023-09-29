@@ -74,7 +74,8 @@ main {
     display: flex;
     flex-direction: column;
     & #add-to-basket-btn {
-      margin: 3px auto;
+      margin: auto;
+      margin-top: 5px;
     }
   }
   & > header#other-info-header {

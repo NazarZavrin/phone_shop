@@ -56,7 +56,7 @@ main {
   flex-wrap: wrap;
   justify-content: space-around;
 }
-section.phone {
+section.product {
   display: grid;
   grid-auto-rows: auto;
   grid-template-columns: 300px;
@@ -71,11 +71,11 @@ section.phone {
   & > div {
     padding: 3px 7px;
   }
-  & > .phone_main_info {
+  & > .product_main_info {
     grid-area: name;
     width: 100%;
   }
-  & > .phone__price {
+  & > .product__price {
     grid-area: price;
   }
   & > .image {

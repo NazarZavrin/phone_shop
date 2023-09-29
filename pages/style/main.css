@@ -228,6 +228,29 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.basket section > div:last-of-type {
   margin-bottom: 0;
 }
+.modal-window.basket section > div > .product_amount {
+  display: flex;
+  flex-direction: row;
+  width: 90px;
+  height: 30px;
+}
+.modal-window.basket section > div > .product_amount > * {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  width: 33.3333333333%;
+  height: 100%;
+}
+.modal-window.basket section > div > .product_amount > button {
+  background-color: royalblue;
+  color: white;
+  margin: 0;
+  font-size: 125%;
+}
+.modal-window.basket section > div > .product_amount > button:disabled {
+  background-color: gray;
+}
 .modal-window.basket section > div > .del-from-basket-btn {
   background-color: red;
   font-size: 18px;
@@ -295,7 +318,7 @@ main {
   justify-content: space-around;
 }
 
-section.phone {
+section.product {
   display: grid;
   grid-auto-rows: auto;
   grid-template-columns: 300px;
@@ -305,17 +328,17 @@ section.phone {
   border-radius: 5px;
   margin: 10px;
 }
-section.phone > div {
+section.product > div {
   padding: 3px 7px;
 }
-section.phone > .phone_main_info {
+section.product > .product_main_info {
   grid-area: name;
   width: 100%;
 }
-section.phone > .phone__price {
+section.product > .product__price {
   grid-area: price;
 }
-section.phone > .image {
+section.product > .image {
   grid-area: image;
   width: 300px;
   height: 150px;
@@ -323,7 +346,7 @@ section.phone > .image {
   background-color: #eee;
   margin: 0;
 }
-section.phone > .image > img {
+section.product > .image > img {
   margin: auto;
   max-width: 100%;
 }

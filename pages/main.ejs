@@ -21,18 +21,18 @@
             <button class="view-basket-btn">Кошик</button>
         </header>
         <main>
-            <% for(const phone of phones){ %>
-                <section class="phone">
+            <% for(const product of products){ %>
+                <section class="product">
                     <div class="image">
-                        <img src="<%= phone.image_name %>" onerror="event.target.setAttribute('src', 
+                        <img src="<%= product.image_name %>" onerror="event.target.setAttribute('src', 
                         '/img/1x1-transparent.png'); event.target.onerror = null;">
                     </div>
-                    <div class="phone_main_info" data-phone_main_info="<%= phone.brand + "|" + phone.name %>">
-                        Мобільний телефон <%= phone.brand %>
-                            <%= phone.name %>
+                    <div class="product_main_info" data-product_main_info="<%= product.brand + "|" + product.name %>">
+                        Мобільний телефон <%= product.brand %>
+                            <%= product.name %>
                     </div>
-                    <div class="phone__price">
-                        Ціна: <%= phone.price %> грн.
+                    <div class="product__price">
+                        Ціна: <%= product.price %> грн.
                     </div>
                 </section>
                 <% }%>
