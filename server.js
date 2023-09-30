@@ -15,10 +15,13 @@ app.use("/orders", ordersRouter);
 
 app.get('/', async (req, res) => {
     try {
-        let result = await pool.query(`SELECT name, brand, price FROM products`);
+        let result = await pool.query(`SELECT DISTINCT name FROM brands`);
+        let brands = result.rows.map(row => row.name);
+        result = await pool.query(`SELECT name, brand, price, image_name FROM products`);
         // console.log(result.rows);
         res.render('main', {
-            products: result.rows
+            products: result.rows,
+            brands: brands,
         });
     } catch (error) {
         console.log(error.message);

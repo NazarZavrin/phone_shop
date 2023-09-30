@@ -2,7 +2,6 @@
 
 import Basket from "./class_Basket.js";
 import Customer from "./class_Customer.js";
-import { createElement, passwordIsCorrect, phoneNumberIsCorrect, setWarningAfterElement, showModalWindow, showPassword } from "./useful-for-client.js";
 
 const customerName = document.getElementById("customer-name");
 const accountBtn = document.getElementById("account-btn");
@@ -17,19 +16,25 @@ if (localStorage.getItem("customerName") === null) {
 } else {
     customerName.textContent = localStorage.getItem("customerName");
 }
+
+Basket.updateAddToBasketBtn(productMainInfo[0], productMainInfo[1], addToBasketBtn);
+
 accountBtn.addEventListener("click", event => {
     if (localStorage.getItem("customerName") === null) {
         Customer.showRegistrationWindow(customerName);
     } else {
-        Customer.showCustomerProfile(customerName);
+        Customer.showCustomerProfile(customerName, {
+            onExit: Basket.updateAddToBasketBtn.bind(null, productMainInfo[0], productMainInfo[1], addToBasketBtn)
+        });
     }
 });
 
 viewBasketBtn.addEventListener('click', event => {
-    basket.show(customerName, addToBasketBtn);
+    basket.show(customerName, {
+        addToBasketBtn: addToBasketBtn, 
+        viewBasketBtn: viewBasketBtn
+    });
 });
-
-Basket.updateAddToBasketBtn(productMainInfo[0], productMainInfo[1], addToBasketBtn);
 
 addToBasketBtn.addEventListener("click", event => {
     basket.addProduct(...productMainInfo);

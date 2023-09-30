@@ -189,3 +189,9 @@
 .modal-window.basket .total-cost {
   text-align: center;
 }
+.modal-window.issuance .warning {
+  max-width: 200px;
+}
+.modal-window.issuance .issue-btn {
+  margin: 0;
+}

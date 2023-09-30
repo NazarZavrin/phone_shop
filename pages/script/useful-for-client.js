@@ -145,3 +145,18 @@ export function isInt(source) {
     }
     return "";
 }
+export function isFloat(text) {
+    for (const symbol of text) {
+        if (Number.isNaN(Number(symbol))) {
+            if (symbol === "." || symbol === ",") {
+                if (text.split(/[.,]/).length > 2) {
+                    return "Decimal point was found more than once.";
+                } else {
+                    continue;
+                }
+            }
+            return "Incorrect symbol.";
+        }
+    }
+    return "";
+}

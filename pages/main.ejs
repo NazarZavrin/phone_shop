@@ -20,11 +20,20 @@
             <span id="customer-name"></span>
             <button class="view-basket-btn">Кошик</button>
         </header>
+        <section class="filter-section">
+            <header>Фільтр бренду:</header>
+            <select id="brand__filter">
+                <option value="none">Усі бренди</option>
+                <% for(const brand of brands){ %>
+                    <option value=<%= brand %>><%= brand %></option>
+                <% } %>
+            </select>
+        </section>
         <main>
             <% for(const product of products){ %>
                 <section class="product">
                     <div class="image">
-                        <img src="<%= product.image_name %>" onerror="event.target.setAttribute('src', 
+                        <img src="/img/<%= product.image_name %>" onerror="event.target.setAttribute('src', 
                         '/img/1x1-transparent.png'); event.target.onerror = null;">
                     </div>
                     <div class="product_main_info" data-product_main_info="<%= product.brand + "|" + product.name %>">

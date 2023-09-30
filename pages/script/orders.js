@@ -1,8 +1,7 @@
 "use strict";
 
-import { createElement, dayAndMonthAreCorrect, hourAndMinuteAreCorrect, isFloat, isInt, orderItemsToOrders, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
-import "./polyfills.js";
 import Orders from "./class_Order.js";
+import { setWarningAfterElement } from "./useful-for-client.js";
 
 const searchBtn = document.getElementById("search-btn");
 const refreshBtn = document.getElementById("refresh-btn");
@@ -27,10 +26,8 @@ refreshBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                console.log(result.orderItems);
-                // orders = orderItemsToOrders(result.orderItems).map(createOrderElement);
-                // console.log(orders);
-                orders = new Orders(result.orderItems);
+                console.log(...result.orders);
+                orders = new Orders(result.orders);
                 searchBtn.click();
             }
         }
@@ -40,7 +37,7 @@ refreshBtn.addEventListener('click', async event => {
     }
 })
 
-// refreshBtn.click();
+refreshBtn.click();
 
 searchBtn.addEventListener('click', event => {
     let everythingIsCorrect = true, message = '';
@@ -57,7 +54,7 @@ searchBtn.addEventListener('click', event => {
         return;
     }
     setWarningAfterElement(searchBtn, '');
-    orders.renderOrders(ordersContainer);
+    orders.filterAndRenderOrders(ordersContainer, searchInputs);
 })
 ordersContainer.addEventListener('click', event => {
     // 1: order deletion logic, 2: order issuance logic

@@ -2,9 +2,9 @@
 
 import Basket from "./class_Basket.js";
 import Customer from "./class_Customer.js";
-import { createElement, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
 // console.info(``);
+console.info(`Develop brand filtration`);
 
 const customerName = document.getElementById("customer-name");
 const accountBtn = document.getElementById("account-btn");

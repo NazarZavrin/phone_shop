@@ -288,11 +288,23 @@ button {
   min-height: 50px;
   display: grid;
   grid-template-rows: auto;
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: auto auto auto 1fr auto;
   align-items: center;
   padding: 7px;
   color: white;
   background-color: gray;
+}
+.wrapper > header button.back {
+  background-color: dodgerblue;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 7px;
+}
+.wrapper > header button.back img {
+  display: block;
+  transform: rotate(180deg);
+  max-width: 100%;
 }
 .wrapper > header > #account-btn {
   width: 35px;
@@ -306,7 +318,7 @@ button {
   max-width: 100%;
 }
 .wrapper > header > .view-basket-btn {
-  grid-column-start: 4;
+  grid-column-start: 5;
 }
 
 main {
@@ -319,15 +331,17 @@ main {
 }
 main > .photo {
   grid-area: photo;
-  width: 300px;
-  height: 150px;
+  width: 200px;
+  height: 250px;
   display: flex;
   background-color: #eee;
   margin: 0;
+  padding: 7px;
 }
 main > .photo > img {
   margin: auto;
   max-width: 100%;
+  max-height: 100%;
 }
 main > .main-info {
   grid-area: main_info;
@@ -336,10 +350,13 @@ main > .main-info {
   padding: 10px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 main > .main-info #add-to-basket-btn {
-  margin: auto;
-  margin-top: 5px;
+  margin: 5px auto;
+}
+main > .main-info > div {
+  margin-bottom: 7px;
 }
 main > header#other-info-header {
   grid-area: other_info_header;

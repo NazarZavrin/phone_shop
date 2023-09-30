@@ -1,6 +1,6 @@
 "use strict";
 
-import { createElement, emailIsCorrect, phoneNumberIsCorrect, setWarningAfterElement, showModalWindow, nameIsCorrect, showPassword, passwordIsCorrect } from "./useful-for-client.js";
+import { createElement, emailIsCorrect, phoneNumberIsCorrect, setWarningAfterElement, showModalWindow, nameIsCorrect, showPassword, passwordIsCorrect, isFloat } from "./useful-for-client.js";
 
 export default class Orders {
     #orders
@@ -8,7 +8,7 @@ export default class Orders {
     constructor(ordersArray = []) {
         this.#orders = ordersArray;
     }
-    renderOrders(ordersContainer) {
+    filterAndRenderOrders(ordersContainer, searchInputs) {
         if (!this.#orders || this.#orders.length === 0) {
             ordersContainer.textContent = "Невидані замовлення відсутні.";
             return;
@@ -24,13 +24,13 @@ export default class Orders {
         }
         ordersContainer.innerHTML = '';
         this.#ordersToDisplay?.forEach(order => {
-            ordersContainer.append(order.element || this.constructor.createOrderElement(order).element);
-        })
+            ordersContainer.append(order.element ||Orders.createOrderElement(order).element);
+        });
     }
     static createOrderElement(order) {
         order.element = createElement({ name: 'div', class: 'order' });
-        const receiptNum = createElement({ class: 'receipt_num', content: 'Замовлення №' + order.receipt_num });
-        order.element.append(receiptNum);
+        const orderNum = createElement({ class: 'order_num', content: 'Замовлення №' + order.num });
+        order.element.append(orderNum);
         const customerName = createElement({ class: 'customer_name', content: 'Покупець: ' + order.customer_name });
         order.element.append(customerName);
         const customerPhoneNum = createElement({ class: 'customer_phone_num', content: 'Номер телефону покупця: ' + order.customer_phone_num });
@@ -41,21 +41,13 @@ export default class Orders {
         order.element.append(cost);
         const orderItems = createElement({ class: 'order-items' });
         order.orderItems.forEach(orderItem => {
-            let text = `Піца: ${orderItem.pizza}; `;
-            if (orderItem.extra_toppings.length > 0) {
-                text += `добавки: ${orderItem.extra_toppings.join(", ")}.`;
-            } else {
-                text += `добавки відсутні.`;
-            }
-            orderItems.insertAdjacentHTML("beforeend", `<div class="order-item">${text[0] + text.slice(1).toLocaleLowerCase()}</div>`);
+            let text = orderItem.product_brand + ' ' + orderItem.product_name + ' (' + orderItem.amount + ' шт.)';
+            orderItems.insertAdjacentHTML("beforeend", `<div class="order-item">${text}</div>`);
         })
         order.element.append(orderItems);
         const issuanceBtn = createElement({ name: 'button', class: 'issuance-btn', content: 'Видати замовлення' });
         order.element.append(issuanceBtn);
         const deleteOrderBtn = createElement({ name: 'button', class: 'delete-order-btn', content: 'Видалити замовлення' });
-        if (localStorage.getItem("employeeName") === 'Admin') {
-            deleteOrderBtn.style.display = 'block';
-        }
         order.element.append(deleteOrderBtn);
         return order;
     }
@@ -76,12 +68,12 @@ export default class Orders {
         }
     }
     async issueOrder(orderIndex) {
-        const header = createElement({ name: "header", content: 'Видача замовлення' });
-        const сostElem = createElement({ class: 'cost', content: 'Вартість: ' + ordersToDisplay[orderIndex].cost + ' грн.' });
+        const header = createElement({ name: "header", content: 'Видача замовлення №' + this.#ordersToDisplay[orderIndex].num });
+        const сostElem = createElement({ class: 'cost', content: 'Вартість: ' + this.#ordersToDisplay[orderIndex].cost + ' грн.' });
         const paidLabel = createElement({ name: "header", content: "Заплачено (грн.):" });
         const paidInput = createElement({ name: "input" });
         paidInput.setAttribute("autocomplete", "off");
-        const changeLabel = createElement({ name: "header", content: 'Введіть заплачену суму' });
+        const changeLabel = createElement({ name: "header" });
         const issueBtn = createElement({ name: 'button', content: "Видати", class: "issue-btn" });
         issueBtn.style.display = "none";
         paidInput.addEventListener("input", event => {
@@ -103,7 +95,7 @@ export default class Orders {
                 return;
             }
             setWarningAfterElement(paidInput, '');
-            let change = Number(paidInput.value.split(",").join(".")) - ordersToDisplay[orderIndex].cost;
+            let change = Number(paidInput.value.split(",").join(".")) - this.#ordersToDisplay[orderIndex].cost;
             if (change < 0) {
                 changeLabel.textContent = 'Сплачено недостатньо';
             } else {
@@ -116,7 +108,7 @@ export default class Orders {
             if (changeLabel.textContent.match(/Решта: [\d.,]+ грн./)) {
                 try {
                     let requestBody = {
-                        num: ordersToDisplay[orderIndex].num,
+                        num: this.#ordersToDisplay[orderIndex].num,
                         paid: Number(paidInput.value.split(",").join("."))
                     };
                     let response = await fetch(location.origin + "/orders/issue", {
@@ -132,7 +124,7 @@ export default class Orders {
                             refreshBtn.click();
                             let receiptLink = document.createElement("a");
                             receiptLink.setAttribute('target', '_blank');
-                            receiptLink.href = location.href + `/${requestBody.num}`;
+                            receiptLink.href = location.origin + `/receipt/${requestBody.num}`;
                             receiptLink.click();
                         }
                     }

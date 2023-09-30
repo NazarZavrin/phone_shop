@@ -228,19 +228,28 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.basket section > div:last-of-type {
   margin-bottom: 0;
 }
-.modal-window.basket section > div > .product_amount {
+.modal-window.basket section > div > .order-item_amount {
   display: flex;
   flex-direction: row;
+  width: 90px;
+  height: 30px;
 }
-.modal-window.basket section > div > .product_amount > * {
+.modal-window.basket section > div > .order-item_amount > * {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 5px;
+  width: 33.3333333333%;
+  height: 100%;
 }
-.modal-window.basket section > div > .product_amount > button {
+.modal-window.basket section > div > .order-item_amount > button {
   background-color: royalblue;
   color: white;
+  margin: 0;
+  font-size: 125%;
+}
+.modal-window.basket section > div > .order-item_amount > button:disabled {
+  background-color: gray;
 }
 .modal-window.basket section > div > .del-from-basket-btn {
   background-color: red;
@@ -250,6 +259,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 .modal-window.basket .total-cost {
   text-align: center;
+}
+.modal-window.issuance .warning {
+  max-width: 200px;
+}
+.modal-window.issuance .issue-btn {
+  margin: 0;
 }
 
 html,
@@ -352,11 +367,21 @@ main > header #search-btn {
   background-color: dodgerblue;
   margin-top: 3px;
 }
-main > header > .refresh-section {
+main > header > .actions-section {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+}
+main > header > .actions-section > #view-report-btn {
+  background-color: royalblue;
+  margin: 3px;
+}
+main > header > .actions-section > #view-receipt-btn {
+  background-color: slateblue;
+  margin: 3px;
+  margin-right: 6px;
 }
 
 main > #orders {
@@ -377,7 +402,7 @@ main > #orders > .order {
   display: grid;
   grid-template-rows: repeat(6, auto);
   grid-template-columns: auto min-content;
-  grid-template-areas: "receipt_num issuance_btn" "cost delete_order_btn" "order_items order_items" "customer_name customer_name" "customer_phone_num customer_phone_num" "datetime datetime";
+  grid-template-areas: "order_num issuance_btn" "cost delete_order_btn" "order_items order_items" "customer_name customer_name" "customer_phone_num customer_phone_num" "datetime datetime";
   box-shadow: 0 0 3px 1px gray;
   border-radius: 5px;
   margin-bottom: 15px;
@@ -389,8 +414,8 @@ main > #orders > .order > div {
   display: flex;
   align-items: center;
 }
-main > #orders > .order > div.receipt_num {
-  grid-area: receipt_num;
+main > #orders > .order > div.order_num {
+  grid-area: order_num;
 }
 main > #orders > .order > div.customer_name {
   grid-area: customer_name;
@@ -419,7 +444,6 @@ main > #orders > .order > .issuance-btn {
 }
 main > #orders > .order > .delete-order-btn {
   grid-area: delete_order_btn;
-  display: none;
   background-color: red;
   white-space: nowrap;
   margin: 5px 0 0 5px;

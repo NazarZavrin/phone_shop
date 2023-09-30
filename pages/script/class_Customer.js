@@ -1,5 +1,6 @@
 "use strict";
 
+import Basket from "./class_Basket.js";
 import { createElement, emailIsCorrect, phoneNumberIsCorrect, setWarningAfterElement, showModalWindow, nameIsCorrect, showPassword, passwordIsCorrect } from "./useful-for-client.js";
 
 export default class Customer {
@@ -151,7 +152,7 @@ export default class Customer {
             logInBtn, createAccountBtn],
             { className: 'registration' });
     }
-    static showCustomerProfile(customerNameElem) {
+    static showCustomerProfile(customerNameElem, {onExit = function () { }}) {
         const customerInfo = createElement({ name: 'section', class: 'info' });
         customerInfo.innerHTML = `<div>${localStorage.getItem("customerName")}</div>
             <div>${localStorage.getItem("customerPhoneNum")}</div>`;
@@ -230,6 +231,8 @@ export default class Customer {
             customerNameElem.style.display = "none";
             localStorage.removeItem("customerName");
             localStorage.removeItem("customerPhoneNum");
+            Basket.deleteAllProducts();
+            onExit();
             event.target.closest(".modal-window").closeWindow();
         });
         showModalWindow([customerInfo, changePasswordBtn,

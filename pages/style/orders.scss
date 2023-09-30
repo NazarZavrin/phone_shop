@@ -104,14 +104,21 @@ main > header {
     background-color: dodgerblue;
     margin-top: 3px;
   }
-  & #refresh-btn {
-    // margin-top: 7px;
-  }
-  & > .refresh-section {
+  & > .actions-section {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    & > #view-report-btn{
+      background-color: royalblue;
+      margin: 3px;
+    }
+    & > #view-receipt-btn{
+      background-color: slateblue;
+      margin: 3px;
+      margin-right: 6px;
+    }
   }
 }
 main > #orders {
@@ -133,7 +140,7 @@ main > #orders {
     grid-template-rows: repeat(6, auto);
     grid-template-columns: auto min-content;
     grid-template-areas:
-      "receipt_num issuance_btn"
+      "order_num issuance_btn"
       "cost delete_order_btn"
       "order_items order_items"
       "customer_name customer_name"
@@ -148,8 +155,8 @@ main > #orders {
     & > div {
       display: flex;
       align-items: center;
-      &.receipt_num {
-        grid-area: receipt_num;
+      &.order_num {
+        grid-area: order_num;
       }
       &.customer_name {
         grid-area: customer_name;
@@ -179,7 +186,6 @@ main > #orders {
     }
     & > .delete-order-btn {
       grid-area: delete_order_btn;
-      display: none;
       background-color: red;
       white-space: nowrap;
       margin: 5px 0 0 5px;

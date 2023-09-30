@@ -1,4 +1,4 @@
-CREATE TABLE brand(
+CREATE TABLE brands(
   name VARCHAR(20) PRIMARY KEY NOT NULL
 );
 INSERT INTO brand VALUES ('Samsung');
@@ -16,7 +16,7 @@ CREATE TABLE products(
   processor VARCHAR(35) NOT NULL,
   matrix_type VARCHAR(20) NOT NULL,
   OS VARCHAR(12) NOT NULL,
-  image_name VARCHAR(20),
+  image_name VARCHAR(30),
   CONSTRAINT product_pk PRIMARY KEY (name, brand)
 );
 *INSERT INTO products VALUES
@@ -37,8 +37,8 @@ CREATE TABLE customers(
 CREATE TABLE orders(
   num BIGSERIAL PRIMARY KEY NOT NULL,
   datetime TIMESTAMP NOT NULL,
-  cost INT NOT NULL,
-  customer_phone_num VARCHAR(20) NOT NULL REFERENCES customers(phone_num) ON UPDATE CASCADE,
+  cost INT,
+  customer_phone_num VARCHAR(20) NOT NULL REFERENCES customers(phone_num) ON UPDATE CASCADE ON DELETE CASCADE,
   issuance_datetime TIMESTAMP NULL,
   paid INT
 );

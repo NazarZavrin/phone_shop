@@ -228,13 +228,13 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.basket section > div:last-of-type {
   margin-bottom: 0;
 }
-.modal-window.basket section > div > .product_amount {
+.modal-window.basket section > div > .order-item_amount {
   display: flex;
   flex-direction: row;
   width: 90px;
   height: 30px;
 }
-.modal-window.basket section > div > .product_amount > * {
+.modal-window.basket section > div > .order-item_amount > * {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -242,13 +242,13 @@ h1, h2, h3, h4, h5, h6 {
   width: 33.3333333333%;
   height: 100%;
 }
-.modal-window.basket section > div > .product_amount > button {
+.modal-window.basket section > div > .order-item_amount > button {
   background-color: royalblue;
   color: white;
   margin: 0;
   font-size: 125%;
 }
-.modal-window.basket section > div > .product_amount > button:disabled {
+.modal-window.basket section > div > .order-item_amount > button:disabled {
   background-color: gray;
 }
 .modal-window.basket section > div > .del-from-basket-btn {
@@ -309,6 +309,24 @@ button {
   grid-column-start: 4;
 }
 
+.wrapper > .filter-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px;
+  border: 1.5px solid dimgray;
+  box-shadow: 0 1px 3px 1px gray;
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+}
+.wrapper > .filter-section select {
+  border: 1px solid dimgray;
+  font: inherit;
+  margin-left: 3px;
+}
+
 main {
   width: 100%;
   padding: 10px;
@@ -320,8 +338,9 @@ main {
 
 section.product {
   display: grid;
+  grid-template-rows: 150px;
   grid-auto-rows: auto;
-  grid-template-columns: 300px;
+  grid-template-columns: 200px;
   grid-template-areas: "image" "name" "price";
   background-color: white;
   box-shadow: 0 0 3px 1px gray;
@@ -330,23 +349,23 @@ section.product {
 }
 section.product > div {
   padding: 3px 7px;
+  max-width: 100%;
 }
 section.product > .product_main_info {
   grid-area: name;
-  width: 100%;
 }
 section.product > .product__price {
   grid-area: price;
 }
 section.product > .image {
   grid-area: image;
-  width: 300px;
-  height: 150px;
   display: flex;
   background-color: #eee;
   margin: 0;
+  padding: 7px;
 }
 section.product > .image > img {
   margin: auto;
   max-width: 100%;
+  max-height: 100%;
 }
