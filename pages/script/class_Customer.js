@@ -152,7 +152,7 @@ export default class Customer {
             logInBtn, createAccountBtn],
             { className: 'registration' });
     }
-    static showCustomerProfile(customerNameElem, {onExit = function () { }}) {
+    static showCustomerProfile(customerNameElem, {onExit = function () { }} = {}) {
         const customerInfo = createElement({ name: 'section', class: 'info' });
         customerInfo.innerHTML = `<div>${localStorage.getItem("customerName")}</div>
             <div>${localStorage.getItem("customerPhoneNum")}</div>`;

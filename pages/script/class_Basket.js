@@ -48,7 +48,7 @@ export default class Basket {
             addToBasketBtn.style.backgroundColor = "";
         }
     }
-    show(customerNameElem, {addToBasketBtn = {}, viewBasketBtn = {}}) {
+    show(customerNameElem, {addToBasketBtn = {}, viewBasketBtn = {}} = {}) {
         let products = this.getProducts();
         // console.log(...products);
         let currentCustomerLabel = null;

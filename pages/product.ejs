@@ -13,12 +13,12 @@
 <body>
   <div class="wrapper">
     <header>
-      <button class="back">
-        <a href="/">
-          <img src="/img/round-arrow.png" 
-          onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;" />
-        </a>
-      </button>
+      <a href="/">
+        <button class="back">
+          <img src="/img/round-arrow.png"
+            onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;" />
+        </button>
+      </a>
       <div id="account-btn">
         <img src="/img/avatar.png"
           onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;" />
@@ -40,8 +40,9 @@
         </div>
         <div class="price">Ціна: <%= productInfo.price %>
         </div>
-        <button type="button" id="add-to-basket-btn" style="background-color: transparent;" data-product_main_info="<%= productInfo.brand + "|" +
-          productInfo.name + "|" + productInfo.price %>"></button>
+        <button type="button" id="add-to-basket-btn" style="background-color: transparent;"
+          data-product_main_info="<%= productInfo.brand + " |" + productInfo.name + "|" + productInfo.price
+          %>"></button>
       </section>
       <header id="other-info-header">Інші характеристики</header>
       <section class="other-info">

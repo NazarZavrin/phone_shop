@@ -76,12 +76,14 @@ main > header {
       border-radius: 5px;
       padding: 0 3px;
       margin: 3px;
-      // &[name="num"] {
-      //   width: 110px;
-      //   // flex-grow: 0;
-      // }
+      &[name="num"] {
+        // min-width: 110px;
+        // max-width: 200px;
+        // flex-grow: 0;
+      }
       &[name="customer_phone_num"] {
         min-width: 230px;
+        // max-width: 300px;
         // flex-grow: 0;
       }
     }
@@ -110,11 +112,11 @@ main > header {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    & > #view-report-btn{
+    & > a > #view-report-btn{
       background-color: royalblue;
       margin: 3px;
     }
-    & > #view-receipt-btn{
+    & > a > #view-receipt-btn{
       background-color: slateblue;
       margin: 3px;
       margin-right: 6px;

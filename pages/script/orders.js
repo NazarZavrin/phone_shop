@@ -26,7 +26,7 @@ refreshBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                console.log(...result.orders);
+                // console.log(...result.orders);
                 orders = new Orders(result.orders);
                 searchBtn.click();
             }

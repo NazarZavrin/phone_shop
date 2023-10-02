@@ -269,6 +269,7 @@ h1, h2, h3, h4, h5, h6 {
 
 html,
 body {
+  display: flex;
   min-height: 100vh;
 }
 
@@ -282,9 +283,13 @@ button {
 }
 
 .wrapper {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   min-width: -moz-fit-content;
   min-width: fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
   min-height: 100vh;
   font: 20px "Calibri";
 }
@@ -292,86 +297,89 @@ button {
 .wrapper > header {
   width: 100%;
   min-height: 50px;
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: auto auto 1fr auto;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   padding: 7px;
   color: white;
   background-color: gray;
 }
-.wrapper > header > #account-btn {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background-color: lightgray;
-  margin-right: 5px;
-  cursor: pointer;
-}
-.wrapper > header > #account-btn > img {
-  max-width: 100%;
-}
-.wrapper > header > .view-basket-btn {
-  grid-column-start: 4;
-}
-
-.wrapper > .filter-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 10px;
-  border: 1.5px solid dimgray;
-  box-shadow: 0 1px 3px 1px gray;
-  border-top: 0;
-  border-radius: 0 0 7px 7px;
-}
-.wrapper > .filter-section select {
-  border: 1px solid dimgray;
-  font: inherit;
-  margin-left: 3px;
+.wrapper > header > a > .to-employee-page-btn {
+  background-color: limegreen;
 }
 
 main {
   width: 100%;
-  padding: 10px;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
   display: flex;
+  flex-direction: column;
+}
+
+main > header {
+  padding: 5px;
+  border: 1.5px solid dimgray;
+  box-shadow: 0 1px 3px 1px gray;
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+main > header .warning {
+  max-width: 100%;
+  display: inline-block;
+  font-size: 14px;
+  color: red;
+  text-align: center;
+  word-wrap: break-word;
+}
+main > header > header {
+  text-align: center;
+}
+main > header input {
+  font: inherit;
+  flex-grow: 1;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 0 3px;
+  margin: 3px;
+}
+main > header > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+main > header > #datetime-period {
+  display: inline-flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+  border: 1px solid gray;
+  padding: 5px;
+  padding-top: 3px;
+  margin: 3px;
+  border-radius: 3px;
+}
+main > header > #datetime-period > .datetime-component {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+}
+main > header > #datetime-period > .datetime-component > input[name] {
+  width: 30px;
+}
+main > header > #datetime-period > .datetime-component > input[name=year] {
+  width: 60px;
+}
+main > header #generate-report-btn {
+  background-color: dodgerblue;
 }
 
-section.product {
-  display: grid;
-  grid-template-rows: 150px;
-  grid-auto-rows: auto;
-  grid-template-columns: 200px;
-  grid-template-areas: "image" "name" "price";
-  background-color: white;
-  box-shadow: 0 0 3px 1px gray;
-  border-radius: 5px;
-  margin: 10px;
-}
-section.product > div {
-  padding: 3px 7px;
-  max-width: 100%;
-}
-section.product > .product_main_info {
-  grid-area: name;
-}
-section.product > .product__price {
-  grid-area: price;
-}
-section.product > .image {
-  grid-area: image;
-  display: flex;
-  background-color: #eee;
-  margin: 0;
-  padding: 7px;
-}
-section.product > .image > img {
-  margin: auto;
-  max-width: 100%;
-  max-height: 100%;
+main > #report {
+  width: 100%;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  padding: 10px;
+  text-align: center;
 }

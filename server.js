@@ -15,7 +15,7 @@ app.use("/orders", ordersRouter);
 
 app.get('/', async (req, res) => {
     try {
-        let result = await pool.query(`SELECT DISTINCT name FROM brands`);
+        let result = await pool.query(`SELECT name FROM brands`);
         let brands = result.rows.map(row => row.name);
         result = await pool.query(`SELECT name, brand, price, image_name FROM products`);
         // console.log(result.rows);
@@ -43,6 +43,15 @@ app.get("/products/:product_info", async (req, res, next) => {
         res.render('product', {
             productInfo: result.rows[0]
         });
+    } catch (error) {
+        console.log(error.message);
+        res.send("<pre>Server error</pre>");
+    }
+})
+
+app.get('/report', async (req, res) => {
+    try {
+        res.sendFile(path.join(path.resolve(), "pages", "report.html"));
     } catch (error) {
         console.log(error.message);
         res.send("<pre>Server error</pre>");

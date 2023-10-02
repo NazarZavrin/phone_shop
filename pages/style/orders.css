@@ -374,11 +374,11 @@ main > header > .actions-section {
   justify-content: center;
   align-items: center;
 }
-main > header > .actions-section > #view-report-btn {
+main > header > .actions-section > a > #view-report-btn {
   background-color: royalblue;
   margin: 3px;
 }
-main > header > .actions-section > #view-receipt-btn {
+main > header > .actions-section > a > #view-receipt-btn {
   background-color: slateblue;
   margin: 3px;
   margin-right: 6px;
