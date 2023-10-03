@@ -1,7 +1,7 @@
 "use strict";
 
 import Orders from "./class_Order.js";
-import { setWarningAfterElement } from "./useful-for-client.js";
+import { isInt, setWarningAfterElement } from "./useful-for-client.js";
 
 const searchBtn = document.getElementById("search-btn");
 const refreshBtn = document.getElementById("refresh-btn");

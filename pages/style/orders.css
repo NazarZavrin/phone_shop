@@ -317,15 +317,14 @@ main > header {
   box-shadow: 0 1px 3px 1px gray;
   border-top: 0;
   border-radius: 0 0 7px 7px;
-  /*& .warning {
-    max-width: 100%;
-    // width: 200px;
-    display: inline-block;
-    font-size: 14px;
-    color: red;
-    text-align: center;
-    word-wrap: break-word;
-  }*/
+}
+main > header .warning {
+  max-width: 100%;
+  display: inline-block;
+  font-size: 14px;
+  color: red;
+  text-align: center;
+  word-wrap: break-word;
 }
 main > header > .search-section {
   display: inline-flex;

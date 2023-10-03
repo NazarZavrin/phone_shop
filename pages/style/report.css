@@ -345,11 +345,6 @@ main > header input {
   padding: 0 3px;
   margin: 3px;
 }
-main > header > div {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
 main > header > #datetime-period {
   display: inline-flex;
   flex-direction: row;
@@ -372,6 +367,11 @@ main > header > #datetime-period > .datetime-component > input[name] {
 main > header > #datetime-period > .datetime-component > input[name=year] {
   width: 60px;
 }
+main > header > div:has(#generate-report-btn) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 main > header #generate-report-btn {
   background-color: dodgerblue;
 }
@@ -382,4 +382,11 @@ main > #report {
   min-width: fit-content;
   padding: 10px;
   text-align: center;
+}
+main > #report > #general-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  padding: 3px;
 }

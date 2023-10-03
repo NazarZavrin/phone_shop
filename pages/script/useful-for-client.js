@@ -160,3 +160,39 @@ export function isFloat(text) {
     }
     return "";
 }
+export function dayAndMonthAreCorrect(daySource, monthSource) {
+    let day = daySource, month = monthSource;
+    if (daySource?.tagName === "INPUT" && typeof daySource?.value === 'string') {
+        day = Number(daySource.value);
+        daySource.style.borderColor = '';
+    }
+    if (monthSource?.tagName === "INPUT" && typeof monthSource?.value === 'string') {
+        month = Number(monthSource.value);
+        monthSource.style.borderColor = '';
+    }
+    let dayIsCorrect = true, monthIsCorrect = true;
+    if (day > 31 || day <= 0) {
+        dayIsCorrect = false;
+    }
+    if (month > 12 || month <= 0) {
+        monthIsCorrect = false;
+    }
+    // в квітні (4), червні (6), вересні (9) та листопаді (11) 30 днів
+    // в січні (1), березні (3), травні (5), липні (7),
+    //  серпні (8), жовтні (10) та грудні (12) 31 день
+    // в лютому (2) максимум 29 днів (у високосному році)
+    if (month == 2 && day > 29) {
+        dayIsCorrect = false;
+    } else if (day == 31) {
+        if (month == 4 || month == 6 || month == 9 || month == 11) {
+            dayIsCorrect = false;
+        }
+    }
+    if (!dayIsCorrect && daySource?.style) {
+        daySource.style.borderColor = 'red';
+    }
+    if (!monthIsCorrect && monthSource?.style) {
+        monthSource.style.borderColor = 'red';
+    }
+    return dayIsCorrect && monthIsCorrect;
+}

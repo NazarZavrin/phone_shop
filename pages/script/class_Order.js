@@ -24,7 +24,7 @@ export default class Orders {
         }
         ordersContainer.innerHTML = '';
         this.#ordersToDisplay?.forEach(order => {
-            ordersContainer.append(order.element ||Orders.createOrderElement(order).element);
+            ordersContainer.append(Orders.createOrderElement(order).element);
         });
     }
     static createOrderElement(order) {
