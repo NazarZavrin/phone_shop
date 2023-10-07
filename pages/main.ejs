@@ -13,16 +13,16 @@
 <body>
     <div class="wrapper">
         <header>
-            <div id="account-btn">
+            <button type="button" id="account-btn">
                 <img src="/img/avatar.png"
                     onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;">
-            </div>
+            </button>
             <span id="customer-name"></span>
             <button class="view-basket-btn">Кошик</button>
         </header>
         <section class="filter-section">
             <header>Фільтр бренду:</header>
-            <select id="brand__filter">
+            <select id="brand-filter">
                 <option value="none">Усі бренди</option>
                 <% for(const brand of brands){ %>
                     <option value=<%= brand %>><%= brand %></option>

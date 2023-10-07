@@ -4,7 +4,7 @@ CREATE TABLE brands(
 INSERT INTO brand VALUES ('Samsung');
 
 CREATE TABLE products(
-  name VARCHAR(15) NOT NULL,
+  name VARCHAR(30) NOT NULL,
   brand VARCHAR(20) NOT NULL REFERENCES brand(name) ON UPDATE CASCADE,
   color VARCHAR(15) NOT NULL,
   price DECIMAL NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE products(
   CONSTRAINT product_pk PRIMARY KEY (name, brand)
 );
 *INSERT INTO products VALUES
-(name, brand, color, price, amount, Діагональ , Оперативна , Ємність , Вбудована , процесора , матриці , Операційна ),
+(name, brand, color, price, amount, Діагональ, Оперативна, Ємність, Вбудована, процесора, матриці, Операційна, img_name),
 2INSERT INTO products VALUES
 ('Galaxy A54', 'Samsung', 'Green', 17999, 17, 6.4, 8, 5000, 256, 'Samsung Exynos 1380', 'Super AMOLED', 'Android'),
 ('Galaxy A34', 'Samsung', 'Light Green', 13299, 21, 6.6, 6, 5000, 128, 'MediaTek Dimensity 1080', 'Super AMOLED', 'Android');

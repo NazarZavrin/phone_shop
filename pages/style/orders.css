@@ -356,6 +356,32 @@ main > header > .search-section > .search-inputs {
   justify-content: space-around;
   align-items: center;
 }
+main > header > .search-section > #datetime-period {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  border: 1px solid gray;
+  padding: 5px;
+  padding-top: 3px;
+  margin: 3px;
+  border-radius: 3px;
+}
+main > header > .search-section > #datetime-period > span {
+  width: 100%;
+  text-align: center;
+}
+main > header > .search-section > #datetime-period .datetime-component {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+}
+main > header > .search-section > #datetime-period .datetime-component > input[name] {
+  width: 30px;
+}
+main > header > .search-section > #datetime-period .datetime-component > input[name=year] {
+  width: 60px;
+}
 main > header > .search-section > div:has(#search-btn) {
   display: flex;
   flex-direction: column;

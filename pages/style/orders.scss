@@ -94,6 +94,41 @@ main > header {
       justify-content: space-around;
       align-items: center;
     }
+    & > #datetime-period {
+      display: inline-flex;
+      // width: fit-content;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      // justify-content: center;
+      // flex-shrink: 1;
+      // align-items: center;
+      border: 1px solid gray;
+      padding: 5px;
+      padding-top: 3px;
+      margin: 3px;
+      border-radius: 3px;
+      & > span {
+        // flex: 1 0 100%;
+        width: 100%;
+        // max-width: 100%;
+        // display: inline-block;
+        // min-width: min-content;
+        text-align: center;
+      }
+      .datetime-component {
+        display: inline-flex;
+        // flex: 0 0 fit-content;
+        flex-direction: row;
+        align-items: center;
+        & > input[name] {
+          width: 30px;
+        }
+        & > input[name="year"] {
+          width: 60px;
+        }
+      }
+    }
     & > div:has(#search-btn) {
       display: flex;
       flex-direction: column;

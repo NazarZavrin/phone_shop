@@ -28,7 +28,7 @@ export default class Orders {
         });
     }
     static createOrderElement(order) {
-        order.element = createElement({ name: 'div', class: 'order' });
+        order.element = createElement({ name: 'section', class: 'order' });
         const orderNum = createElement({ class: 'order_num', content: 'Замовлення №' + order.num });
         order.element.append(orderNum);
         const customerName = createElement({ class: 'customer_name', content: 'Покупець: ' + order.customer_name });
