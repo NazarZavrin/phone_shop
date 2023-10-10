@@ -8,7 +8,13 @@ const accountBtn = document.getElementById("account-btn");
 const viewBasketBtn = document.getElementsByClassName("view-basket-btn")[0];
 const content = document.querySelector(".wrapper > main");
 const addToBasketBtn = document.getElementById("add-to-basket-btn");
-const productMainInfo = addToBasketBtn.dataset.product_main_info.split("|");
+let splitResult = addToBasketBtn.dataset.product_main_info.split("|");
+const productMainInfo = {
+    brand: splitResult[0], 
+    name: splitResult[1], 
+    price: splitResult[2], 
+    amount: splitResult[3], 
+} 
 
 const basket = new Basket();
 if (localStorage.getItem("customerName") === null) {
@@ -17,27 +23,30 @@ if (localStorage.getItem("customerName") === null) {
     customerName.textContent = localStorage.getItem("customerName");
 }
 
-Basket.updateAddToBasketBtn(productMainInfo[0], productMainInfo[1], addToBasketBtn);
+Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn, productMainInfo.amount);
 
 accountBtn.addEventListener("click", event => {
     if (localStorage.getItem("customerName") === null) {
         Customer.showRegistrationWindow(customerName);
     } else {
         Customer.showCustomerProfile(customerName, {
-            onExit: Basket.updateAddToBasketBtn.bind(null, productMainInfo[0], productMainInfo[1], addToBasketBtn)
+            onExit: Basket.updateAddToBasketBtn.bind(null, productMainInfo.brand, productMainInfo.name, addToBasketBtn, productMainInfo.amount)
         });
     }
 });
+// Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn, productMainInfo.amount);
 
 viewBasketBtn.addEventListener('click', event => {
     basket.show(customerName, {
-        addToBasketBtn: addToBasketBtn, 
-        viewBasketBtn: viewBasketBtn
+        onProductDelete: () => Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn), 
+        onRegister: () => viewBasketBtn.click(),
+        getCurrentProductMainInfo: () => { return  productMainInfo },
+        onOrderCreated: (newAmount) => Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn, newAmount),
     });
 });
 
 addToBasketBtn.addEventListener("click", event => {
-    basket.addProduct(...productMainInfo);
-    Basket.updateAddToBasketBtn(productMainInfo[0], productMainInfo[1], addToBasketBtn);
+    basket.addProduct(productMainInfo.brand, productMainInfo.name, productMainInfo.price);
+    Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn);
     console.log(basket.getProducts());
 })

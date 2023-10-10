@@ -38,7 +38,9 @@ content.addEventListener("click", async event => {
 })
 
 viewBasketBtn.addEventListener('click', event => {
-    basket.show(customerName);
+    basket.show(customerName, {
+        onRegister: () => viewBasketBtn.click(),
+    });
 });
 
 brandFilter.addEventListener('change', event => {

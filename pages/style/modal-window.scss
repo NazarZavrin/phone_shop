@@ -155,6 +155,9 @@
   }
 
   &.basket {
+    & .warning {
+      max-width: 240px;
+    }
     .current-customer-label {
       border: 1px solid gray;
       border-radius: 14px;

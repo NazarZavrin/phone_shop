@@ -15,9 +15,9 @@ app.use("/orders", ordersRouter);
 
 app.get('/', async (req, res) => {
     try {
-        let result = await pool.query(`SELECT name FROM brands`);
+        let result = await pool.query(`SELECT name FROM brands ORDER BY name`);
         let brands = result.rows.map(row => row.name);
-        result = await pool.query(`SELECT name, brand, price, image_name FROM products`);
+        result = await pool.query(`SELECT name, brand, price, amount, image_name FROM products ORDER BY brand, name`);
         // console.log(result.rows);
         res.render('main', {
             products: result.rows,

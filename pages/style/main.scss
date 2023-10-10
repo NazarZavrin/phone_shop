@@ -97,6 +97,9 @@ section.product {
   & > .product__price {
     grid-area: price;
   }
+  & > .product__availability {
+    font-size: 80%;
+  }
   & > .image {
     grid-area: image;
     display: flex;

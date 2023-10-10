@@ -203,6 +203,9 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.profile .exit-btn {
   background-color: red;
 }
+.modal-window.basket .warning {
+  max-width: 240px;
+}
 .modal-window.basket .current-customer-label {
   border: 1px solid gray;
   border-radius: 14px;
@@ -363,6 +366,9 @@ section.product > .product_main_info {
 }
 section.product > .product__price {
   grid-area: price;
+}
+section.product > .product__availability {
+  font-size: 80%;
 }
 section.product > .image {
   grid-area: image;

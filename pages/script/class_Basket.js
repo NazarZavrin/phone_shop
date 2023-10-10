@@ -28,27 +28,35 @@ export default class Basket {
         }
         return products;
     }
-    static updateAddToBasketBtn(brand, name, addToBasketBtn) {
+    static updateAddToBasketBtn(brand, name, addToBasketBtn, amount = "-1") {
 
-        let contains = false;
+        let disable = false;
         for (const key of Object.keys(localStorage)) {
             // console.log(key);
             // console.log(`${this.#storageLabel}${brand}|${name}`);
             if (key.includes(`${this.#storageLabel}${brand}|${name}`)) {
-                contains = true;
+                disable = true;
                 break;
             }
         }
-        console.log(arguments, contains);
-        if (contains) {
-            addToBasketBtn.textContent = "Вже в кошику";
+        if (Number(amount) === 0) {
+            disable = true;
+        }
+        // console.log(arguments, disable);
+        if (disable) {
+            addToBasketBtn.textContent = Number(amount) === 0 ? "Немає в наявності" : "Вже в кошику";
             addToBasketBtn.style.backgroundColor = "dimgray";
+            addToBasketBtn.disabled = true;
         } else {
             addToBasketBtn.textContent = "Додати до кошику";
             addToBasketBtn.style.backgroundColor = "";
+            addToBasketBtn.disabled = false;
         }
     }
-    show(customerNameElem, {addToBasketBtn = {}, viewBasketBtn = {}} = {}) {
+    show(customerNameElem, {
+        onProductDelete = () => {}, onRegister = () => {}, 
+        onOrderCreated = () => {}, getCurrentProductMainInfo = () => {},
+    } = {}) {
         let products = this.getProducts();
         // console.log(...products);
         let currentCustomerLabel = null;
@@ -112,7 +120,7 @@ export default class Basket {
             this.deleteProduct(products[orderItemIndex].brand, products[orderItemIndex].name);
 
             // console.log(products);
-            Basket.updateAddToBasketBtn(products[orderItemIndex]?.brand, products[orderItemIndex]?.name, addToBasketBtn);
+            onProductDelete(products[orderItemIndex]?.brand, products[orderItemIndex]?.name);// updateAddToBasketBtn
             products = this.getProducts();
             const orderItemElement = delFromBasketBtn.closest('section > div');
             orderItemElement.remove();
@@ -142,6 +150,10 @@ export default class Basket {
                         customerPhoneNum: localStorage.getItem("customerPhoneNum"),
                         orderItems: products
                     };
+                    
+                    if (getCurrentProductMainInfo()?.brand) {
+                        requestBody.currentProductInfo = getCurrentProductMainInfo();
+                    }
                     let response = await fetch(location.origin + "/orders/create-order", {
                         method: "POST",
                         body: JSON.stringify(requestBody),
@@ -151,9 +163,18 @@ export default class Basket {
                         let result = await response.json();
                         console.log(result);
                         if (!result.success) {
+                            if (result.message.includes("are available")) {
+                                const match = result.message.match(/Only (\d+) phones (.+) are available/);
+                                console.log(match);
+                                setWarningAfterElement(orderBtn, `Кількість смартфонів`
+                                + ` ${match[2]} в наявності: ${match[1]}.`
+                                + ` Замовлення не оформлено.`);
+                                return;
+                            }
                             throw new Error(result.message || "Server error.");
                         } else {
                             setWarningAfterElement(orderBtn, `Замовлення оформлено. Номер чеку: ${result.num || -1}.`);
+                            onOrderCreated(result.newAmount);
                             return;
                         }
                     }
@@ -164,7 +185,7 @@ export default class Basket {
                 }
             } else {
                 event.target.closest(".modal-window").closeWindow();
-                Customer.showRegistrationWindow(customerNameElem, () => viewBasketBtn.click());
+                Customer.showRegistrationWindow(customerNameElem, onRegister);
             }
         });
         showModalWindow([currentCustomerLabel, orderItems,

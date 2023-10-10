@@ -14,7 +14,10 @@ ordersRouter.post("/create-order", (req, res, next) => {
     })(req, res, next);
 }, async (req, res) => {
     try {
-        // console.log(req.body);
+
+
+
+
         if (!req.body.customerPhoneNum || !Array.isArray(req.body.orderItems) || req.body.orderItems?.length == 0) {
             throw new Error("Order creation: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
@@ -30,6 +33,16 @@ ordersRouter.post("/create-order", (req, res, next) => {
         `, [currentDateTime, req.body.customerPhoneNum]);
         const orderNum = result.rows[0].num;
         for (const orderItem of req.body.orderItems) {
+            result = await pool.query(`UPDATE products 
+            SET amount = amount - $1 WHERE name = $2 AND brand = $3
+            RETURNING name, brand, amount;
+            `, [orderItem.amount, orderItem.name, orderItem.brand]);
+            /*console.log(orderItem.amount);
+            console.log(result.rows[0]);*/
+            if (result.rows[0].amount < 0) {
+                throw new Error(`Only ${result.rows[0].amount + orderItem.amount}`
+                    + ` phones ${orderItem.brand + " " + orderItem.name} are available.`);
+            }
             result = await pool.query(`INSERT INTO order_items 
                 (product_name, product_brand, order_num, amount) VALUES
                 ($1, $2, $3, $4);
@@ -48,8 +61,16 @@ ordersRouter.post("/create-order", (req, res, next) => {
         result = await pool.query(`UPDATE orders 
         SET cost = $1 WHERE num = $2;
         `, [orderCost, orderNum]);
+        if (req.body.currentProductInfo) {
+            console.log(req.body.currentProductInfo);
+            result = await pool.query(`SELECT amount FROM products 
+            WHERE name = $1 AND brand = $2;
+            `, [req.body.currentProductInfo.name, req.body.currentProductInfo.brand]);
+        }
+
+        console.log(result.rows);
         await pool.query("COMMIT;");
-        res.json({ success: true, message: "Order was created successfully.", num: orderNum });
+        res.json({ success: true, message: "Order was created successfully.", num: orderNum, newAmount: result.rows[0]?.amount });
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
@@ -79,5 +100,31 @@ ordersRouter.propfind("/get-orders", async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
+    }
+})
+
+ordersRouter.all(/^\/(\d+)$/, async (req, res, next) => {
+
+    if (req.method === "GET") {
+        res.sendFile(path.join(path.resolve(), "pages", "receipt.html"));
+    } else if (req.method === "PROPFIND") {
+        try {
+            let receipt_num = Number(req.url.match(/^\/(\d+)$/)[1]);
+            let result = await pool.query(`
+            SELECT num, datetime, issuance_datetime, cost, customers.name AS customer_name 
+            FROM orders INNER JOIN customers ON customer_phone_num = phone_num 
+            WHERE issuance_datetime IS NOT NULL AND num = $1;`, [receipt_num]);
+            const order = result.rows[0];
+            result = await pool.query(`
+            SELECT product_name, product_brand, amount 
+            FROM order_items WHERE order_num = $1`, [order.num]);
+            order.orderItems = result.rows;
+            res.json({ success: true, orderItems: orderItems });
+        } catch (error) {
+            console.log(error.message);
+            res.json({ success: false, message: error.message });
+        }
+    } else {
+        next();
     }
 })

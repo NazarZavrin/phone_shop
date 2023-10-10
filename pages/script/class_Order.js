@@ -8,7 +8,7 @@ export default class Orders {
     constructor(ordersArray = []) {
         this.#orders = ordersArray;
     }
-    filterAndRenderOrders(ordersContainer, searchInputs) {
+    filterAndRenderOrders(ordersContainer, searchInputs, dateTimeComponents, searchBtn) {
         if (!this.#orders || this.#orders.length === 0) {
             ordersContainer.textContent = "Невидані замовлення відсутні.";
             return;
@@ -17,7 +17,31 @@ export default class Orders {
         // console.log(orders.length);
         this.#ordersToDisplay = this.#orders.filter(order => order.num.includes(searchInputs.num.value))
             .filter(order => order.customer_phone_num.includes(searchInputs.customer_phone_num.value));
-
+            let fromTimestamp = dateTimeComponents.from.day.value === '' ?
+            0 : Date.parse(new Date(
+                Number(dateTimeComponents.from.year.value),
+                Number(dateTimeComponents.from.month.value) - 1,
+                Number(dateTimeComponents.from.day.value),
+                0, 0, 0, 0 // hours, minutes, seconds and milliseconds
+            )) || 0;
+        let toTimestamp = dateTimeComponents.to.day.value === '' ?
+            Infinity : Date.parse(new Date(
+                Number(dateTimeComponents.to.year.value),
+                Number(dateTimeComponents.to.month.value) - 1,
+                Number(dateTimeComponents.to.day.value),
+                23, 59, 59, 999 // hours, minutes, seconds and milliseconds
+            )) || Infinity;
+        if (fromTimestamp > toTimestamp) {
+            setWarningAfterElement(searchBtn, 'У діапазоні дат початок більше ніж кінець.');
+            return;
+        } else {
+            this.#ordersToDisplay = this.#ordersToDisplay.filter(order => {
+                let orderTimestamp = new Date(order.datetime).setSeconds(0, 0);
+                // new Date() adds timezone offset to ISOString
+                // console.log(order.datetime, orderTimestamp);
+                return orderTimestamp >= fromTimestamp && orderTimestamp <= toTimestamp;
+            })
+        }
         if (this.#ordersToDisplay.length === 0) {
             ordersContainer.textContent = "Немає невиданих замовлень, що задовільняють фільтри.";
             return;
@@ -124,7 +148,7 @@ export default class Orders {
                             refreshBtn.click();
                             let receiptLink = document.createElement("a");
                             receiptLink.setAttribute('target', '_blank');
-                            receiptLink.href = location.origin + `/receipt/${requestBody.num}`;
+                            receiptLink.href = location.origin + `/orders/receipt/${requestBody.num}`;
                             receiptLink.click();
                         }
                     }

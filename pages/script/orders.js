@@ -1,7 +1,7 @@
 "use strict";
 
 import Orders from "./class_Order.js";
-import { isInt, setWarningAfterElement } from "./useful-for-client.js";
+import { dayAndMonthAreCorrect, isInt, setWarningAfterElement } from "./useful-for-client.js";
 
 const searchBtn = document.getElementById("search-btn");
 const refreshBtn = document.getElementById("refresh-btn");
@@ -12,6 +12,23 @@ let searchInputs = {};
 for (const input of searchInputsContainer.querySelectorAll('input')) {
     searchInputs[input.getAttribute('name')] = input;
 }
+let dateTimeComponents = document.querySelectorAll('#datetime-period > .datetime-component');
+dateTimeComponents = {
+    from: {
+        day: dateTimeComponents[0].children[1],
+        month: dateTimeComponents[0].children[2],
+        year: dateTimeComponents[0].children[3]
+    },
+    to: {
+        day: dateTimeComponents[1].children[1],
+        month: dateTimeComponents[1].children[2],
+        year: dateTimeComponents[1].children[3]
+    },
+}
+let currentDate = new Date();
+dateTimeComponents.to.day.value = currentDate.getDate();
+dateTimeComponents.to.month.value = currentDate.getMonth() + 1;
+dateTimeComponents.to.year.value = currentDate.getFullYear();
 
 let orders = new Orders();
 
@@ -49,12 +66,54 @@ searchBtn.addEventListener('click', event => {
         message = 'Номер телефону покупця повинен складатися лише з цифр.';
         everythingIsCorrect = false;
     }
+    for (const dateTimeComponentKey in dateTimeComponents) {
+        const dateTimeComponent = dateTimeComponents[dateTimeComponentKey];
+        let dateTimeComponentIsUsed = false;
+        for (const key in dateTimeComponent) {
+            dateTimeComponent[key].style.borderColor = '';
+            if (!dateTimeComponentIsUsed && dateTimeComponent[key].value.length > 0) {
+                // console.log(dateTimeComponentKey, dateTimeComponent[key]);
+                dateTimeComponentIsUsed = true;
+            }
+        }
+        // console.log(dateTimeComponentIsUsed);
+        if (!everythingIsCorrect || dateTimeComponentIsUsed === false) {
+            continue;
+        }
+        for (const key in dateTimeComponent) {
+            if (dateTimeComponent[key].value.length == 0) {
+                if (key === 'year') {
+                    dateTimeComponent[key].value = new Date().getFullYear();
+                    continue;
+                }
+                message = `День та місяць 
+                    ${dateTimeComponentKey === 'to' ? 'кінця' : 'початку'} 
+                    діапазону дат повинні бути заповнені.`;
+                dateTimeComponent[key].style.borderColor = 'red';
+                everythingIsCorrect = false;
+                break;
+            }
+        }
+        if (!everythingIsCorrect) {
+            continue;
+        }
+        if (isInt(dateTimeComponent.day).length > 0 ||
+            isInt(dateTimeComponent.month).length > 0 ||
+            isInt(dateTimeComponent.year).length > 0 ||
+            !dayAndMonthAreCorrect(dateTimeComponent.day, dateTimeComponent.month)) {
+            message = `Некоректна або неіснуюча дата 
+                ${dateTimeComponentKey === 'to' ? 'кінця' : 'початку'} 
+                діапазону дат.`;
+            everythingIsCorrect = false;
+            continue;
+        }
+    }
     if (everythingIsCorrect === false) {
         setWarningAfterElement(searchBtn, message);
         return;
     }
     setWarningAfterElement(searchBtn, '');
-    orders.filterAndRenderOrders(ordersContainer, searchInputs);
+    orders.filterAndRenderOrders(ordersContainer, searchInputs, dateTimeComponents, searchBtn);
 })
 ordersContainer.addEventListener('click', event => {
     // 1: order deletion logic, 2: order issuance logic

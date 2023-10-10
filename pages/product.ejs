@@ -41,8 +41,9 @@
         <div class="price">Ціна: <%= productInfo.price %>
         </div>
         <button type="button" id="add-to-basket-btn" style="background-color: transparent;"
-          data-product_main_info="<%= productInfo.brand + " |" + productInfo.name + "|" + productInfo.price
-          %>"></button>
+          data-product_main_info="<%= productInfo.brand + "|" + productInfo.name + "|" 
+          + productInfo.price + "|" + productInfo.amount %>">
+        </button>
       </section>
       <header id="other-info-header">Інші характеристики</header>
       <section class="other-info">

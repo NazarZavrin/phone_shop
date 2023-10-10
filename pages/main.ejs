@@ -31,7 +31,7 @@
         </section>
         <main>
             <% for(const product of products){ %>
-                <section class="product">
+                <section class="product" <%= product.amount == 0 ? 'style=opacity:0.5;' : "" %>>
                     <div class="image">
                         <img src="/img/<%= product.image_name %>" onerror="event.target.setAttribute('src', 
                         '/img/1x1-transparent.png'); event.target.onerror = null;">
@@ -43,6 +43,11 @@
                     <div class="product__price">
                         Ціна: <%= product.price %> грн.
                     </div>
+                    <% if(product.amount == 0) { %>
+                        <div class="product__availability">
+                            Немає в наявності
+                        </div>
+                    <% } %>
                 </section>
                 <% }%>
         </main>

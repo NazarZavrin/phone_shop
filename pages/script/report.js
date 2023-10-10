@@ -17,7 +17,6 @@ dateTimeComponents = {
         year: dateTimeComponents[1].children[3]
     },
 }
-
 let currentDate = new Date();
 dateTimeComponents.to.day.value = currentDate.getDate();
 dateTimeComponents.to.month.value = currentDate.getMonth() + 1;
