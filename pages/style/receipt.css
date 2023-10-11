@@ -70,7 +70,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 html, body {
-  width: 300px;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 .wrapper {
@@ -94,12 +95,13 @@ header {
 
 .receipt_body {
   display: grid;
-  grid-template-columns: auto max-content;
+  grid-template-columns: max-content max-content;
   grid-auto-rows: auto;
 }
 .receipt_body > .order-item-cost {
   justify-self: end;
   align-self: end;
+  margin-left: 10px;
 }
 
 .receipt_payment {

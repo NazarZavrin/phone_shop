@@ -1,7 +1,7 @@
 @import "./null-style.scss";
 
 html, body {
-    width: 300px;
+    width: fit-content;
 }
 .wrapper {
     font: 18px "Arial";
@@ -22,11 +22,12 @@ header {
 
 .receipt_body {
     display: grid;
-    grid-template-columns: auto max-content;
+    grid-template-columns: max-content max-content;
     grid-auto-rows: auto;
     & > .order-item-cost {
         justify-self: end;
         align-self: end;
+        margin-left: 10px;
     }
 }
 .receipt_payment {

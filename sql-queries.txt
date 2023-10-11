@@ -47,7 +47,7 @@ CREATE TABLE order_items(
   id BIGSERIAL PRIMARY KEY NOT NULL,
   product_name VARCHAR(15) NOT NULL,
   product_brand VARCHAR(20) NOT NULL,
-  order_num BIGINT NOT NULL REFERENCES orders(num) ON UPDATE CASCADE,
+  order_num BIGINT NOT NULL REFERENCES orders(num) ON UPDATE CASCADE ON DELETE CASCADE,
   amount INT NOT NULL,
   FOREIGN KEY (product_name, product_brand) REFERENCES products(name, brand) ON UPDATE CASCADE
 );

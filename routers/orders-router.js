@@ -14,10 +14,6 @@ ordersRouter.post("/create-order", (req, res, next) => {
     })(req, res, next);
 }, async (req, res) => {
     try {
-
-
-
-
         if (!req.body.customerPhoneNum || !Array.isArray(req.body.orderItems) || req.body.orderItems?.length == 0) {
             throw new Error("Order creation: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
@@ -103,23 +99,74 @@ ordersRouter.propfind("/get-orders", async (req, res) => {
     }
 })
 
-ordersRouter.all(/^\/(\d+)$/, async (req, res, next) => {
+ordersRouter.patch("/issue", (req, res, next) => {
+    express.json({
+        limit: req.get('content-length'),
+    })(req, res, next);
+},  async (req, res) => {
+    try {
+        if (!req.body.customerPhoneNum || !req.body.num || !req.body.paid) {
+            throw new Error("Order issuance: req.body doesn't contain some data: " + JSON.stringify(req.body));
+        }
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;
+        `);
+        let result = await pool.query(`SELECT NOW();`);
+        const currentDateTime = result.rows[0].now;
+        result = await pool.query(`UPDATE orders 
+        SET issuance_datetime = $1, paid = $2 
+        WHERE num = $3;
+        `, [currentDateTime, req.body.paid, req.body.num]);
+        await pool.query("COMMIT;");
+        res.json({ success: true, message: "Order was issued successfully." });
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+})
 
+ordersRouter.delete("/delete", (req, res, next) => {
+    express.json({
+        limit: req.get('content-length'),
+    })(req, res, next);
+}, async (req, res) => {
+    try {
+        if (!req.body.num) {
+            throw new Error("Order deletion: req.body doesn't contain some data: " + JSON.stringify(req.body));
+        }
+        await pool.query(`DELETE FROM orders WHERE num = $1;`,
+            [req.body.num]);
+        res.json({ success: true });
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+})
+
+ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
     if (req.method === "GET") {
         res.sendFile(path.join(path.resolve(), "pages", "receipt.html"));
     } else if (req.method === "PROPFIND") {
         try {
-            let receipt_num = Number(req.url.match(/^\/(\d+)$/)[1]);
+            let receipt_num = Number(req.url.match(/^\/receipt\/(\d+)$/)[1]);
             let result = await pool.query(`
-            SELECT num, datetime, issuance_datetime, cost, customers.name AS customer_name 
+            SELECT num, datetime, cost, issuance_datetime, paid, customers.name AS customer_name 
             FROM orders INNER JOIN customers ON customer_phone_num = phone_num 
             WHERE issuance_datetime IS NOT NULL AND num = $1;`, [receipt_num]);
+            if (result.rowCount === 0) {
+                res.json({ success: false, message: "Non-existent receipt number." });
+                return;
+            }
             const order = result.rows[0];
             result = await pool.query(`
-            SELECT product_name, product_brand, amount 
-            FROM order_items WHERE order_num = $1`, [order.num]);
+            SELECT product_name, product_brand, products.amount, 
+            order_items.amount * products.price AS cost 
+            FROM order_items INNER JOIN products 
+            ON product_name = name AND product_brand = brand 
+            WHERE order_num = $1`, [order.num]);
             order.orderItems = result.rows;
-            res.json({ success: true, orderItems: orderItems });
+            res.json({ success: true, order: order });
         } catch (error) {
             console.log(error.message);
             res.json({ success: false, message: error.message });

@@ -91,7 +91,7 @@ export default class Orders {
             }
         }
     }
-    async issueOrder(orderIndex) {
+    async issueOrder(orderIndex, {onComplete = () => {}}) {
         const header = createElement({ name: "header", content: 'Видача замовлення №' + this.#ordersToDisplay[orderIndex].num });
         const сostElem = createElement({ class: 'cost', content: 'Вартість: ' + this.#ordersToDisplay[orderIndex].cost + ' грн.' });
         const paidLabel = createElement({ name: "header", content: "Заплачено (грн.):" });
@@ -133,6 +133,7 @@ export default class Orders {
                 try {
                     let requestBody = {
                         num: this.#ordersToDisplay[orderIndex].num,
+                        customerPhoneNum: localStorage.getItem("customerPhoneNum"),
                         paid: Number(paidInput.value.split(",").join("."))
                     };
                     let response = await fetch(location.origin + "/orders/issue", {
@@ -145,11 +146,7 @@ export default class Orders {
                         if (!result.success) {
                             throw new Error(result.message || "Server error.");
                         } else {
-                            refreshBtn.click();
-                            let receiptLink = document.createElement("a");
-                            receiptLink.setAttribute('target', '_blank');
-                            receiptLink.href = location.origin + `/orders/receipt/${requestBody.num}`;
-                            receiptLink.click();
+                            onComplete(requestBody.num);
                         }
                     }
                 } catch (error) {

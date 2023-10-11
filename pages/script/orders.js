@@ -140,5 +140,13 @@ ordersContainer.addEventListener('click', event => {
         return;
     }
     let orderIndex = [...ordersContainer.querySelectorAll('.issuance-btn')].findIndex(btn => btn === issuanceBtn);
-    orders.issueOrder(orderIndex);
+    orders.issueOrder(orderIndex, {
+        onComplete: (receipt_num) => {
+            refreshBtn.click();
+            let receiptLink = document.createElement("a");
+            receiptLink.setAttribute('target', '_blank');
+            receiptLink.href = location.origin + `/orders/receipt/${receipt_num}`;
+            receiptLink.click();
+        }
+    });
 })
