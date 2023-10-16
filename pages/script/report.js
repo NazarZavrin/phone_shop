@@ -28,7 +28,7 @@ let ordersReceived = true;
 
 (async () => {
     try {
-        let response = await fetch(location.origin + "/get-issued-orders", {
+        let response = await fetch(location.origin + "/orders/get-issued-orders", {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         })
@@ -37,6 +37,7 @@ let ordersReceived = true;
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
+                console.log(result.orders);
                 orders = result.orders;
                 ordersReceived = true;
             }
@@ -101,12 +102,12 @@ generateReportBtn.addEventListener('click', event => {
     }
     setWarningAfterElement(generateReportBtn, '');
     renderOrders();
-    reportContainer.insertAdjacentHTML('afterbegin', `<section id="general-info">
-    <div>Кількість проданих товарів: ${
-        ordersToDisplay.reduce((prev, cur) => prev + cur.orderItems.length, 0)} </div>
-    <div>Загальна вартість: ${
-        ordersToDisplay.reduce((prev, cur) => prev + cur.cost, 0)} </div>
-    </section>`);
+    if (ordersToDisplay.length > 0) {
+        reportContainer.insertAdjacentHTML('afterbegin', `<section id="general-info">
+        <div>Кількість проданих товарів: ${ordersToDisplay.reduce((prev, cur) => prev + cur.orderItems.length, 0)} </div>
+        <div>Загальна вартість: ${ordersToDisplay.reduce((prev, cur) => prev + cur.cost, 0)} </div>
+        </section>`);
+    }
 })
 function renderOrders() {
     // if (!orders || orders.length === 0) {
@@ -136,8 +137,8 @@ function renderOrders() {
     if (fromTimestamp > toTimestamp) {
         setWarningAfterElement(generateReportBtn, 'У діапазоні дат початок більше ніж кінець.');
     } else {
-        ordersToDisplay = ordersToDisplay.filter(order => {
-            let orderTimestamp = new Date(order.datetime).setSeconds(0, 0);
+        ordersToDisplay = orders.filter(order => {
+            let orderTimestamp = new Date(order.issuance_datetime).setSeconds(0, 0);
             // new Date() adds timezone offset to ISOString
             // console.log(order.datetime, orderTimestamp);
             return orderTimestamp >= fromTimestamp && orderTimestamp <= toTimestamp;
@@ -162,6 +163,8 @@ function createOrderElement(order) {
     // order.element.append(customerPhoneNum);
     const datetime = createElement({ class: 'datetime', content: 'Дата замовлення: ' + new Date(order.datetime).toLocaleString() });
     order.element.append(datetime);
+    const issuanceDatetime = createElement({ class: 'issuance_datetime', content: 'Дата видачі: ' + new Date(order.issuance_datetime).toLocaleString() });
+    order.element.append(issuanceDatetime);
     const cost = createElement({ class: 'cost', content: 'Вартість: ' + order.cost + ' грн.' });
     order.element.append(cost);
     const orderItems = createElement({ class: 'order-items' });

@@ -29,6 +29,7 @@ customersRouter.post("/create-account", (req, res, next) => {
         await pool.query(`COMMIT;`);
         res.json({ success: true, message: "Customer was added.", customerData: result.rows[0] });
     } catch (error) {
+        await pool.query("ROLLBACK;");
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
@@ -59,8 +60,10 @@ customersRouter.propfind("/log-in", (req, res, next) => {
             res.json({ success: false, message: "Wrong password." });
             return;
         }
+        await pool.query(`COMMIT;`);
         res.json({ success: true, customerData: result.rows[0] });
     } catch (error) {
+        await pool.query("ROLLBACK;");
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
@@ -99,6 +102,7 @@ customersRouter.patch("/change-password", (req, res, next) => {
         await pool.query(`COMMIT;`);
         res.json({ success: true });
     } catch (error) {
+        await pool.query("ROLLBACK;");
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }

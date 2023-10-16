@@ -142,7 +142,7 @@
   padding: 3px;
 }
 .modal-window.basket section {
-  max-height: 60vh;
+  max-height: 50vh;
   overflow: auto;
   padding: 3px;
   margin-bottom: 3px;

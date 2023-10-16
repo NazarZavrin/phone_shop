@@ -1,9 +1,10 @@
 "use strict";
 
 import Orders from "./class_Order.js";
-import { dayAndMonthAreCorrect, isInt, setWarningAfterElement } from "./useful-for-client.js";
+import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
 const searchBtn = document.getElementById("search-btn");
+const viewReceiptBtn = document.getElementById("view-receipt-btn");
 const refreshBtn = document.getElementById("refresh-btn");
 const ordersContainer = document.getElementById("orders");
 
@@ -35,7 +36,7 @@ let orders = new Orders();
 refreshBtn.addEventListener('click', async event => {
     try {
         let response = await fetch(location.origin + "/orders/get-orders", {
-            method: "PROPFIND",
+            method: "GET",
             headers: { "Content-Type": "application/json" }
         })
         if (response.ok) {
@@ -55,6 +56,25 @@ refreshBtn.addEventListener('click', async event => {
 })
 
 refreshBtn.click();
+
+viewReceiptBtn.addEventListener("click", event => {
+    event.preventDefault();
+    const href = event.target.parentElement.getAttribute('href');
+    const orderNumLabel = createElement({ name: "header", content: "Введіть номер замовлення:" });
+    const orderNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
+    const toReceiptPageBtn = createElement({ name: 'button', content: "Переглянути чек" });
+    toReceiptPageBtn.addEventListener("click", event => {
+        setWarningAfterElement(toReceiptPageBtn, '');
+        if (isInt(orderNumInput.value).length === 0 && Number(orderNumInput.value) > 0) {
+            const link = createElement({ name: "a", attributes: [`href: ${href + '/' + orderNumInput.value}`, `target: _blank`] });
+            link.click();
+            return;
+        }
+        setWarningAfterElement(toReceiptPageBtn, "Некоректний номер замовлення");
+    });
+    showModalWindow([orderNumLabel, orderNumInput, toReceiptPageBtn],
+        { className: 'view-receipt' });
+})
 
 searchBtn.addEventListener('click', event => {
     let everythingIsCorrect = true, message = '';

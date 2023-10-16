@@ -9,7 +9,7 @@
             let result = await response.json();
             if (!result.success) {
                 if (result.message.includes("Non-existent")) {
-                    document.body.innerHTML = `<pre>Неіснуючий номер чеку.</pre>`;
+                    document.body.children[0].textContent = `Неіснуючий номер чеку.`;
                 } else {
                     throw new Error(result.message || "Server error.");
                 }
@@ -51,11 +51,10 @@
                 document.getElementsByClassName("wrapper")[0].style.display = "";
             }
         } else {
-            document.body.innerHTML = `<pre>Server error.</pre>`;
+            document.body.children[0].textContent = `Server error.`;
         }
     } catch (error) {
-        /*console.error(error.message);
-        alert("Error");*/
-        throw error;
+        console.error(error.message);
+        alert("Error");
     }
 })();

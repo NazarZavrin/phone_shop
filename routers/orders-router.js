@@ -33,8 +33,8 @@ ordersRouter.post("/create-order", (req, res, next) => {
             SET amount = amount - $1 WHERE name = $2 AND brand = $3
             RETURNING name, brand, amount;
             `, [orderItem.amount, orderItem.name, orderItem.brand]);
-            /*console.log(orderItem.amount);
-            console.log(result.rows[0]);*/
+            console.log(orderItem.amount);
+            console.log(result.rows[0]);
             if (result.rows[0].amount < 0) {
                 throw new Error(`Only ${result.rows[0].amount + orderItem.amount}`
                     + ` phones ${orderItem.brand + " " + orderItem.name} are available.`);
@@ -68,12 +68,13 @@ ordersRouter.post("/create-order", (req, res, next) => {
         await pool.query("COMMIT;");
         res.json({ success: true, message: "Order was created successfully.", num: orderNum, newAmount: result.rows[0]?.amount });
     } catch (error) {
+        await pool.query("ROLLBACK;");
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
 })
 
-ordersRouter.propfind("/get-orders", async (req, res) => {
+ordersRouter.get("/get-orders", async (req, res) => {
     try {
         await pool.query(`
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
@@ -94,6 +95,7 @@ ordersRouter.propfind("/get-orders", async (req, res) => {
         await pool.query("COMMIT;");
         res.json({ success: true, orders: orders });
     } catch (error) {
+        await pool.query("ROLLBACK;");
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
@@ -103,7 +105,7 @@ ordersRouter.patch("/issue", (req, res, next) => {
     express.json({
         limit: req.get('content-length'),
     })(req, res, next);
-},  async (req, res) => {
+}, async (req, res) => {
     try {
         if (!req.body.customerPhoneNum || !req.body.num || !req.body.paid) {
             throw new Error("Order issuance: req.body doesn't contain some data: " + JSON.stringify(req.body));
@@ -121,6 +123,7 @@ ordersRouter.patch("/issue", (req, res, next) => {
         await pool.query("COMMIT;");
         res.json({ success: true, message: "Order was issued successfully." });
     } catch (error) {
+        await pool.query("ROLLBACK;");
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
@@ -149,6 +152,10 @@ ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
         res.sendFile(path.join(path.resolve(), "pages", "receipt.html"));
     } else if (req.method === "PROPFIND") {
         try {
+            await pool.query(`
+            SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+            BEGIN;
+            `);
             let receipt_num = Number(req.url.match(/^\/receipt\/(\d+)$/)[1]);
             let result = await pool.query(`
             SELECT num, datetime, cost, issuance_datetime, paid, customers.name AS customer_name 
@@ -160,18 +167,55 @@ ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
             }
             const order = result.rows[0];
             result = await pool.query(`
-            SELECT product_name, product_brand, products.amount, 
+            SELECT product_name, product_brand, order_items.amount, 
             order_items.amount * products.price AS cost 
             FROM order_items INNER JOIN products 
             ON product_name = name AND product_brand = brand 
             WHERE order_num = $1`, [order.num]);
             order.orderItems = result.rows;
+            await pool.query("COMMIT;");
             res.json({ success: true, order: order });
         } catch (error) {
+            await pool.query("ROLLBACK;");
             console.log(error.message);
             res.json({ success: false, message: error.message });
         }
     } else {
         next();
+    }
+})
+
+ordersRouter.get('/report', async (req, res) => {
+    try {
+        res.sendFile(path.join(path.resolve(), "pages", "report.html"));
+    } catch (error) {
+        console.log(error.message);
+        res.send("<pre>Server error</pre>");
+    }
+})
+
+ordersRouter.get("/get-issued-orders", async (req, res) => {
+    try {
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;
+        `);
+        let result = await pool.query(`
+        SELECT num, datetime, cost, issuance_datetime FROM orders 
+        WHERE issuance_datetime IS NOT NULL 
+        ORDER BY datetime ASC;`);
+        const orders = result.rows;
+        for (const order of orders) {
+            result = await pool.query(`
+            SELECT product_name, product_brand, amount 
+            FROM order_items WHERE order_num = $1`, [order.num]);
+            order.orderItems = result.rows;
+        }
+        await pool.query("COMMIT;");
+        res.json({ success: true, orders: orders });
+    } catch (error) {
+        await pool.query("ROLLBACK;");
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
     }
 })

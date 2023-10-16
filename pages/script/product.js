@@ -6,7 +6,6 @@ import Customer from "./class_Customer.js";
 const customerName = document.getElementById("customer-name");
 const accountBtn = document.getElementById("account-btn");
 const viewBasketBtn = document.getElementsByClassName("view-basket-btn")[0];
-const content = document.querySelector(".wrapper > main");
 const addToBasketBtn = document.getElementById("add-to-basket-btn");
 let splitResult = addToBasketBtn.dataset.product_main_info.split("|");
 const productMainInfo = {

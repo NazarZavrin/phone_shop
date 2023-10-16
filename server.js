@@ -15,43 +15,40 @@ app.use("/orders", ordersRouter);
 
 app.get('/', async (req, res) => {
     try {
+        await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
         let result = await pool.query(`SELECT name FROM brands ORDER BY name`);
         let brands = result.rows.map(row => row.name);
         result = await pool.query(`SELECT name, brand, price, amount, image_name FROM products ORDER BY brand, name`);
         // console.log(result.rows);
+        await pool.query(`COMMIT;`);
         res.render('main', {
             products: result.rows,
             brands: brands,
         });
     } catch (error) {
+        await pool.query("ROLLBACK;");
         console.log(error.message);
         res.send("<pre>Server error</pre>");
     }
 })
 
 app.get("/products/:product_info", async (req, res, next) => {
-    const productInfo = req.params.product_info.match(/^(?<brand>.{1,20})\|(?<name>.{1,15})$/)?.groups;
-    if (!productInfo) {
+    const productInfo = req.params.product_info.match(/^(?<brand>.{1,20})\|(?<name>.{1,30})$/)?.groups;
+    try {
+        if (productInfo) {
+            let result = await pool.query(`SELECT * FROM products 
+            WHERE brand = $1 AND name = $2`,
+            [productInfo.brand, productInfo.name]);
+            // console.log(result.rows);
+            if (result.rows.length === 1) {
+                res.render('product', {
+                    productInfo: result.rows[0]
+                });
+                return;
+            }
+        }
         res.send("<pre>Такого продукту не існує!</pre>");
         return;
-    }
-    try {
-        let result = await pool.query(`SELECT * FROM products 
-        WHERE brand = $1 AND name = $2`,
-        [productInfo.brand, productInfo.name]);
-        // console.log(result.rows);
-        res.render('product', {
-            productInfo: result.rows[0]
-        });
-    } catch (error) {
-        console.log(error.message);
-        res.send("<pre>Server error</pre>");
-    }
-})
-
-app.get('/report', async (req, res) => {
-    try {
-        res.sendFile(path.join(path.resolve(), "pages", "report.html"));
     } catch (error) {
         console.log(error.message);
         res.send("<pre>Server error</pre>");

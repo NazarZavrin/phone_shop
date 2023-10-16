@@ -122,7 +122,20 @@ main > #report {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    border: 1px solid black;
-    padding: 3px;
+    border: 0.5px solid black;
+    & > div {
+      flex: 1 1 auto;
+      padding: 3px 7px;
+      border: 0.5px solid black;
+    }
+  }
+  & > .order {
+    width: 100%;
+    min-width: fit-content;
+    padding: 10px;
+    text-align: left;
+    box-shadow: 0 0 3px 1px gray;
+    border-radius: 5px;
+    margin-top: 15px;
   }
 }
