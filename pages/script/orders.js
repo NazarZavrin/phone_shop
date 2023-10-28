@@ -1,6 +1,6 @@
 "use strict";
 
-import Orders from "./class_Order.js";
+import Orders from "./class_Orders.js";
 import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
 const searchBtn = document.getElementById("search-btn");
@@ -44,7 +44,6 @@ refreshBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                // console.log(...result.orders);
                 orders = new Orders(result.orders);
                 searchBtn.click();
             }
@@ -58,15 +57,13 @@ refreshBtn.addEventListener('click', async event => {
 refreshBtn.click();
 
 viewReceiptBtn.addEventListener("click", event => {
-    event.preventDefault();
-    const href = event.target.parentElement.getAttribute('href');
     const orderNumLabel = createElement({ name: "header", content: "Введіть номер замовлення:" });
     const orderNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
     const toReceiptPageBtn = createElement({ name: 'button', content: "Переглянути чек" });
     toReceiptPageBtn.addEventListener("click", event => {
         setWarningAfterElement(toReceiptPageBtn, '');
         if (isInt(orderNumInput.value).length === 0 && Number(orderNumInput.value) > 0) {
-            const link = createElement({ name: "a", attributes: [`href: ${href + '/' + orderNumInput.value}`, `target: _blank`] });
+            const link = createElement({ name: "a", attributes: [`href: ${'/orders/receipt/' + orderNumInput.value}`, `target: _blank`] });
             link.click();
             return;
         }
@@ -92,11 +89,9 @@ searchBtn.addEventListener('click', event => {
         for (const key in dateTimeComponent) {
             dateTimeComponent[key].style.borderColor = '';
             if (!dateTimeComponentIsUsed && dateTimeComponent[key].value.length > 0) {
-                // console.log(dateTimeComponentKey, dateTimeComponent[key]);
                 dateTimeComponentIsUsed = true;
             }
         }
-        // console.log(dateTimeComponentIsUsed);
         if (!everythingIsCorrect || dateTimeComponentIsUsed === false) {
             continue;
         }
@@ -135,6 +130,7 @@ searchBtn.addEventListener('click', event => {
     setWarningAfterElement(searchBtn, '');
     orders.filterAndRenderOrders(ordersContainer, searchInputs, dateTimeComponents, searchBtn);
 })
+
 ordersContainer.addEventListener('click', event => {
     // 1: order deletion logic, 2: order issuance logic
     // 1: order deletion logic

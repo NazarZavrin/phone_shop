@@ -19,6 +19,7 @@ customersRouter.post("/create-account", (req, res, next) => {
         SELECT * FROM customers WHERE phone_num = $1;
         `, [req.body.phoneNum]);
         if (result.rowCount > 0) {
+            await pool.query("ROLLBACK;");
             res.json({ success: false, message: "Customer with such phone number already exists." });
             return;
         }
@@ -44,6 +45,9 @@ customersRouter.propfind("/log-in", (req, res, next) => {
         if (!req.body.phoneNum || !req.body.password) {
             throw new Error("Customer log in: req.body doesn't contain some data: : " + JSON.stringify(req.body));
         }
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;`);
         let result = await pool.query(`SELECT phone_num FROM customers WHERE phone_num = $1;`, [req.body.phoneNum]);
         let message = "";
         if (result.rowCount === 0) {
@@ -52,11 +56,13 @@ customersRouter.propfind("/log-in", (req, res, next) => {
             message = `Found several customers with such data.`;
         }
         if (message.length > 0) {
+            await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: message });
             return;
         }
         result = await pool.query(`SELECT name, phone_num FROM customers WHERE phone_num = $1 AND password = $2;`, [req.body.phoneNum, req.body.password]);
         if (result.rowCount === 0) {
+            await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: "Wrong password." });
             return;
         }
@@ -78,7 +84,9 @@ customersRouter.patch("/change-password", (req, res, next) => {
         if (!req.body.customerPhoneNum || !req.body.oldPassword || !req.body.newPassword) {
             throw new Error("Customer password changing: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
-        await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;`);
         let result = await pool.query(`
             SELECT * FROM customers WHERE phone_num = $1;
             `, [req.body.customerPhoneNum]);
@@ -89,6 +97,7 @@ customersRouter.patch("/change-password", (req, res, next) => {
             message = `Found several customers with such data.`;
         }
         if (message.length > 0) {
+            await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: message });
             return;
         }
@@ -96,6 +105,7 @@ customersRouter.patch("/change-password", (req, res, next) => {
         WHERE phone_num = $2 AND password = $3;`,
             [req.body.newPassword, req.body.customerPhoneNum, req.body.oldPassword]);
         if (result.rowCount === 0) {
+            await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: "Wrong password." });
             return;
         }

@@ -3,15 +3,13 @@
 import Basket from "./class_Basket.js";
 import Customer from "./class_Customer.js";
 
-// console.info(``);
-
 const customerName = document.getElementById("customer-name");
 const accountBtn = document.getElementById("account-btn");
 const viewBasketBtn = document.getElementsByClassName("view-basket-btn")[0];
 const brandFilter = document.getElementById("brand-filter");
 const content = document.querySelector(".wrapper > main");
 
-const basket = new Basket();
+
 if (localStorage.getItem("customerName") === null) {
     customerName.style.display = "none";
 } else {
@@ -37,6 +35,7 @@ content.addEventListener("click", async event => {
     }
 })
 
+const basket = new Basket();
 viewBasketBtn.addEventListener('click', event => {
     basket.show(customerName, {
         onRegister: () => viewBasketBtn.click(),
@@ -44,8 +43,6 @@ viewBasketBtn.addEventListener('click', event => {
 });
 
 brandFilter.addEventListener('change', event => {
-    // console.dir(brandFilter);
-    // console.log(brandFilter.value);
     let brandForFilter = brandFilter.value;
     if (brandForFilter === "none") {
         brandForFilter = "";

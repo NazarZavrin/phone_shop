@@ -30,7 +30,7 @@ export function showModalWindow(elementsArray, { style = "", className = "", han
     });
 }
 export function createElement({ name: elemName = "div", style = "", content = "", class: className = "", attributes = [] } = {}) {
-    // attributes - array of objects with keys "name" and "value"
+    // attributes - array of strings of the format "attributeName: value"
     let element = document.createElement(elemName);
     if (elemName == "input") {
         element.value = content;
@@ -125,15 +125,12 @@ export function passwordIsCorrect(inputElement, elementForWarning = null) {
 
 export function isInt(source) {
     let text = source;
-    // console.log(source?.tagName === "INPUT", source?.value);
     if (source?.tagName === "INPUT" && typeof source?.value === 'string') {
-        // console.log("+");
         text = source.value;
         source.style.borderColor = '';
     }
     for (const symbol of text) {
         if (Number.isNaN(Number(symbol))) {
-            // console.log(source);
             if (source?.style) {
                 source.style.borderColor = 'red';
             }

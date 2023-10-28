@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phone shop orders</title>
     <link rel="stylesheet" href="./style/orders.css" />
 </head>
+
 <body>
     <div class="wrapper">
         <header>Замовлення</header>
@@ -15,7 +17,8 @@
                     <header>Фільтри для пошуку:</header>
                     <div class="search-inputs">
                         <input name="num" type="tel" placeholder="Номер чеку" autocomplete="off">
-                        <input name="customer_phone_num" type="tel" placeholder="Номер телефону покупця" autocomplete="off">
+                        <input name="customer_phone_num" type="tel" placeholder="Номер телефону покупця"
+                            autocomplete="off">
                     </div>
                     <section id="datetime-period">
                         <span>Період</span>
@@ -38,11 +41,9 @@
                 </section>
                 <section class="actions-section">
                     <a href="/orders/report">
-                        <button id="view-report-btn">Звітна форма за період</button> 
+                        <button id="view-report-btn">Звітна форма за період</button>
                     </a>
-                    <a href="/orders/receipt">
-                        <button id="view-receipt-btn">Чек</button>
-                    </a>
+                    <button id="view-receipt-btn">Чек</button>
                     <button id="refresh-btn">Оновити дані</button>
                 </section>
             </header>
@@ -51,4 +52,5 @@
     </div>
     <script src="./script/orders.js" type="module"></script>
 </body>
+
 </html>

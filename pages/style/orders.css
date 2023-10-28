@@ -213,7 +213,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 3px;
 }
 .modal-window.basket section {
-  max-height: 60vh;
+  max-height: 50vh;
   overflow: auto;
   padding: 3px;
   margin-bottom: 3px;
@@ -406,7 +406,7 @@ main > header > .actions-section > a > #view-report-btn {
   background-color: royalblue;
   margin: 3px;
 }
-main > header > .actions-section > a > #view-receipt-btn {
+main > header > .actions-section > #view-receipt-btn {
   background-color: slateblue;
   margin: 3px;
   margin-right: 6px;

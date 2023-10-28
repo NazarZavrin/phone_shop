@@ -1,6 +1,6 @@
 "use strict";
 
-import { createElement, emailIsCorrect, phoneNumberIsCorrect, setWarningAfterElement, showModalWindow, nameIsCorrect, showPassword, passwordIsCorrect, isFloat } from "./useful-for-client.js";
+import { createElement, setWarningAfterElement, showModalWindow, isFloat } from "./useful-for-client.js";
 
 export default class Orders {
     #orders
@@ -13,11 +13,9 @@ export default class Orders {
             ordersContainer.textContent = "Невидані замовлення відсутні.";
             return;
         }
-        // console.log(orders[0]);
-        // console.log(orders.length);
         this.#ordersToDisplay = this.#orders.filter(order => order.num.includes(searchInputs.num.value))
             .filter(order => order.customer_phone_num.includes(searchInputs.customer_phone_num.value));
-            let fromTimestamp = dateTimeComponents.from.day.value === '' ?
+        let fromTimestamp = dateTimeComponents.from.day.value === '' ?
             0 : Date.parse(new Date(
                 Number(dateTimeComponents.from.year.value),
                 Number(dateTimeComponents.from.month.value) - 1,
@@ -38,7 +36,6 @@ export default class Orders {
             this.#ordersToDisplay = this.#ordersToDisplay.filter(order => {
                 let orderTimestamp = new Date(order.datetime).setSeconds(0, 0);
                 // new Date() adds timezone offset to ISOString
-                // console.log(order.datetime, orderTimestamp);
                 return orderTimestamp >= fromTimestamp && orderTimestamp <= toTimestamp;
             })
         }

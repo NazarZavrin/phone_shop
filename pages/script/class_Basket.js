@@ -28,12 +28,9 @@ export default class Basket {
         }
         return products;
     }
-    static updateAddToBasketBtn(brand, name, addToBasketBtn, amount = "-1") {
-
+    static updateAddToBasketBtn(addToBasketBtn, brand, name, amount = "-1") {
         let disable = false;
         for (const key of Object.keys(localStorage)) {
-            // console.log(key);
-            // console.log(`${this.#storageLabel}${brand}|${name}`);
             if (key.includes(`${this.#storageLabel}${brand}|${name}`)) {
                 disable = true;
                 break;
@@ -42,7 +39,6 @@ export default class Basket {
         if (Number(amount) === 0) {
             disable = true;
         }
-        // console.log(arguments, disable);
         if (disable) {
             addToBasketBtn.textContent = Number(amount) === 0 ? "Немає в наявності" : "Вже в кошику";
             addToBasketBtn.style.backgroundColor = "dimgray";
@@ -54,11 +50,10 @@ export default class Basket {
         }
     }
     show(customerNameElem, {
-        onProductDelete = () => {}, onRegister = () => {}, 
+        onRegister = () => {}, onProductDelete = () => {}, 
         onOrderCreated = () => {}, getCurrentProductMainInfo = () => {},
     } = {}) {
         let products = this.getProducts();
-        // console.log(...products);
         let currentCustomerLabel = null;
         if (localStorage.getItem("customerName") !== null) {
             currentCustomerLabel = createElement({ content: "Покупець: " + localStorage.getItem("customerName") });
@@ -68,10 +63,9 @@ export default class Basket {
         const totalCostElem = createElement({ class: 'total-cost' });
         const orderBtn = createElement({ name: 'button', content: "Замовити", class: "order-btn" });
         function updateTotalCost() {
-            // console.log(...products);
             totalCostElem.textContent = `Сума замовлення: ${products.reduce(
                 (totalCost, orderItem) => totalCost + Number.parseFloat(orderItem.price * orderItem.amount), 0)
-                } грн.`;
+            } грн.`;
             if (totalCostElem.textContent.includes(": 0 грн")) {
                 orderItems.innerHTML = "<p style='padding: 50px'>Кошик пустий</p>";
                 totalCostElem.textContent = "";
@@ -103,24 +97,20 @@ export default class Basket {
                 <div class="order-item_amount__num">${orderItem.amount}</div>
                 <button class="increase">+</button>`;
                 orderItem.cost = orderItem.price * orderItem.amount;
-                // console.log(orderItem.cost);
                 const costElem = amountElem.parentElement.querySelector('.order-item_cost');
                 costElem.innerHTML = `<div class='order-item-cost'>${orderItem.cost} грн.</div>`;
                 this.setProductInfo(orderItem.brand, orderItem.name, orderItem.price, orderItem.amount);
                 updateTotalCost();
             }
-
             // deletion from the basket
             const delFromBasketBtn = event.target.closest('.del-from-basket-btn');
             if (!delFromBasketBtn) {
                 return;
             }
             let orderItemIndex = [...orderItems.querySelectorAll('.del-from-basket-btn')].findIndex(btn => btn === delFromBasketBtn);
-            // console.log(products);
             this.deleteProduct(products[orderItemIndex].brand, products[orderItemIndex].name);
-
-            // console.log(products);
-            onProductDelete(products[orderItemIndex]?.brand, products[orderItemIndex]?.name);// updateAddToBasketBtn
+            //onProductDelete(products[orderItemIndex]?.brand, products[orderItemIndex]?.name);// updateAddToBasketBtn
+            onProductDelete();
             products = this.getProducts();
             const orderItemElement = delFromBasketBtn.closest('section > div');
             orderItemElement.remove();
@@ -130,7 +120,6 @@ export default class Basket {
             const nameBrandElem = createElement({ class: 'order-item_name_and_brand', content: `${orderItem.brand + " " + orderItem.name}` });
             const amountElem = createElement({ class: 'order-item_amount' });
             const costElem = createElement({ class: 'order-item_cost' });
-            // console.log(amountElem);
             const orderItemElement = createElement();
             orderItemElement.append(nameBrandElem);
             orderItemElement.append(amountElem);
@@ -150,22 +139,19 @@ export default class Basket {
                         customerPhoneNum: localStorage.getItem("customerPhoneNum"),
                         orderItems: products
                     };
-                    
                     if (getCurrentProductMainInfo()?.brand) {
                         requestBody.currentProductInfo = getCurrentProductMainInfo();
                     }
-                    let response = await fetch(location.origin + "/orders/create-order", {
+                    let response = await fetch(location.origin + "/orders/create", {
                         method: "POST",
                         body: JSON.stringify(requestBody),
                         headers: { "Content-Type": "application/json" }
                     })
                     if (response.ok) {
                         let result = await response.json();
-                        console.log(result);
                         if (!result.success) {
-                            if (result.message.includes("are available")) {
-                                const match = result.message.match(/Only (\d+) phones (.+) are available/);
-                                console.log(match);
+                            const match = result.message.match(/Only (\d+) phones (.+) are available/);
+                            if (match) {
                                 setWarningAfterElement(orderBtn, `Кількість смартфонів`
                                 + ` ${match[2]} в наявності: ${match[1]}.`
                                 + ` Замовлення не оформлено.`);

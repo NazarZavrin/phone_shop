@@ -15,37 +15,35 @@ const productMainInfo = {
     amount: splitResult[3], 
 } 
 
-const basket = new Basket();
+Basket.updateAddToBasketBtn(addToBasketBtn, productMainInfo.brand, productMainInfo.name, productMainInfo.amount);
+
 if (localStorage.getItem("customerName") === null) {
     customerName.style.display = "none";
 } else {
     customerName.textContent = localStorage.getItem("customerName");
 }
 
-Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn, productMainInfo.amount);
-
 accountBtn.addEventListener("click", event => {
     if (localStorage.getItem("customerName") === null) {
         Customer.showRegistrationWindow(customerName);
     } else {
         Customer.showCustomerProfile(customerName, {
-            onExit: Basket.updateAddToBasketBtn.bind(null, productMainInfo.brand, productMainInfo.name, addToBasketBtn, productMainInfo.amount)
+            onExit: Basket.updateAddToBasketBtn.bind(null, addToBasketBtn, productMainInfo.brand, productMainInfo.name, productMainInfo.amount)
         });
     }
 });
-// Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn, productMainInfo.amount);
 
+const basket = new Basket();
 viewBasketBtn.addEventListener('click', event => {
     basket.show(customerName, {
-        onProductDelete: () => Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn), 
+        onProductDelete: () => Basket.updateAddToBasketBtn(addToBasketBtn, productMainInfo.brand, productMainInfo.name),
         onRegister: () => viewBasketBtn.click(),
-        getCurrentProductMainInfo: () => { return  productMainInfo },
-        onOrderCreated: (newAmount) => Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn, newAmount),
+        getCurrentProductMainInfo: () => { return productMainInfo },
+        onOrderCreated: (newAmount) => Basket.updateAddToBasketBtn(addToBasketBtn, productMainInfo.brand, productMainInfo.name, newAmount),
     });
 });
 
 addToBasketBtn.addEventListener("click", event => {
     basket.addProduct(productMainInfo.brand, productMainInfo.name, productMainInfo.price);
-    Basket.updateAddToBasketBtn(productMainInfo.brand, productMainInfo.name, addToBasketBtn);
-    console.log(basket.getProducts());
+    Basket.updateAddToBasketBtn(addToBasketBtn, productMainInfo.brand, productMainInfo.name);
 })

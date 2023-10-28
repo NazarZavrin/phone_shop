@@ -24,7 +24,7 @@ dateTimeComponents.to.year.value = currentDate.getFullYear();
 
 let orders = [];
 let ordersToDisplay = [];
-let ordersReceived = true;
+let ordersReceived = false;
 
 (async () => {
     try {
@@ -60,11 +60,9 @@ generateReportBtn.addEventListener('click', event => {
         for (const key in dateTimeComponent) {
             dateTimeComponent[key].style.borderColor = '';
             if (!dateTimeComponentIsUsed && dateTimeComponent[key].value.length > 0) {
-                // console.log(dateTimeComponentKey, dateTimeComponent[key]);
                 dateTimeComponentIsUsed = true;
             }
         }
-        // console.log(dateTimeComponentIsUsed);
         if (!everythingIsCorrect || dateTimeComponentIsUsed === false) {
             continue;
         }
@@ -104,18 +102,12 @@ generateReportBtn.addEventListener('click', event => {
     renderOrders();
     if (ordersToDisplay.length > 0) {
         reportContainer.insertAdjacentHTML('afterbegin', `<section id="general-info">
-        <div>Кількість проданих товарів: ${ordersToDisplay.reduce((prev, cur) => prev + cur.orderItems.length, 0)} </div>
-        <div>Загальна вартість: ${ordersToDisplay.reduce((prev, cur) => prev + cur.cost, 0)} </div>
+        <div>Кількість проданих товарів: ${ordersToDisplay.reduce((prev, cur) => prev + cur.orderItems.length, 0)}</div>
+        <div>Загальна вартість: ${ordersToDisplay.reduce((prev, cur) => prev + Number(cur.cost), 0)}</div>
         </section>`);
     }
 })
 function renderOrders() {
-    // if (!orders || orders.length === 0) {
-    //     reportContainer.textContent = "Невидані замовлення відсутні.";
-    //     return;
-    // }
-    // console.log(orders[0]);
-    // console.log(orders.length);
     let fromTimestamp = dateTimeComponents.from.day.value === '' ?
         0 : Date.parse(new Date(
             Number(dateTimeComponents.from.year.value),
@@ -130,17 +122,12 @@ function renderOrders() {
             Number(dateTimeComponents.to.day.value),
             23, 59, 59, 999 // hours, minutes, seconds and milliseconds
         )) || Infinity;
-    // console.log(fromTimestamp);
-    // console.log(toTimestamp);
-    // console.log(new Date(fromTimestamp));
-    // console.log(new Date(toTimestamp));
     if (fromTimestamp > toTimestamp) {
         setWarningAfterElement(generateReportBtn, 'У діапазоні дат початок більше ніж кінець.');
     } else {
         ordersToDisplay = orders.filter(order => {
             let orderTimestamp = new Date(order.issuance_datetime).setSeconds(0, 0);
             // new Date() adds timezone offset to ISOString
-            // console.log(order.datetime, orderTimestamp);
             return orderTimestamp >= fromTimestamp && orderTimestamp <= toTimestamp;
         })
     }
@@ -157,10 +144,6 @@ function createOrderElement(order) {
     order.element = createElement({ name: 'div', class: 'order' });
     const orderNum = createElement({ class: 'order_num', content: 'Замовлення №' + order.num });
     order.element.append(orderNum);
-    // const customerName = createElement({ class: 'customer_name', content: 'Покупець: ' + order.customer_name });
-    // order.element.append(customerName);
-    // const customerPhoneNum = createElement({ class: 'customer_phone_num', content: 'Номер телефону покупця: ' + order.customer_phone_num });
-    // order.element.append(customerPhoneNum);
     const datetime = createElement({ class: 'datetime', content: 'Дата замовлення: ' + new Date(order.datetime).toLocaleString() });
     order.element.append(datetime);
     const issuanceDatetime = createElement({ class: 'issuance_datetime', content: 'Дата видачі: ' + new Date(order.issuance_datetime).toLocaleString() });

@@ -8,7 +8,7 @@ ordersRouter.get("/", async (req, res) => {
     res.sendFile(path.join(path.resolve(), "pages", "orders.html"));
 })
 
-ordersRouter.post("/create-order", (req, res, next) => {
+ordersRouter.post("/create", (req, res, next) => {
     express.json({
         limit: req.get('content-length'),
     })(req, res, next);
@@ -19,8 +19,7 @@ ordersRouter.post("/create-order", (req, res, next) => {
         }
         await pool.query(`
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-        BEGIN;
-        `);
+        BEGIN;`);
         let result = await pool.query(`SELECT NOW();`);
         const currentDateTime = result.rows[0].now;
         result = await pool.query(`INSERT INTO orders 
@@ -33,8 +32,6 @@ ordersRouter.post("/create-order", (req, res, next) => {
             SET amount = amount - $1 WHERE name = $2 AND brand = $3
             RETURNING name, brand, amount;
             `, [orderItem.amount, orderItem.name, orderItem.brand]);
-            console.log(orderItem.amount);
-            console.log(result.rows[0]);
             if (result.rows[0].amount < 0) {
                 throw new Error(`Only ${result.rows[0].amount + orderItem.amount}`
                     + ` phones ${orderItem.brand + " " + orderItem.name} are available.`);
@@ -46,7 +43,6 @@ ordersRouter.post("/create-order", (req, res, next) => {
         }
         let orderCost = 0;
         for (const orderItem of req.body.orderItems) {
-            // console.log(orderItem);
             result = await pool.query(`SELECT order_items.amount * products.price AS order_item_cost 
                 FROM order_items INNER JOIN products 
                 ON product_name = name AND product_brand = brand 
@@ -58,13 +54,10 @@ ordersRouter.post("/create-order", (req, res, next) => {
         SET cost = $1 WHERE num = $2;
         `, [orderCost, orderNum]);
         if (req.body.currentProductInfo) {
-            console.log(req.body.currentProductInfo);
             result = await pool.query(`SELECT amount FROM products 
             WHERE name = $1 AND brand = $2;
             `, [req.body.currentProductInfo.name, req.body.currentProductInfo.brand]);
         }
-
-        console.log(result.rows);
         await pool.query("COMMIT;");
         res.json({ success: true, message: "Order was created successfully.", num: orderNum, newAmount: result.rows[0]?.amount });
     } catch (error) {
@@ -78,8 +71,7 @@ ordersRouter.get("/get-orders", async (req, res) => {
     try {
         await pool.query(`
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-        BEGIN;
-        `);
+        BEGIN;`);
         let result = await pool.query(`
         SELECT num, datetime, cost, customer_phone_num, customers.name AS customer_name 
         FROM orders INNER JOIN customers ON customer_phone_num = phone_num 
@@ -107,13 +99,12 @@ ordersRouter.patch("/issue", (req, res, next) => {
     })(req, res, next);
 }, async (req, res) => {
     try {
-        if (!req.body.customerPhoneNum || !req.body.num || !req.body.paid) {
+        if (!req.body.num || !req.body.customerPhoneNum || !req.body.paid) {
             throw new Error("Order issuance: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
         await pool.query(`
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-        BEGIN;
-        `);
+        BEGIN;`);
         let result = await pool.query(`SELECT NOW();`);
         const currentDateTime = result.rows[0].now;
         result = await pool.query(`UPDATE orders 
@@ -147,6 +138,31 @@ ordersRouter.delete("/delete", (req, res, next) => {
     }
 })
 
+ordersRouter.get("/get-issued-orders", async (req, res) => {
+    try {
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;`);
+        let result = await pool.query(`
+        SELECT num, datetime, cost, issuance_datetime FROM orders 
+        WHERE issuance_datetime IS NOT NULL 
+        ORDER BY datetime ASC;`);
+        const orders = result.rows;
+        for (const order of orders) {
+            result = await pool.query(`
+            SELECT product_name, product_brand, amount 
+            FROM order_items WHERE order_num = $1`, [order.num]);
+            order.orderItems = result.rows;
+        }
+        await pool.query("COMMIT;");
+        res.json({ success: true, orders: orders });
+    } catch (error) {
+        await pool.query("ROLLBACK;");
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+})
+
 ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
     if (req.method === "GET") {
         res.sendFile(path.join(path.resolve(), "pages", "receipt.html"));
@@ -154,14 +170,14 @@ ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
         try {
             await pool.query(`
             SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-            BEGIN;
-            `);
+            BEGIN;`);
             let receipt_num = Number(req.url.match(/^\/receipt\/(\d+)$/)[1]);
             let result = await pool.query(`
             SELECT num, datetime, cost, issuance_datetime, paid, customers.name AS customer_name 
             FROM orders INNER JOIN customers ON customer_phone_num = phone_num 
             WHERE issuance_datetime IS NOT NULL AND num = $1;`, [receipt_num]);
             if (result.rowCount === 0) {
+                await pool.query("ROLLBACK;");
                 res.json({ success: false, message: "Non-existent receipt number." });
                 return;
             }
@@ -191,31 +207,5 @@ ordersRouter.get('/report', async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.send("<pre>Server error</pre>");
-    }
-})
-
-ordersRouter.get("/get-issued-orders", async (req, res) => {
-    try {
-        await pool.query(`
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-        BEGIN;
-        `);
-        let result = await pool.query(`
-        SELECT num, datetime, cost, issuance_datetime FROM orders 
-        WHERE issuance_datetime IS NOT NULL 
-        ORDER BY datetime ASC;`);
-        const orders = result.rows;
-        for (const order of orders) {
-            result = await pool.query(`
-            SELECT product_name, product_brand, amount 
-            FROM order_items WHERE order_num = $1`, [order.num]);
-            order.orderItems = result.rows;
-        }
-        await pool.query("COMMIT;");
-        res.json({ success: true, orders: orders });
-    } catch (error) {
-        await pool.query("ROLLBACK;");
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
     }
 })

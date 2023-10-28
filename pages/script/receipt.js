@@ -15,7 +15,6 @@
                 }
             } else {
                 let order = result.order;
-                console.log(order);
                 const labels = {
                     cost: "Вартість",
                     paid: "Сплачено",
@@ -41,7 +40,7 @@
                 const change = Number(order.paid) - Number(order.cost);
                 document.querySelector(".change").textContent += change.toFixed(change % 1 === 0 ? 0 : 2);
                 // ↑ if change is integer number (change % 1 === 0) then we will not output fraction digits, otherwise we will output 2 fraction digits
-                for (const item of ["cost", "paid", "change"]) {
+                for (const item in labels) {
                     let elem = document.getElementsByClassName(item)[0];
                     elem.textContent += " грн.";
                     elem.insertAdjacentHTML("beforebegin",
