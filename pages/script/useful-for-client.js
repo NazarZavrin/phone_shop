@@ -157,6 +157,7 @@ export function isFloat(text) {
     }
     return "";
 }
+
 export function dayAndMonthAreCorrect(daySource, monthSource) {
     let day = daySource, month = monthSource;
     if (daySource?.tagName === "INPUT" && typeof daySource?.value === 'string') {

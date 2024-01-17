@@ -32,16 +32,16 @@
           onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;" />
       </section>
       <section class="main-info">
-        <div class="name_and_brand">
+        <div class="model_and_brand">
           Мобільний телефон <%= productInfo.brand %>
-            <%= productInfo.name %>
+            <%= productInfo.model %>
         </div>
         <div class="color">Колір: <%= productInfo.color %>
         </div>
         <div class="price">Ціна: <%= productInfo.price %>
         </div>
         <button type="button" id="add-to-basket-btn" style="background-color: transparent;"
-          data-product_main_info="<%= productInfo.brand + "|" + productInfo.name + "|" 
+          data-product_main_info="<%= productInfo.brand + "|" + productInfo.brand + "|" 
           + productInfo.price + "|" + productInfo.amount %>">
         </button>
       </section>

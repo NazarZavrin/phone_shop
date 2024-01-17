@@ -14,7 +14,7 @@ ordersRouter.post("/create", (req, res, next) => {
     })(req, res, next);
 }, async (req, res) => {
     try {
-        if (!req.body.customerPhoneNum || !Array.isArray(req.body.orderItems) || req.body.orderItems?.length == 0) {
+        if (!req.body.customerPhoneNum || !req.body.originatorPhoneNum || !Array.isArray(req.body.orderItems) || req.body.orderItems?.length == 0) {
             throw new Error("Order creation: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
         await pool.query(`
@@ -23,31 +23,33 @@ ordersRouter.post("/create", (req, res, next) => {
         let result = await pool.query(`SELECT NOW();`);
         const currentDateTime = result.rows[0].now;
         result = await pool.query(`INSERT INTO orders 
-        (num, datetime, customer_phone_num) VALUES
-        (DEFAULT, $1, $2) RETURNING num, datetime;
-        `, [currentDateTime, req.body.customerPhoneNum]);
+        (num, datetime, customer_id, originator_id) VALUES
+        (DEFAULT, $1, (SELECT id FROM customers WHERE phone_num = $2 AND is_deleted = FALSE), 
+        (SELECT id FROM employees WHERE phone_num = $3 AND is_fired = FALSE)) RETURNING num, datetime;
+        `, [currentDateTime, req.body.customerPhoneNum, req.body.originatorPhoneNum]);
         const orderNum = result.rows[0].num;
         for (const orderItem of req.body.orderItems) {
-            result = await pool.query(`UPDATE products 
-            SET amount = amount - $1 WHERE name = $2 AND brand = $3
-            RETURNING name, brand, amount;
-            `, [orderItem.amount, orderItem.name, orderItem.brand]);
+            result = await pool.query(`WITH brand_info AS (SELECT * FROM brands WHERE name = $1) 
+            UPDATE products SET amount = amount - $2 FROM brand_info
+            WHERE model = $3 AND brand_id = brand_info.id
+            RETURNING products.id AS product_id, model, brand_info.name, amount;
+            `, [orderItem.brand, orderItem.amount, orderItem.model]);
             if (result.rows[0].amount < 0) {
                 throw new Error(`Only ${result.rows[0].amount + orderItem.amount}`
-                    + ` phones ${orderItem.brand + " " + orderItem.name} are available.`);
+                    + ` phones ${orderItem.brand + " " + orderItem.model} are available.`);
             }
             result = await pool.query(`INSERT INTO order_items 
-                (product_name, product_brand, order_num, amount) VALUES
+                (product_id, order_num, amount) VALUES
                 ($1, $2, $3, $4);
-                `, [orderItem.name, orderItem.brand, orderNum, orderItem.amount]);
+                `, [result.rows[0].product_id, orderNum, orderItem.amount]);
         }
         let orderCost = 0;
         for (const orderItem of req.body.orderItems) {
             result = await pool.query(`SELECT order_items.amount * products.price AS order_item_cost 
                 FROM order_items INNER JOIN products 
-                ON product_name = name AND product_brand = brand 
-                WHERE order_num = $1 AND product_name = $2 AND product_brand = $3;
-                `, [orderNum, orderItem.name, orderItem.brand]);
+                ON product_id = products.id 
+                WHERE order_num = $1 AND products.model = $2 AND products.brand_id = (SELECT id FROM brands WHERE name = $3);
+                `, [orderNum, orderItem.model, orderItem.brand]);
             orderCost += Number(result.rows[0].order_item_cost);
         }
         result = await pool.query(`UPDATE orders 
@@ -55,8 +57,8 @@ ordersRouter.post("/create", (req, res, next) => {
         `, [orderCost, orderNum]);
         if (req.body.currentProductInfo) {
             result = await pool.query(`SELECT amount FROM products 
-            WHERE name = $1 AND brand = $2;
-            `, [req.body.currentProductInfo.name, req.body.currentProductInfo.brand]);
+            WHERE model = $1 AND brand_id = (SELECT id FROM brands WHERE name = $2);
+            `, [req.body.currentProductInfo.model, req.body.currentProductInfo.brand]);
         }
         await pool.query("COMMIT;");
         res.json({ success: true, message: "Order was created successfully.", num: orderNum, newAmount: result.rows[0]?.amount });
@@ -65,7 +67,7 @@ ordersRouter.post("/create", (req, res, next) => {
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
-})
+})// updated sql-queries until this row
 
 ordersRouter.get("/get-orders", async (req, res) => {
     try {

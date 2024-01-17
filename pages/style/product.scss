@@ -2,7 +2,6 @@
 @import "./modal-window.scss";
 html,
 body {
-  // display: flex;
   min-height: 100vh;
 }
 button {
@@ -93,7 +92,6 @@ main {
     justify-content: center;
     & #add-to-basket-btn {
       margin: 5px auto;
-      // margin-top: 5px;
     }
     & > div {
       margin-bottom: 7px;

@@ -18,8 +18,9 @@ app.get('/', async (req, res) => {
         await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
         let result = await pool.query(`SELECT name FROM brands ORDER BY name`);
         let brands = result.rows.map(row => row.name);
-        result = await pool.query(`SELECT name, brand, price, amount, image_name FROM products ORDER BY brand, name`);
-        // console.log(result.rows);
+        result = await pool.query(`SELECT model, brands.name AS brand, price, amount, image_name 
+        FROM products INNER JOIN brands ON brand_id = brands.id 
+        ORDER BY brands.name, model`);
         await pool.query(`COMMIT;`);
         res.render('main', {
             products: result.rows,
@@ -33,13 +34,13 @@ app.get('/', async (req, res) => {
 })
 
 app.get("/products/:product_info", async (req, res, next) => {
-    const productInfo = req.params.product_info.match(/^(?<brand>.{1,20})\|(?<name>.{1,30})$/)?.groups;
+    const productInfo = req.params.product_info.match(/^(?<brand>.{1,20})\|(?<model>.{1,30})$/)?.groups;
     try {
         if (productInfo) {
-            let result = await pool.query(`SELECT * FROM products 
-            WHERE brand = $1 AND name = $2`,
-            [productInfo.brand, productInfo.name]);
-            // console.log(result.rows);
+            let result = await pool.query(`SELECT products.*, brands.name AS brand FROM products 
+            INNER JOIN brands ON brand_id = brands.id 
+            WHERE brands.name = $1 AND model = $2`,
+            [productInfo.brand, productInfo.model]);
             if (result.rows.length === 1) {
                 res.render('product', {
                     productInfo: result.rows[0]

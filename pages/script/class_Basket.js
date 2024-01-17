@@ -109,8 +109,7 @@ export default class Basket {
             }
             let orderItemIndex = [...orderItems.querySelectorAll('.del-from-basket-btn')].findIndex(btn => btn === delFromBasketBtn);
             this.deleteProduct(products[orderItemIndex].brand, products[orderItemIndex].name);
-            //onProductDelete(products[orderItemIndex]?.brand, products[orderItemIndex]?.name);// updateAddToBasketBtn
-            onProductDelete();
+            onProductDelete();// Basket.updateAddToBasketBtn(...)
             products = this.getProducts();
             const orderItemElement = delFromBasketBtn.closest('section > div');
             orderItemElement.remove();

@@ -36,11 +36,8 @@
     align-items: center;
     width: 35px;
     height: 35px;
-    // background: rgb(128, 128, 128);
     background: red;
     border-radius: 50%;
-
-    // border-radius: 50%;
     & > img {
       max-width: 100%;
     }
@@ -208,10 +205,6 @@
           }
         }
       }
-      // .decrease
-      // .order-item_amount__num
-      // .increase
-
       & > .del-from-basket-btn {
         background-color: red;
         font-size: 18px;

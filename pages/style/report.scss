@@ -42,10 +42,6 @@ main {
   flex-direction: column;
 }
 main > header {
-  // display: flex;
-  // flex-direction: row;
-  // // justify-content: space-between;
-  // align-items: center;
   padding: 5px;
   border: 1.5px solid dimgray;
   box-shadow: 0 1px 3px 1px gray;
@@ -53,15 +49,12 @@ main > header {
   border-radius: 0 0 7px 7px;
   & .warning {
     max-width: 100%;
-    // width: 200px;
     display: inline-block;
     font-size: 14px;
     color: red;
     text-align: center;
     word-wrap: break-word;
   }
-  // display: block;
-  // width: fit-content;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -78,13 +71,9 @@ main > header {
   }
   & > #datetime-period {
     display: inline-flex;
-    // width: fit-content;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
-    // justify-content: center;
-    // flex-shrink: 1;
-    // align-items: center;
     border: 1px solid gray;
     padding: 5px;
     padding-top: 3px;
@@ -92,7 +81,6 @@ main > header {
     border-radius: 3px;
     & > .datetime-component {
       display: inline-flex;
-      // flex: 0 0 fit-content;
       flex-direction: row;
       align-items: center;
       & > input[name] {
@@ -110,7 +98,6 @@ main > header {
   }
   & #generate-report-btn {
     background-color: dodgerblue;
-    // margin-top: 3px;
   }
 }
 main > #report {

@@ -2,9 +2,6 @@
 @import "./modal-window.scss";
 html,
 body {
-  // display: flex;
-  // min-width: fit-content;
-  // height: fit-content;
   min-height: 100vh;
 }
 button {
@@ -68,7 +65,6 @@ button {
 main {
   width: 100%;
   padding: 10px;
-  // min-width: fit-content;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

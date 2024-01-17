@@ -36,9 +36,9 @@
                         <img src="/img/<%= product.image_name %>" onerror="event.target.setAttribute('src', 
                         '/img/1x1-transparent.png'); event.target.onerror = null;">
                     </div>
-                    <div class="product_main_info" data-product_main_info="<%= product.brand + "|" + product.name %>">
+                    <div class="product_main_info" data-product_main_info="<%= product.brand + "|" + product.model %>">
                         Мобільний телефон <%= product.brand %>
-                            <%= product.name %>
+                            <%= product.model %>
                     </div>
                     <div class="product__price">
                         Ціна: <%= product.price %> грн.

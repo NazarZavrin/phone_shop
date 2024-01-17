@@ -1,11 +1,48 @@
-CREATE TABLE brands(
-  name VARCHAR(20) PRIMARY KEY NOT NULL
+CREATE TABLE customers (
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  phone_num VARCHAR(20) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  password VARCHAR(20) NOT NULL,
+  is_deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
-INSERT INTO brand VALUES ('Samsung');
 
-CREATE TABLE products(
-  name VARCHAR(30) NOT NULL,
-  brand VARCHAR(20) NOT NULL REFERENCES brand(name) ON UPDATE CASCADE,
+INSERT INTO customers VALUES (DEFAULT, '0951234567', 'Василь Лисенко', 'lysenko_vasyl@gmail.com', 'vpassword', FALSE),
+(DEFAULT, '0951231231', 'Остап Мельник', 'ostap_melnyk@gmail.com', 'opassword', FALSE);
+
+CREATE TABLE employees (
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  phone_num VARCHAR(20) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  password VARCHAR(20) NOT NULL,
+  passport_num VARCHAR(9) NOT NULL,
+  is_fired BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+INSERT INTO employees VALUES (DEFAULT, '0951111111', 'Admin', 'phone_shop_admin@gmail.com', 'adminpassword', '942014523', FALSE),
+(DEFAULT, '0952222222', 'Юрій Чуприна', 'yurii_chupryna@gmail.com', 'upassword', '413901825', FALSE);
+
+CREATE TABLE orders (
+  num BIGSERIAL PRIMARY KEY NOT NULL,
+  datetime TIMESTAMP NOT NULL,
+  cost DECIMAL,
+  customer_id BIGINT NOT NULL REFERENCES customers(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  originator_id BIGINT NOT NULL REFERENCES employees(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  issuance_datetime TIMESTAMP NULL,
+  paid DECIMAL
+);
+
+CREATE TABLE brands (
+  id SMALLSERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(20) NOT NULL
+);
+INSERT INTO brands (name) VALUES ('Apple'), ('Samsung'), ('Xiaomi');
+
+CREATE TABLE products (
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  model VARCHAR(30) NOT NULL,
+  brand_id SMALLINT NOT NULL REFERENCES brands(id) ON UPDATE CASCADE,
   color VARCHAR(15) NOT NULL,
   price DECIMAL NOT NULL,
   amount INT NOT NULL,
@@ -16,38 +53,25 @@ CREATE TABLE products(
   processor VARCHAR(35) NOT NULL,
   matrix_type VARCHAR(20) NOT NULL,
   OS VARCHAR(12) NOT NULL,
-  image_name VARCHAR(30),
-  CONSTRAINT product_pk PRIMARY KEY (name, brand)
-);
-*INSERT INTO products VALUES
-(name, brand, color, price, amount, Діагональ, Оперативна, Ємність, Вбудована, процесора, матриці, Операційна, img_name),
-2INSERT INTO products VALUES
-('Galaxy A54', 'Samsung', 'Green', 17999, 17, 6.4, 8, 5000, 256, 'Samsung Exynos 1380', 'Super AMOLED', 'Android'),
-('Galaxy A34', 'Samsung', 'Light Green', 13299, 21, 6.6, 6, 5000, 128, 'MediaTek Dimensity 1080', 'Super AMOLED', 'Android');
-1INSERT INTO products VALUES
-('Galaxy A24', 'Samsung', 'Black', 8999, 12, 6.5, 6, 5000, 128, 'MediaTek Helio G99', 'Super AMOLED', 'Android');
-
-CREATE TABLE customers(
-  phone_num VARCHAR(20) PRIMARY KEY NOT NULL,
-  name VARCHAR(50) NOT NULL,
-  email VARCHAR(50) NOT NULL,
-  password VARCHAR(20) NOT NULL
+  image_name VARCHAR(30)
 );
 
-CREATE TABLE orders(
-  num BIGSERIAL PRIMARY KEY NOT NULL,
-  datetime TIMESTAMP NOT NULL,
-  cost INT,
-  customer_phone_num VARCHAR(20) NOT NULL REFERENCES customers(phone_num) ON UPDATE CASCADE ON DELETE CASCADE,
-  issuance_datetime TIMESTAMP NULL,
-  paid INT
-);
+INSERT INTO products VALUES (DEFAULT, 'Galaxy A24', (SELECT id FROM brands WHERE name = 'Samsung'), 'Black', 9000, 33, 6.5, 6, 5000, 128, 'MediaTek Helio G99', 'Super AMOLED', 'Android', 'Samsung Galaxy A24.png'),
+(DEFAULT, 'Galaxy A34', (SELECT id FROM brands WHERE name = 'Samsung'), 'Light Green', 13300, 22, 6.6, 6, 5000, 128, 'MediaTek Dimensity 1080', 'Super AMOLED', 'Android', 'Samsung Galaxy A34.png'), 
+(DEFAULT, 'Galaxy A54', (SELECT id FROM brands WHERE name = 'Samsung'), 'Green', 18000, 17, 6.4, 8, 5000, 256, 'Samsung Exynos 1380', 'Super AMOLED', 'Android', 'Samsung Galaxy A54.png'), 
+(DEFAULT, 'Galaxy M34', (SELECT id FROM brands WHERE name = 'Samsung'), 'Dark Blue', 12000, 33, 6.5, 8, 6000, 128, 'Samsung Exynos 1280', 'Super AMOLED', 'Android', 'Samsung Galaxy M34.png'), 
+(DEFAULT, 'Redmi Note 12 Pro', (SELECT id FROM brands WHERE name = 'Xiaomi'), 'Sky Blue', 11000, 3, 6.67, 6, 5000, 128, 'MediaTek Dimensity 1080', 'AMOLED', 'Android', 'Xiaomi Redmi Note 12 Pro.png'), 
+(DEFAULT, 'Redmi Note 12S', (SELECT id FROM brands WHERE name = 'Xiaomi'), 'Ice Blue', 9000, 5, 6.43, 8, 5000, 256, 'MediaTek Helio G96', 'AMOLED', 'Android', 'Xiaomi Redmi Note 12S.png'), 
+(DEFAULT, 'Redmi Note 12', (SELECT id FROM brands WHERE name = 'Xiaomi'), 'Ice Blue', 7000, 7, 6.67, 4, 5000, 128, 'Qualcomm Snapdragon 685', 'AMOLED', 'Android', 'Xiaomi Redmi Note 12.png'), 
+(DEFAULT, 'iPhone 11', (SELECT id FROM brands WHERE name = 'Apple'), 'Black', 21000, 7, 6.1, 7, 3046, 64, 'Apple A13 Bionic', 'IPS', 'iOS', 'Apple iPhone 11.png'), 
+(DEFAULT, 'iPhone 12', (SELECT id FROM brands WHERE name = 'Apple'), 'Black', 25000, 11, 6.1, 5, 3046, 64, 'Apple A14 Bionic', 'OLED', 'iOS', 'Apple iPhone 12.png'), 
+(DEFAULT, 'iPhone 13', (SELECT id FROM brands WHERE name = 'Apple'), 'Midnight', 32000, 4, 6.1, 3, 3046, 128, 'Apple A15 Bionic', 'OLED', 'iOS', 'Apple iPhone 13.png'), 
+(DEFAULT, 'iPhone 14', (SELECT id FROM brands WHERE name = 'Apple'), 'Midnight', 42000, 7, 6.1, 2, 3046, 256, 'Apple A15 Bionic', 'OLED', 'iOS', 'Apple iPhone 14.png'), 
+(DEFAULT, 'iPhone 15', (SELECT id FROM brands WHERE name = 'Apple'), 'Blue', 42500, 3, 6.1, 1, 3046, 128, 'Apple A16 Bionic', 'OLED', 'iOS', 'Apple iPhone 15.png');
 
 CREATE TABLE order_items(
   id BIGSERIAL PRIMARY KEY NOT NULL,
-  product_name VARCHAR(15) NOT NULL,
-  product_brand VARCHAR(20) NOT NULL,
+  product_id BIGINT NOT NULL REFERENCES products(id) ON UPDATE CASCADE,
   order_num BIGINT NOT NULL REFERENCES orders(num) ON UPDATE CASCADE ON DELETE CASCADE,
-  amount INT NOT NULL,
-  FOREIGN KEY (product_name, product_brand) REFERENCES products(name, brand) ON UPDATE CASCADE
+  amount INT NOT NULL
 );
