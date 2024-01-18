@@ -6,14 +6,16 @@ import { createElement, setWarningAfterElement, showModalWindow } from "./useful
 export default class Basket {
     static #storageLabel = "product: ";
     constructor() { }
-    setProductInfo(brand, name, price, amount) {
-        localStorage.setItem(`${Basket.#storageLabel}${brand}|${name}`, JSON.stringify({
+    setProductInfo(brand, model, price, amount) {
+        localStorage.setItem(`${Basket.#storageLabel}${brand}|${model}`, JSON.stringify({
             price: price,
             amount: amount
         }));
+        console.log("setProductInfo");
+        console.log(localStorage);
     }
-    addProduct(brand, name, price) {
-        this.setProductInfo(brand, name, price, 1);
+    addProduct(brand, model, price) {
+        this.setProductInfo(brand, model, price, 1);
     }
     getProducts() {
         const products = [];
@@ -21,17 +23,17 @@ export default class Basket {
             const key = localStorage.key(i);
             if (key.startsWith(`${Basket.#storageLabel}`)) {
                 const info = JSON.parse(localStorage.getItem(key));
-                const productNameAndBrand = key.split(Basket.#storageLabel)[1];
-                [info.brand, info.name] = productNameAndBrand.split("|");
+                const productModelAndBrand = key.split(Basket.#storageLabel)[1];
+                [info.brand, info.model] = productModelAndBrand.split("|");
                 products.push(info);
             }
         }
         return products;
     }
-    static updateAddToBasketBtn(addToBasketBtn, brand, name, amount = "-1") {
+    static updateAddToBasketBtn(addToBasketBtn, brand, model, amount = "-1") {
         let disable = false;
         for (const key of Object.keys(localStorage)) {
-            if (key.includes(`${this.#storageLabel}${brand}|${name}`)) {
+            if (key.includes(`${this.#storageLabel}${brand}|${model}`)) {
                 disable = true;
                 break;
             }
@@ -99,7 +101,7 @@ export default class Basket {
                 orderItem.cost = orderItem.price * orderItem.amount;
                 const costElem = amountElem.parentElement.querySelector('.order-item_cost');
                 costElem.innerHTML = `<div class='order-item-cost'>${orderItem.cost} грн.</div>`;
-                this.setProductInfo(orderItem.brand, orderItem.name, orderItem.price, orderItem.amount);
+                this.setProductInfo(orderItem.brand, orderItem.model, orderItem.price, orderItem.amount);
                 updateTotalCost();
             }
             // deletion from the basket
@@ -108,7 +110,7 @@ export default class Basket {
                 return;
             }
             let orderItemIndex = [...orderItems.querySelectorAll('.del-from-basket-btn')].findIndex(btn => btn === delFromBasketBtn);
-            this.deleteProduct(products[orderItemIndex].brand, products[orderItemIndex].name);
+            this.deleteProduct(products[orderItemIndex].brand, products[orderItemIndex].model);
             onProductDelete();// Basket.updateAddToBasketBtn(...)
             products = this.getProducts();
             const orderItemElement = delFromBasketBtn.closest('section > div');
@@ -116,11 +118,11 @@ export default class Basket {
             updateTotalCost();
         });
         products.forEach(orderItem => {
-            const nameBrandElem = createElement({ class: 'order-item_name_and_brand', content: `${orderItem.brand + " " + orderItem.name}` });
+            const modelBrandElem = createElement({ class: 'order-item_model_and_brand', content: `${orderItem.brand + " " + orderItem.model}` });
             const amountElem = createElement({ class: 'order-item_amount' });
             const costElem = createElement({ class: 'order-item_cost' });
             const orderItemElement = createElement();
-            orderItemElement.append(nameBrandElem);
+            orderItemElement.append(modelBrandElem);
             orderItemElement.append(amountElem);
             orderItemElement.append(costElem);
             orderItemElement.insertAdjacentHTML('beforeend', `<button type="button" class="del-from-basket-btn">Видалити з кошику</button>`);
@@ -177,8 +179,8 @@ export default class Basket {
             totalCostElem, orderBtn],
             { className: 'basket' });
     }
-    deleteProduct(brand, name) {
-        localStorage.removeItem(`${Basket.#storageLabel}${brand}|${name}`);
+    deleteProduct(brand, model) {
+        localStorage.removeItem(`${Basket.#storageLabel}${brand}|${model}`);
     }
     static deleteAllProducts() {
         for (let i = 0; i < localStorage.length; i++) {

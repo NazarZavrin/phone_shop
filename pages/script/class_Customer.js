@@ -83,7 +83,8 @@ export default class Customer {
         passwordBlock.addEventListener("change", showPassword);
         const logInBtn = createElement({ name: 'button', content: "Увійти", class: "log-in-btn" });
         logInBtn.addEventListener("click", async event => {
-            setWarningAfterElement(phoneNumInput, '');
+            /*setWarningAfterElement(phoneNumInput, '');
+            // phoneNumberIsCorrect() will erase the warning after this input */
             setWarningAfterElement(passwordInput, '');
             setWarningAfterElement(logInBtn, '');
             // for login you must enter phone number and password

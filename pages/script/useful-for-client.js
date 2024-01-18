@@ -109,6 +109,20 @@ export function emailIsCorrect(inputElement, elementForWarning = null) {
     setWarningAfterElement(elementForWarning, warningText);
     return warningText.length > 0 ? false : true;
 }
+const passportNumRegex = /^[\d\w]{4,9}$/;
+export function passportNumIsCorrect(inputElement, elementForWarning = null) {
+    let warningText = "";
+    if (inputElement.value.length > 9) {
+        warningText = "Номер паспорту не повинен бути більше, ніж 9 символів.";
+    } else if (inputElement.value.length < 4) {
+        warningText = "Номер паспорту не повинен бути менше ніж 4 символи.";
+    } else if (!inputElement.value.match(passportNumRegex)) {
+        warningText = `Некоректний номер паспорту.`;
+    }
+    elementForWarning = elementForWarning || inputElement;
+    setWarningAfterElement(elementForWarning, warningText);
+    return warningText.length > 0 ? false : true;
+}
 export function passwordIsCorrect(inputElement, elementForWarning = null) {
     let warningText = "";
     if (inputElement.value.length > 20) {

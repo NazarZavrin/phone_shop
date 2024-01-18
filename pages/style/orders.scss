@@ -20,15 +20,27 @@ button {
 }
 .wrapper > header {
   width: 100%;
-  display: flex;
-  justify-content: center;
+  min-height: 50px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto 1fr;
   align-items: center;
-  padding: 7px 0;
+  padding: 7px;
   color: white;
-  font-weight: bold;
-  font-size: 125%;
   background-color: gray;
+  & > #account-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: lightgray;
+    margin-right: 5px;
+    cursor: pointer;
+    & > img {
+      max-width: 100%;
+    }
+  }
 }
+
 main {
   width: 100%;
   min-width: fit-content;

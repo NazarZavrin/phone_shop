@@ -1,8 +1,12 @@
 "use strict";
 
+import Employee from "./class_Employee.js";
 import Orders from "./class_Orders.js";
 import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
+const employeeName = document.getElementById("employee-name");
+const accountBtn = document.getElementById("account-btn");
+const content = document.getElementsByTagName("main")[0];
 const searchBtn = document.getElementById("search-btn");
 const viewReceiptBtn = document.getElementById("view-receipt-btn");
 const refreshBtn = document.getElementById("refresh-btn");
@@ -33,6 +37,35 @@ dateTimeComponents.to.year.value = currentDate.getFullYear();
 
 let orders = new Orders();
 
+content.style.display = "none";
+if (localStorage.getItem("employeeName") === null) {
+    Employee.showRegistrationWindow(employeeName, () => {
+        employeeName.textContent = localStorage.getItem("employeeName");
+        content.style.display = "";
+    });
+} else {
+    employeeName.textContent = localStorage.getItem("employeeName");
+    content.style.display = "";
+}
+accountBtn.addEventListener("click", event => {
+    if (localStorage.getItem("employeeName") === null) {
+        Employee.showRegistrationWindow(employeeName, () => {
+            employeeName.textContent = localStorage.getItem("employeeName");
+            content.style.display = "";
+        });
+    } else {
+        Employee.showEmployeeProfile(employeeName, {
+            onExit: () => {
+                content.style.display = "none";
+                Employee.showRegistrationWindow(employeeName, () => {
+                    employeeName.textContent = localStorage.getItem("employeeName");
+                    content.style.display = "";
+                });
+            }
+        });
+    }
+});
+
 refreshBtn.addEventListener('click', async event => {
     try {
         let response = await fetch(location.origin + "/orders/get-orders", {
@@ -44,6 +77,7 @@ refreshBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
+                console.log(result.orders);
                 orders = new Orders(result.orders);
                 searchBtn.click();
             }
