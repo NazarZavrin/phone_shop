@@ -89,7 +89,7 @@ export default class Employee {
             createAccountBtn],
             { className: 'create-account' });
     }
-    static showRegistrationWindow(employeeNameElem, callback = function () { }) {
+    static showRegistrationWindow(employeeNameElem, {onRegistered = function () { }}) {
         const phoneNumLabel = createElement({ name: "header", content: "Введіть ваш номер телефону:" });
         const phoneNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
         const passwordLabel = createElement({ name: "header", content: "Введіть пароль:" });
@@ -141,10 +141,10 @@ export default class Employee {
                         }
                         throw new Error(result.message || "Server error.");
                     } else {
-                        employeeNameElem.textContent = result.employeeData.name;
-                        employeeNameElem.style.display = "";
                         localStorage.setItem("employeeName", result.employeeData.name);
                         localStorage.setItem("employeePhoneNum", result.employeeData.phone_num);
+                        onRegistered();
+                        event.target.closest(".modal-window").closeWindow();
                     }
                 }
             } catch (error) {
@@ -152,8 +152,6 @@ export default class Employee {
                 alert("Error");
                 return;
             }
-            event.target.closest(".modal-window").closeWindow();
-            callback();
         });
         showModalWindow([phoneNumLabel, phoneNumInput,
             passwordLabel, passwordBlock,
@@ -237,7 +235,6 @@ export default class Employee {
         });
         const exitBtn = createElement({ name: 'button', class: 'exit-btn', content: 'Вийти' });
         exitBtn.addEventListener('click', event => {
-            employeeNameElem.style.display = "none";
             localStorage.removeItem("employeeName");
             localStorage.removeItem("employeePhoneNum");
             onExit();

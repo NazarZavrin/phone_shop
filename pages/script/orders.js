@@ -6,6 +6,7 @@ import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement, sh
 
 const employeeName = document.getElementById("employee-name");
 const accountBtn = document.getElementById("account-btn");
+const toAdminPageBtn = document.getElementById("to-admin-page-btn");
 const content = document.getElementsByTagName("main")[0];
 const searchBtn = document.getElementById("search-btn");
 const viewReceiptBtn = document.getElementById("view-receipt-btn");
@@ -37,31 +38,39 @@ dateTimeComponents.to.year.value = currentDate.getFullYear();
 
 let orders = new Orders();
 
-content.style.display = "none";
-if (localStorage.getItem("employeeName") === null) {
-    Employee.showRegistrationWindow(employeeName, () => {
-        employeeName.textContent = localStorage.getItem("employeeName");
-        content.style.display = "";
-    });
-} else {
+
+function updateInterface() {
+    content.style.display = "none";
+    employeeName.style.display = "none";
+    toAdminPageBtn.style.display = "none";
+    if (localStorage.getItem("employeeName") === null) {
+        Employee.showRegistrationWindow(employeeName, {
+            onRegistered: onEmployeeRegistered
+        });
+    } else {
+        onEmployeeRegistered();
+    }
+}
+function onEmployeeRegistered() {
     employeeName.textContent = localStorage.getItem("employeeName");
     content.style.display = "";
+    employeeName.style.display = "";
+    Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "none");
+    if (localStorage.getItem("employeeName") === 'Admin') {
+        toAdminPageBtn.style.display = "";
+        Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "");
+    }
 }
+updateInterface();
+
 accountBtn.addEventListener("click", event => {
     if (localStorage.getItem("employeeName") === null) {
-        Employee.showRegistrationWindow(employeeName, () => {
-            employeeName.textContent = localStorage.getItem("employeeName");
-            content.style.display = "";
+        Employee.showRegistrationWindow(employeeName, {
+            onRegistered: onEmployeeRegistered
         });
     } else {
         Employee.showEmployeeProfile(employeeName, {
-            onExit: () => {
-                content.style.display = "none";
-                Employee.showRegistrationWindow(employeeName, () => {
-                    employeeName.textContent = localStorage.getItem("employeeName");
-                    content.style.display = "";
-                });
-            }
+            onExit: updateInterface
         });
     }
 });
@@ -90,6 +99,7 @@ refreshBtn.addEventListener('click', async event => {
 
 refreshBtn.click();
 
+// !!! delete
 viewReceiptBtn.addEventListener("click", event => {
     const orderNumLabel = createElement({ name: "header", content: "Введіть номер замовлення:" });
     const orderNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
@@ -163,13 +173,14 @@ searchBtn.addEventListener('click', event => {
     }
     setWarningAfterElement(searchBtn, '');
     orders.filterAndRenderOrders(ordersContainer, searchInputs, dateTimeComponents, searchBtn);
+    // Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "none");
 })
 
 ordersContainer.addEventListener('click', event => {
     // 1: order deletion logic, 2: order issuance logic
     // 1: order deletion logic
     const deleteOrderBtn = event.target.closest('.delete-order-btn');
-    if (deleteOrderBtn) {
+    if (deleteOrderBtn && localStorage.getItem("employeeName") === 'Admin') {
         try {
             let orderIndex = [...ordersContainer.querySelectorAll('.delete-order-btn')].findIndex(btn => btn === deleteOrderBtn);
             orders.deleteOrder(orderIndex);

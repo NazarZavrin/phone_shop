@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin page</title>
+    <link rel="stylesheet" href="./style/admin.css" />
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <span id="employee-name"></span>
+            <a href="/orders">
+                <button class="to-orders-page-btn">Видача і видалення замовлень</button>
+            </a>
+        </header>
+        <main style="display: none;">
+            <a href="/">
+                <button class="to-main-page-btn">Сторінка покупця</button>
+            </a>
+            <a href="/admin/issued-orders">
+                <button class="issued-orders-btn">Видані замовлення</button>
+            </a>
+            <button class="view-receipt-btn">Перегляд чеку</button>
+            <a href="/register-supply">
+                <button class="register-supply-btn">Оформлення поставки</button>
+            </a>
+            <a href="/employees">
+                <button class="to-employees-page-btn">Ведення даних про співробітників</button>
+            </a>
+            <a href="/customers">
+                <button class="to-customers-page-btn">Ведення даних про користувачів</button>
+            </a>
+        </main>
+    </div>
+    <script src="./script/admin.js" type="module"></script>
+</body>
+</html>

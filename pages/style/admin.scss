@@ -1,0 +1,67 @@
+@import "./null-style.scss";
+
+html,
+body {
+  min-height: 100vh;
+}
+button {
+  background-color: limegreen;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font: inherit;
+  text-align: center;
+  width: fit-content;
+}
+.wrapper {
+  width: 100%;
+  min-width: fit-content;
+  min-height: 100vh;
+  font: 20px "Calibri";
+}
+.wrapper > header {
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  padding: 7px;
+  color: white;
+  background-color: gray;
+  & > a {
+    grid-column-start: 4;
+    margin-left: 5px;
+  }
+}
+main {
+  width: 100%;
+  padding: 7px;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+main > a, main > button {
+  display: inline-block;
+  margin: 3px;
+  .to-main-page-btn {
+    background-color: cadetblue;
+  }
+  .issued-orders-btn {
+    background-color: royalblue;
+  }
+  &.view-receipt-btn {
+    background-color: slateblue;
+  }
+  .register-supply-btn {
+    background-color: dimgray;
+  }
+  .to-customers-page-btn {
+    background-color: dodgerblue;
+  }
+  .to-employees-page-btn {
+    background-color: limegreen;
+  }
+}

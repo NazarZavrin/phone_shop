@@ -44,7 +44,7 @@ viewBasketBtn.addEventListener('click', event => {
 });
 
 addToBasketBtn.addEventListener("click", event => {
-    console.log(productMainInfo);
+    //console.log(productMainInfo);
     basket.addProduct(productMainInfo.brand, productMainInfo.model, productMainInfo.price);
     Basket.updateAddToBasketBtn(addToBasketBtn, productMainInfo.brand, productMainInfo.model);
 })

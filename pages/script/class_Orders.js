@@ -62,7 +62,7 @@ export default class Orders {
         order.element.append(cost);
         const orderItems = createElement({ class: 'order-items' });
         order.orderItems.forEach(orderItem => {
-            let text = orderItem.product_brand + ' ' + orderItem.product_name + ' (' + orderItem.amount + ' шт.)';
+            let text = orderItem.brand + ' ' + orderItem.model + ' (' + orderItem.amount + ' шт.)';
             orderItems.insertAdjacentHTML("beforeend", `<div class="order-item">${text}</div>`);
         })
         order.element.append(orderItems);
@@ -70,6 +70,9 @@ export default class Orders {
         order.element.append(issuanceBtn);
         const deleteOrderBtn = createElement({ name: 'button', class: 'delete-order-btn', content: 'Видалити замовлення' });
         order.element.append(deleteOrderBtn);
+        if (localStorage.getItem("employeeName") !== 'Admin') {
+            deleteOrderBtn.style.display = "none";
+        }
         return order;
     }
     async deleteOrder(orderIndex) {
@@ -130,7 +133,7 @@ export default class Orders {
                 try {
                     let requestBody = {
                         num: this.#ordersToDisplay[orderIndex].num,
-                        customerPhoneNum: localStorage.getItem("customerPhoneNum"),
+                        employeePhoneNum: localStorage.getItem("employeePhoneNum"),
                         paid: Number(paidInput.value.split(",").join("."))
                     };
                     let response = await fetch(location.origin + "/orders/issue", {

@@ -23,7 +23,7 @@ button {
   min-height: 50px;
   display: grid;
   grid-template-rows: auto;
-  grid-template-columns: auto auto 1fr;
+  grid-template-columns: auto auto 1fr auto;
   align-items: center;
   padding: 7px;
   color: white;
@@ -38,6 +38,10 @@ button {
     & > img {
       max-width: 100%;
     }
+  }
+  & > a {
+    grid-column-start: 4;
+    margin-left: 5px;
   }
 }
 

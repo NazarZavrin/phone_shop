@@ -208,3 +208,17 @@ export function dayAndMonthAreCorrect(daySource, monthSource) {
     }
     return dayIsCorrect && monthIsCorrect;
 }
+
+export function redirectUnregistered(employeeNameElem, content){
+    content ? content.style.display = "none" : null;
+    employeeNameElem ? employeeNameElem.style.display = "none" : null;
+    if (localStorage.getItem("employeeName") === 'Admin') {
+        if (employeeNameElem) {
+            employeeNameElem.textContent = localStorage.getItem("employeeName");
+            employeeNameElem.style.display = "";
+        }
+        content ? content.style.display = "" : null;
+    } else {
+        location.href = location.origin + "/orders";
+    }
+}

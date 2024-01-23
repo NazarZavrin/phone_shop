@@ -1,0 +1,144 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:focus, :active {
+  outline: none;
+}
+
+a:focus, a:active {
+  outline: none;
+}
+
+nav, footer, header, aside {
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 14px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a, a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: 400;
+}
+
+html,
+body {
+  min-height: 100vh;
+}
+
+button {
+  background-color: limegreen;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font: inherit;
+  text-align: center;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.wrapper {
+  width: 100%;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  min-height: 100vh;
+  font: 20px "Calibri";
+}
+
+.wrapper > header {
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  padding: 7px;
+  color: white;
+  background-color: gray;
+}
+.wrapper > header > a {
+  grid-column-start: 4;
+  margin-left: 5px;
+}
+
+main {
+  width: 100%;
+  padding: 7px;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+main > a, main > button {
+  display: inline-block;
+  margin: 3px;
+}
+main > a .to-main-page-btn, main > button .to-main-page-btn {
+  background-color: cadetblue;
+}
+main > a .issued-orders-btn, main > button .issued-orders-btn {
+  background-color: royalblue;
+}
+main > a.view-receipt-btn, main > button.view-receipt-btn {
+  background-color: slateblue;
+}
+main > a .register-supply-btn, main > button .register-supply-btn {
+  background-color: dimgray;
+}
+main > a .to-customers-page-btn, main > button .to-customers-page-btn {
+  background-color: dodgerblue;
+}
+main > a .to-employees-page-btn, main > button .to-employees-page-btn {
+  background-color: limegreen;
+}

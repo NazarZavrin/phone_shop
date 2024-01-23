@@ -1,0 +1,128 @@
+@import "./null-style.scss";
+@import "./modal-window.scss";
+html,
+body {
+  display: flex;
+  min-height: 100vh;
+}
+button {
+  background-color: limegreen;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font: inherit;
+  text-align: center;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: fit-content;
+  height: fit-content;
+  min-height: 100vh;
+  font: 20px "Calibri";
+}
+.wrapper > header {
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 7px;
+  color: white;
+  background-color: gray;
+  & > a > .to-employee-page-btn {
+    background-color: limegreen;
+  }
+}
+main {
+  width: 100%;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+main > header {
+  padding: 5px;
+  border: 1.5px solid dimgray;
+  box-shadow: 0 1px 3px 1px gray;
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+  & .warning {
+    max-width: 100%;
+    display: inline-block;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+    word-wrap: break-word;
+  }
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  & > header {
+    text-align: center;
+  }
+  & input {
+    font: inherit;
+    flex-grow: 1;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 0 3px;
+    margin: 3px;
+  }
+  & > #datetime-period {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    border: 1px solid gray;
+    padding: 5px;
+    padding-top: 3px;
+    margin: 3px;
+    border-radius: 3px;
+    & > .datetime-component {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      & > input[name] {
+        width: 30px;
+      }
+      & > input[name="year"] {
+        width: 60px;
+      }
+    }
+  }
+  & > div:has(#get-issued-orders-btn) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  & #get-issued-orders-btn {
+    background-color: dodgerblue;
+  }
+}
+main > #issued-orders {
+  width: 100%;
+  min-width: fit-content;
+  padding: 10px;
+  text-align: center;
+  & > #general-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 0.5px solid black;
+    & > div {
+      flex: 1 1 auto;
+      padding: 3px 7px;
+      border: 0.5px solid black;
+    }
+  }
+  & > .order {
+    width: 100%;
+    min-width: fit-content;
+    padding: 10px;
+    text-align: left;
+    box-shadow: 0 0 3px 1px gray;
+    border-radius: 5px;
+    margin-top: 15px;
+  }
+}

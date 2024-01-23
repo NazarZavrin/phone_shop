@@ -32,7 +32,7 @@
                     document.getElementsByClassName(key)[0].textContent += order[key] || '';
                 }
                 order.orderItems.forEach(orderItem => {
-                    let text = orderItem.product_brand + ' ' + orderItem.product_name + ' (' + orderItem.amount + ' шт.)';
+                    let text = orderItem.brand + ' ' + orderItem.model + ' (' + orderItem.amount + ' шт.)';
                     document.querySelector(".receipt_body").insertAdjacentHTML("beforeend",
                         `<div class="order-item">${text}</div>
                     <div class="order-item-cost">${orderItem.cost} грн.</div>`);

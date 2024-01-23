@@ -4,7 +4,7 @@ import path from 'path';
 
 export const ordersRouter = express.Router();
 
-ordersRouter.get("/", async (req, res) => {
+ordersRouter.get("/", (req, res) => {
     res.sendFile(path.join(path.resolve(), "pages", "orders.html"));
 })
 
@@ -82,14 +82,16 @@ ordersRouter.get("/get-orders", async (req, res) => {
         const orders = result.rows;
         for (const order of orders) {
             result = await pool.query(`
-            SELECT model, brands.name, order_items.amount 
+            SELECT model, brands.name AS brand, order_items.amount AS amount 
             FROM order_items 
-            INNER JOIN products ON order_items.id = product_id 
+            INNER JOIN products ON products.id = product_id 
             INNER JOIN brands ON brands.id = brand_id 
             WHERE order_num = $1`, [order.num]);
+            console.log(result.rows);
             order.orderItems = result.rows;
         }
         await pool.query("COMMIT;");
+        
         res.json({ success: true, orders: orders });
     } catch (error) {
         await pool.query("ROLLBACK;");
@@ -104,7 +106,7 @@ ordersRouter.patch("/issue", (req, res, next) => {
     })(req, res, next);
 }, async (req, res) => {
     try {
-        if (!req.body.num || !req.body.customerPhoneNum || !req.body.employeePhoneNum || !req.body.paid) {
+        if (!req.body.num || !req.body.employeePhoneNum || !req.body.paid) {
             // !req.body.customerPhoneNum <- we don't need the customer's phone number
             throw new Error("Order issuance: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
@@ -158,9 +160,9 @@ ordersRouter.get("/get-issued-orders", async (req, res) => {
         const orders = result.rows;
         for (const order of orders) {
             result = await pool.query(`
-            SELECT model, brands.name, order_items.amount 
+            SELECT model, brands.name AS brand, order_items.amount AS amount 
             FROM order_items 
-            INNER JOIN products ON order_items.id = product_id 
+            INNER JOIN products ON products.id = product_id 
             INNER JOIN brands ON brands.id = brand_id 
             WHERE order_num = $1`, [order.num]);
             order.orderItems = result.rows;
@@ -194,10 +196,10 @@ ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
             }
             const order = result.rows[0];
             result = await pool.query(`
-            SELECT model, brands.name, order_items.amount, 
+            SELECT model, brands.name AS brand, order_items.amount AS amount, 
             order_items.amount * products.price AS cost 
             FROM order_items 
-            INNER JOIN products ON order_items.id = product_id 
+            INNER JOIN products ON products.id = product_id 
             INNER JOIN brands ON brands.id = brand_id 
             WHERE order_num = $1`, [order.num]);
             order.orderItems = result.rows;
@@ -210,14 +212,5 @@ ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
         }
     } else {
         next();
-    }
-})
-
-ordersRouter.get('/report', async (req, res) => {
-    try {
-        res.sendFile(path.join(path.resolve(), "pages", "report.html"));
-    } catch (error) {
-        console.log(error.message);
-        res.send("<pre>Server error</pre>");
     }
 })

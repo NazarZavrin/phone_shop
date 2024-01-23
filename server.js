@@ -4,6 +4,7 @@ import path from 'path';
 import { customersRouter } from './routers/customers-router.js';
 import { employeesRouter } from './routers/employees-router.js';
 import { ordersRouter } from './routers/orders-router.js';
+import { adminRouter } from './routers/admin-router.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ app.use(express.static(path.join(path.resolve(), 'pages')));
 app.use("/customers", customersRouter);
 app.use("/employees", employeesRouter);
 app.use("/orders", ordersRouter);
+app.use("/admin", adminRouter);
 
 app.get('/', async (req, res) => {
     try {
