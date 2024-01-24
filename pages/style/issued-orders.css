@@ -377,6 +377,10 @@ main > header > div:has(#get-issued-orders-btn) {
 }
 main > header #get-issued-orders-btn {
   background-color: dodgerblue;
+  margin-bottom: 3px;
+}
+main > header #build-chart-btn {
+  background-color: dimgray;
 }
 
 main > #issued-orders {

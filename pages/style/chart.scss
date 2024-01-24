@@ -1,0 +1,13 @@
+@import "./null-style.scss";
+
+html, body {
+    min-height: 100vh;
+}
+
+.wrapper {
+    width: 100%;
+}
+#chart {
+    // width: 100%;
+    max-height: 100vh;
+}

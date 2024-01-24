@@ -138,6 +138,7 @@ searchBtn.addEventListener('click', event => {
         }
         if (!everythingIsCorrect || dateTimeComponentIsUsed === false) {
             continue;
+            // do not type break in order to dateTimeComponent[key].style.borderColor = '' for all components
         }
         for (const key in dateTimeComponent) {
             if (dateTimeComponent[key].value.length == 0) {
@@ -155,6 +156,8 @@ searchBtn.addEventListener('click', event => {
         }
         if (!everythingIsCorrect) {
             continue;
+            // do not type break in order to dateTimeComponent[key].style.borderColor = '' for all components,
+            // if (!everythingIsCorrect... above will not allow to set a new message
         }
         if (isInt(dateTimeComponent.day).length > 0 ||
             isInt(dateTimeComponent.month).length > 0 ||

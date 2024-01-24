@@ -214,3 +214,46 @@ ordersRouter.all(/^\/receipt\/(\d+)$/, async (req, res, next) => {
         next();
     }
 })
+
+ordersRouter.propfind("/get-data-for-chart", (req, res, next) => {
+    express.json({
+        limit: req.get('content-length')
+    })(req, res, next);
+}, async (req, res) => {
+    try {
+        if (!req.body.from || !req.body.to) {
+            throw new Error("Receiving data for chart: req.body doesn't contain some data: " + JSON.stringify(req.body));
+        }
+        /*let dateBounds = req.body.from.split(".").concat(req.body.to.split(".")).map(str => Number(str));
+        if (dateBounds.some(item => !Number.isFinite(item))) {
+            throw new Error("Receiving data for chart: not all date bounds are numbers" + JSON.stringify(dateBounds));
+        }*/
+        // console.log(req.body);
+        let result = await pool.query(`SELECT *
+        FROM (SELECT EXTRACT(YEAR FROM issuance_datetime) AS year, 
+        EXTRACT(MONTH FROM issuance_datetime) AS month, SUM(cost) AS income
+        FROM orders WHERE cost > 0 AND issuance_datetime BETWEEN $1 AND $2 
+        GROUP BY year, month) AS income_info
+        FULL JOIN (SELECT EXTRACT(YEAR FROM datetime) AS year, 
+        EXTRACT(MONTH FROM datetime) AS month, SUM(cost) * -1 AS spending 
+        FROM orders WHERE cost < 0 AND datetime BETWEEN $1 AND $2 
+        GROUP BY year, month) AS spending_info
+        ON income_info.year = spending_info.year AND income_info.month = spending_info.month
+        ORDER BY LEAST(income_info.year, spending_info.year), LEAST(income_info.month, spending_info.month) ASC;`// for ORDER BY DESC use GREATEST() instead of LEAST() (https://stackoverflow.com/questions/66231376/sort-full-join-based-on-two-columns-on-two-different-tables)
+        , [req.body.from, req.body.to]);
+        /*let result = await pool.query(`SELECT income_info.year AS year, income_info.month AS month, income, spending
+        FROM (SELECT EXTRACT(YEAR FROM issuance_datetime) AS year, 
+        EXTRACT(MONTH FROM issuance_datetime) AS month, SUM(cost) AS income
+        FROM orders WHERE cost > 0 GROUP BY year, month) AS income_info
+        FULL JOIN (SELECT EXTRACT(YEAR FROM datetime) AS year, 
+        EXTRACT(MONTH FROM datetime) AS month, SUM(cost) * -1 AS spending
+        FROM orders WHERE cost < 0 GROUP BY year, month) AS spending_info
+        ON income_info.year = spending_info.year AND income_info.month = spending_info.month
+        WHERE (income_info.month BETWEEN $1 AND $3) AND (income_info.year BETWEEN $2 AND $4) ORDER BY income_info.year, income_info.month;
+        `, [...dateBounds]);
+        console.log(...dateBounds);*/
+        res.json({success: true, dataForChart: result.rows});
+    } catch (error) {
+        res.json({success: false, message: error.message});
+    }
+})

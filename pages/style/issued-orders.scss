@@ -94,10 +94,15 @@ main > header {
   & > div:has(#get-issued-orders-btn) {
     display: flex;
     flex-direction: column;
+    // justify-content: space-between;
     align-items: center;
   }
   & #get-issued-orders-btn {
     background-color: dodgerblue;
+    margin-bottom: 3px;
+  }
+  & #build-chart-btn {
+    background-color: dimgray;
   }
 }
 main > #issued-orders {

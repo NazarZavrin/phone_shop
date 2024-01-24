@@ -3,6 +3,7 @@
 import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement } from "./useful-for-client.js";
 
 const getIssuedOrdersBtn = document.getElementById("get-issued-orders-btn");
+const buildChartBtn = document.getElementById("build-chart-btn");
 const issuedOrdersContainer = document.getElementById("issued-orders");
 
 let dateTimeComponents = document.querySelectorAll('#datetime-period > .datetime-component');
@@ -38,7 +39,7 @@ let ordersReceived = false;
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                console.log(result.orders);
+                // console.log(result.orders);
                 orders = result.orders;
                 ordersReceived = true;
             }
@@ -62,6 +63,7 @@ getIssuedOrdersBtn.addEventListener('click', event => {
             dateTimeComponent[key].style.borderColor = '';
             if (!dateTimeComponentIsUsed && dateTimeComponent[key].value.length > 0) {
                 dateTimeComponentIsUsed = true;
+                // do not type break in order to dateTimeComponent[key].style.borderColor = '' for all components
             }
         }
         if (!everythingIsCorrect || dateTimeComponentIsUsed === false) {
@@ -83,6 +85,8 @@ getIssuedOrdersBtn.addEventListener('click', event => {
         }
         if (!everythingIsCorrect) {
             continue;
+            // do not type break in order to dateTimeComponent[key].style.borderColor = '' for all components,
+            // if (!everythingIsCorrect... above will not allow to set a new message
         }
         if (isInt(dateTimeComponent.day).length > 0 ||
             isInt(dateTimeComponent.month).length > 0 ||
@@ -96,10 +100,10 @@ getIssuedOrdersBtn.addEventListener('click', event => {
         }
     }
     if (everythingIsCorrect === false) {
-        setWarningAfterElement(getIssuedOrdersBtn, message);
+        setWarningAfterElement(getIssuedOrdersBtn.parentElement, message);
         return;
     }
-    setWarningAfterElement(getIssuedOrdersBtn, '');
+    setWarningAfterElement(getIssuedOrdersBtn.parentElement, '');
     renderOrders();
     if (ordersToDisplay.length > 0) {
         issuedOrdersContainer.insertAdjacentHTML('afterbegin', `<section id="general-info">
@@ -108,7 +112,7 @@ getIssuedOrdersBtn.addEventListener('click', event => {
         </section>`);
     }
 })
-function renderOrders() {
+function getTimestamps() {
     let fromTimestamp = dateTimeComponents.from.day.value === '' ?
         0 : Date.parse(new Date(
             Number(dateTimeComponents.from.year.value),
@@ -117,14 +121,19 @@ function renderOrders() {
             0, 0, 0, 0 // hours, minutes, seconds and milliseconds
         )) || 0;
     let toTimestamp = dateTimeComponents.to.day.value === '' ?
-        Infinity : Date.parse(new Date(
+            Date.parse(new Date(9999, 0, 1)) : Date.parse(new Date(
             Number(dateTimeComponents.to.year.value),
             Number(dateTimeComponents.to.month.value) - 1,
             Number(dateTimeComponents.to.day.value),
             23, 59, 59, 999 // hours, minutes, seconds and milliseconds
-        )) || Infinity;
+        )) || Date.parse(new Date(9999, 0, 1));
+    return {fromTimestamp, toTimestamp}
+}
+
+function renderOrders() {
+    let {fromTimestamp, toTimestamp} = getTimestamps();
     if (fromTimestamp > toTimestamp) {
-        setWarningAfterElement(getIssuedOrdersBtn, 'У діапазоні дат початок більше ніж кінець.');
+        setWarningAfterElement(getIssuedOrdersBtn.parentElement, 'У діапазоні дат початок більше ніж кінець.');
     } else {
         ordersToDisplay = orders.filter(order => {
             let orderTimestamp = new Date(order.issuance_datetime).setSeconds(0, 0);
@@ -159,3 +168,39 @@ function createOrderElement(order) {
     order.element.append(orderItems);
     return order;
 }
+buildChartBtn.addEventListener('click', async event => {
+    event.preventDefault();// don't follow the link
+    getIssuedOrdersBtn.click();
+    let warningElement = getIssuedOrdersBtn.parentElement.nextElementSibling;
+    if (warningElement?.matches('.warning') && warningElement.textContent.length > 0) {
+        return;
+    }
+    try {
+        let {fromTimestamp, toTimestamp} = getTimestamps();
+        let requestBody = {
+            from: new Date(fromTimestamp),
+            to: new Date(toTimestamp)
+        };
+        // console.log(requestBody);
+        let response = await fetch(location.origin + "/orders/get-data-for-chart", {
+            method: "PROPFIND",
+            body: JSON.stringify(requestBody),
+            headers: { "Content-Type": "application/json" }
+        })
+        if (response.ok) {
+            let result = await response.json();
+            if (!result.success) {
+                throw new Error(result.message || "Server error.");
+            } else {
+                // console.log(result);
+                localStorage.setItem("dataForChart", JSON.stringify(result.dataForChart));
+                localStorage.setItem("dateBoundsForChart", `від ${requestBody.from.toLocaleDateString()} до ${requestBody.to.toLocaleDateString()}`);
+                buildChartBtn.parentElement.click();// follow the link only now
+            }
+        }
+    } catch (error) {
+        event.preventDefault();
+        console.error(error.message);
+        alert("Error");
+    }
+});
