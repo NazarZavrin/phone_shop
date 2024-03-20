@@ -1,10 +1,12 @@
 "use strict";
 
-import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement } from "./useful-for-client.js";
+import { createElement, dayAndMonthAreCorrect, isInt, redirectUnregistered, setWarningAfterElement } from "./useful-for-client.js";
 
 const getIssuedOrdersBtn = document.getElementById("get-issued-orders-btn");
 const buildChartBtn = document.getElementById("build-chart-btn");
 const issuedOrdersContainer = document.getElementById("issued-orders");
+
+redirectUnregistered(issuedOrdersContainer, null);
 
 let dateTimeComponents = document.querySelectorAll('#datetime-period > .datetime-component');
 dateTimeComponents = {
@@ -46,7 +48,9 @@ let ordersReceived = false;
         }
     } catch (error) {
         console.error(error.message);
-        alert("Error");
+        if (!error.message.includes("Failed to fetch")) {
+            alert("Error");
+        }
     }
 })();
 

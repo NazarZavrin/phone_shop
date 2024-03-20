@@ -87,7 +87,7 @@ ordersRouter.get("/get-orders", async (req, res) => {
             INNER JOIN products ON products.id = product_id 
             INNER JOIN brands ON brands.id = brand_id 
             WHERE order_num = $1`, [order.num]);
-            console.log(result.rows);
+            // console.log(result.rows);
             order.orderItems = result.rows;
         }
         await pool.query("COMMIT;");

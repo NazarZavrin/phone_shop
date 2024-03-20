@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register supply</title>
+    <link rel="stylesheet" href="/style/register-supply.css" />
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <a href="/admin">
+                <button class="to-admin-page-btn">На сторінку адміністратора</button>
+            </a>
+        </header>
+        <main style="display: none;">
+            <section class="upload-file">
+                <div class="input-wrapper">
+                    <span>Перетягніть сюди .csv файл накладної чи натисніть для вибору файлу</span>
+                    <input type="file" accept=".csv" class="consignment-note-input">
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="/script/register-supply.js" type="module"></script>
+</body>
+</html>

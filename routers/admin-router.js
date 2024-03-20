@@ -7,9 +7,6 @@ export const adminRouter = express.Router();
 adminRouter.get('/', (req, res) => {
     res.sendFile(path.join(path.resolve(), "pages", "admin.html"));
 })
-adminRouter.get('/chart', (req, res) => {
-    res.sendFile(path.join(path.resolve(), "pages", "chart.html"));
-})
 
 adminRouter.get('/issued-orders', (req, res) => {
     try {
@@ -18,4 +15,12 @@ adminRouter.get('/issued-orders', (req, res) => {
         console.log(error.message);
         res.send("<pre>Server error</pre>");
     }
+})
+
+adminRouter.get('/register-supply', (req, res) => {
+    res.sendFile(path.join(path.resolve(), "pages", "register-supply.html"));
+})
+
+adminRouter.get('/chart', (req, res) => {
+    res.sendFile(path.join(path.resolve(), "pages", "chart.html"));
 })

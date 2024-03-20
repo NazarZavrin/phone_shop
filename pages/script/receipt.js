@@ -1,5 +1,9 @@
 "use strict";
+
+import { redirectUnregistered } from "./useful-for-client.js";
+
 (async () => {
+    redirectUnregistered(document.body, null);
     try {
         let response = await fetch(location.href, {
             method: "PROPFIND",

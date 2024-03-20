@@ -289,10 +289,6 @@ button {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-width: -moz-fit-content;
-  min-width: fit-content;
-  height: -moz-fit-content;
-  height: fit-content;
   min-height: 100vh;
   font: 20px "Calibri";
 }
@@ -307,7 +303,7 @@ button {
   color: white;
   background-color: gray;
 }
-.wrapper > header > a > .to-employee-page-btn {
+.wrapper > header > a > .to-admin-page-btn {
   background-color: limegreen;
 }
 

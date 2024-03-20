@@ -9,7 +9,7 @@ const accountBtn = document.getElementById("account-btn");
 const toAdminPageBtn = document.getElementById("to-admin-page-btn");
 const content = document.getElementsByTagName("main")[0];
 const searchBtn = document.getElementById("search-btn");
-const viewReceiptBtn = document.getElementById("view-receipt-btn");
+// const viewReceiptBtn = document.getElementById("view-receipt-btn");
 const refreshBtn = document.getElementById("refresh-btn");
 const ordersContainer = document.getElementById("orders");
 
@@ -51,7 +51,7 @@ function updateInterface() {
         onEmployeeRegistered();
     }
 }
-function onEmployeeRegistered() {
+function onEmployeeRegistered() { // update employeeName, delete buttons and toAdminPageBtn
     employeeName.textContent = localStorage.getItem("employeeName");
     content.style.display = "";
     employeeName.style.display = "";
@@ -93,13 +93,15 @@ refreshBtn.addEventListener('click', async event => {
         }
     } catch (error) {
         console.error(error.message);
-        alert("Error");
+        if (!error.message.includes("Failed to fetch")) {
+            alert("Error");
+        }
     }
 })
 
 refreshBtn.click();
 
-// !!! delete
+/*// !!! delete
 viewReceiptBtn.addEventListener("click", event => {
     const orderNumLabel = createElement({ name: "header", content: "Введіть номер замовлення:" });
     const orderNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
@@ -116,7 +118,7 @@ viewReceiptBtn.addEventListener("click", event => {
     showModalWindow([orderNumLabel, orderNumInput, toReceiptPageBtn],
         { className: 'view-receipt' });
 })
-
+*/
 searchBtn.addEventListener('click', event => {
     let everythingIsCorrect = true, message = '';
     if (searchInputs.num.value.length > 0 && isInt(searchInputs.num.value).length > 0) {

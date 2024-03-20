@@ -31,8 +31,11 @@ app.get('/', async (req, res) => {
             brands: brands,
         });
     } catch (error) {
-        await pool.query("ROLLBACK;");
-        console.log(error.message);
+        // throw new Error(error);
+        try {
+            await pool.query("ROLLBACK;");
+        } catch (anotherError) {}
+        console.log(error);
         res.send("<pre>Server error</pre>");
     }
 })
