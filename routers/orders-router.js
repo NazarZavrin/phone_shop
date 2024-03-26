@@ -91,7 +91,6 @@ ordersRouter.get("/get-orders", async (req, res) => {
             order.orderItems = result.rows;
         }
         await pool.query("COMMIT;");
-        
         res.json({ success: true, orders: orders });
     } catch (error) {
         await pool.query("ROLLBACK;");

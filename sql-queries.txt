@@ -6,8 +6,9 @@ CREATE TABLE customers (
   password VARCHAR(20) NOT NULL,
   is_deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
+ALTER TABLE customers ALTER COLUMN password TYPE VARCHAR(60);
 
-INSERT INTO customers VALUES (DEFAULT, '0951234567', 'Василь Лисенко', 'lysenko_vasyl@gmail.com', 'vpassword', FALSE),
+(don't add any customers in the database) INSERT INTO customers VALUES (DEFAULT, '0951234567', 'Василь Лисенко', 'lysenko_vasyl@gmail.com', 'vpassword', FALSE),
 (DEFAULT, '0951231231', 'Остап Мельник', 'ostap_melnyk@gmail.com', 'opassword', FALSE);
 
 CREATE TABLE employees (
@@ -19,8 +20,9 @@ CREATE TABLE employees (
   passport_num VARCHAR(9) NOT NULL,
   is_fired BOOLEAN NOT NULL DEFAULT FALSE
 );
+ALTER TABLE employees ALTER COLUMN password TYPE VARCHAR(60);
 
-INSERT INTO employees VALUES (DEFAULT, '0951111111', 'Admin', 'phone_shop_admin@gmail.com', 'adminpassword', '942014523', FALSE),
+(edit with hashed password. don't add any employee in the database) INSERT INTO employees VALUES (DEFAULT, '0951111111', 'Admin', 'phone_shop_admin@gmail.com', '$2b$10$Gv8d86o4esX2MeeBMpPeLOA4FAjx2jPRfjtcqCim3lCfs75qePFBy', '942014523', FALSE),
 (DEFAULT, '0952222222', 'Юрій Чуприна', 'yurii_chupryna@gmail.com', 'upassword', '413901825', FALSE);
 
 CREATE TABLE orders (

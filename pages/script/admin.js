@@ -6,6 +6,8 @@ const employeeName = document.getElementById("employee-name");
 const content = document.getElementsByTagName("main")[0];
 const viewReceiptBtn = document.getElementsByClassName("view-receipt-btn")?.[0];
 
+redirectUnregistered(content, employeeName);
+
 viewReceiptBtn.addEventListener("click", event => {
     const orderNumLabel = createElement({ name: "header", content: "Введіть номер замовлення:" });
     const orderNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
@@ -23,4 +25,3 @@ viewReceiptBtn.addEventListener("click", event => {
         { className: 'view-receipt' });
 })
 
-redirectUnregistered(content, employeeName);

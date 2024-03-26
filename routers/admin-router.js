@@ -1,5 +1,4 @@
 import express from 'express';
-import pool from '../connect-to-PostgreSQL.js'
 import path from 'path';
 
 export const adminRouter = express.Router();
