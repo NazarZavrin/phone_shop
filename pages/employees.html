@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employees</title>
+    <link rel="stylesheet" href="/style/employees.css" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <a href="/admin">
+                <button id="to-admin-page-btn">На сторінку адміністратора</button>
+            </a>
+        </header>
+        <main>
+            <header>
+                <section class="search-section">
+                    <header>Фільтри для пошуку:</header>
+                    <div class="search-inputs">
+                        <input name="name" placeholder="Ім'я співробітника" autocomplete="off" />
+                        <input name="phone_num" type="tel" placeholder="Номер телефону співробітника"
+                            autocomplete="off" />
+                    </div>
+                    <div class="buttons">
+                        <button id="search-btn">Шукати</button>
+                        <button id="refresh-btn">Оновити дані</button>
+                    </div>
+                </section>
+            </header>
+            <button id="add-employee-btn">Додати співробітника</button>
+            <section id="employees"></section>
+        </main>
+    </div>
+    <script src="/script/employees.js" type="module"></script>
+</body>
+
+</html>

@@ -28,9 +28,13 @@ dateTimeComponents.to.year.value = currentDate.getFullYear();
 
 let orders = [];
 let ordersToDisplay = [];
-let ordersReceived = false;
+// let ordersReceived = false;
 
-(async () => {
+/*(async () => {
+    
+})();*/
+
+getIssuedOrdersBtn.addEventListener('click', async event => {
     try {
         let response = await fetch(location.origin + "/orders/get-issued-orders", {
             method: "GET",
@@ -43,7 +47,7 @@ let ordersReceived = false;
             } else {
                 // console.log(result.orders);
                 orders = result.orders;
-                ordersReceived = true;
+                // ordersReceived = true;
             }
         }
     } catch (error) {
@@ -52,13 +56,10 @@ let ordersReceived = false;
             alert("Error");
         }
     }
-})();
-
-getIssuedOrdersBtn.addEventListener('click', event => {
-    if (!ordersReceived) {
+    /*if (!ordersReceived) {
         alert("Замовлення не завантажені. Спробуйте пізніше чи оновіть сторінку.");
         return;
-    }
+    }*/
     let everythingIsCorrect = true, message = '';
     for (const dateTimeComponentKey in dateTimeComponents) {
         const dateTimeComponent = dateTimeComponents[dateTimeComponentKey];

@@ -11,10 +11,8 @@ export default class Employee {
         const nameLabel = createElement({ name: "header", content: "Введіть ім'я співробітника:" });
         const nameInput = createElement({ name: "input" });
         nameInput.setAttribute("autocomplete", "off");
-        const phoneNumberLabel = createElement({ name: "header", content: "Введіть номер телефону співробітника:" });
-        const phoneNumberInput = createElement({ name: "input" });
-        phoneNumberInput.setAttribute("autocomplete", "off");
-        phoneNumberInput.setAttribute("type", "tel");
+        const phoneNumLabel = createElement({ name: "header", content: "Введіть номер телефону співробітника:" });
+        const phoneNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
         const emailLabel = createElement({ name: "header", content: "Введіть email співробітника:" });
         const emailInput = createElement({ name: "input" });
         emailInput.setAttribute("autocomplete", "off");
@@ -36,7 +34,7 @@ export default class Employee {
             setWarningAfterElement(passwordInput, '');*/
             setWarningAfterElement(createAccountBtn, '');
             let everythingIsCorrect = nameIsCorrect(nameInput);
-            everythingIsCorrect = phoneNumberIsCorrect(phoneNumberInput) && everythingIsCorrect;
+            everythingIsCorrect = phoneNumberIsCorrect(phoneNumInput) && everythingIsCorrect;
             everythingIsCorrect = emailIsCorrect(emailInput) && everythingIsCorrect;
             everythingIsCorrect = passportNumIsCorrect(passportNumInput) && everythingIsCorrect;
             everythingIsCorrect = passwordIsCorrect(passwordInput) && everythingIsCorrect;
@@ -45,9 +43,9 @@ export default class Employee {
             }
             try {
                 let requestBody = {
-                    employeeName: localStorage.getItem("employeeName"),
+                    creatorName: localStorage.getItem("employeeName"),
                     name: nameInput.value,
-                    phoneNum: phoneNumberInput.value,
+                    phoneNum: phoneNumInput.value,
                     email: emailInput.value,
                     passportNum: passportNumInput.value,
                     password: passwordInput.value
@@ -60,9 +58,8 @@ export default class Employee {
                 if (response.ok) {
                     let result = await response.json();
                     if (!result.success) {
-                        // !!! phone_num instead of name
-                        if (result.message.includes("name already exists")) {
-                            setWarningAfterElement(createAccountBtn, 'Співробітник з таким іменем вже існує');
+                        if (result.message.includes("phone number already exists")) {
+                            setWarningAfterElement(createAccountBtn, 'Співробітник з таким номером телефону вже існує');
                             return;
                         }
                         if (result.message.includes("passport number already exists")) {
@@ -82,14 +79,14 @@ export default class Employee {
             }
         });
         showModalWindow([header, nameLabel, nameInput,
-            phoneNumberLabel, phoneNumberInput,
+            phoneNumLabel, phoneNumInput,
             emailLabel, emailInput,
             passportNumLabel, passportNumInput,
             passwordLabel, passwordBlock,
             createAccountBtn],
             { className: 'create-account' });
     }
-    static showRegistrationWindow(employeeNameElem, {onRegistered = function () { }}) {
+    static showRegistrationWindow(employeeNameElem, { onRegistered = function () { } }) {
         const phoneNumLabel = createElement({ name: "header", content: "Введіть ваш номер телефону:" });
         const phoneNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
         const passwordLabel = createElement({ name: "header", content: "Введіть пароль:" });
@@ -158,11 +155,11 @@ export default class Employee {
             logInBtn],
             { className: 'registration' });
     }
-    static showEmployeeProfile(employeeNameElem, {onExit = function () { }} = {}) {
+    static showEmployeeProfile(employeeNameElem, { onExit = function () { } } = {}) {
         const employeeInfo = createElement({ name: 'section', class: 'info' });
         employeeInfo.innerHTML = `<div>${localStorage.getItem("employeeName")}</div>
             <div>${localStorage.getItem("employeePhoneNum")}</div>`;
-            // add employee's passportNum and email here
+        // add employee's passportNum and email here
         const oldPasswordLabel = createElement({ name: "label", content: "Введіть старий пароль:" },);
         const oldPasswordInput = createElement({ name: "input", attributes: ["type: password", "autocomplete: off"] });
         const oldPasswordBlock = createElement({ name: "form", class: "password-block" });
@@ -244,33 +241,24 @@ export default class Employee {
             exitBtn],
             { className: 'profile' });
     }
-    // !!! to do
     static createEmployeeElement(employee) {
         employee.element = createElement({ name: 'div', class: 'employee' });
-        const info = createElement({ name: 'section', class: 'info' });
-        employee.element.append(info);
-        const name = createElement({ class: 'name', content: "Ім'я: " + employee.name });
-        info.append(name);
-        const passportNum = createElement({ class: 'passport_num', content: 'Номер паспорту: ' + employee.passport_num });
-        info.append(passportNum);
-        const phoneNum = createElement({ class: 'phone_num', content: 'Номер телефону: ' + employee.phone_num });
-        info.append(phoneNum);
-        const email = createElement({ class: 'email', content: 'Email: ' + employee.email });
-        info.append(email);
-        const buttons = createElement({ name: 'section', class: 'buttons' });
-        employee.element.append(buttons);
-        const editInfoBtn = createElement({ name: 'button', class: 'edit-info-btn', content: 'Редагувати дані ' });
-        editInfoBtn.textContent += employee.name !== 'Admin' ? 'співробітника' : 'адміністратора';
-        buttons.append(editInfoBtn);
-        const deleteBtn = createElement({ name: 'button', class: 'delete-btn', content: 'Видалити співробітника' });
-        if (employee.name !== 'Admin') {
-            buttons.append(deleteBtn);
-        } else {
-            buttons.style.justifyContent = 'center';
-        }
+        employee.element?.setAttribute('id', employee.phone_num);
+        const employeeName = createElement({ class: 'name', content: `Ім'я: ` + employee.name });
+        employee.element.append(employeeName);
+        const employeePhoneNum = createElement({ class: 'phone_num', content: 'Номер телефону: ' + employee.phone_num });
+        employee.element.append(employeePhoneNum);
+        const employeePassportNum = createElement({ class: 'passport_num', content: 'Номер паспорту: ' + employee.passport_num });
+        employee.element.append(employeePassportNum);
+        const employeeEmail = createElement({ class: 'email', content: 'Email: ' + employee.email });
+        employee.element.append(employeeEmail);
+        const editInfoBtn = createElement({ name: 'button', class: 'edit_info_btn', content: 'Редагувати' });
+        employee.element.append(editInfoBtn);
+        const deleteBtn = createElement({ name: 'button', class: 'delete_btn', content: 'Видалити' });
+        employee.element.append(deleteBtn);
         return employee;
     }
-    // !!! to do
+    /*// !!! to do
     static async fetchEmployees() {
         try {
             let requestBody = {
@@ -288,7 +276,6 @@ export default class Employee {
                 } else {
                     // console.log(result.employees);
                     employees = result.employees
-                        .sort((a, b) => a.name === 'Admin' ? -1 : 0)
                         .map(this.createEmployeeElement);
                     // console.log(employees);
                     // employees = [];
@@ -298,8 +285,8 @@ export default class Employee {
             console.error(error.message);
             alert("Error");
         }
-    }
-    // !!! to do
+    }*/
+    /*// !!! to do
     static renderEmployees(employeesContainer, searchInput) {
         employeesContainer.innerHTML = '<button id="create-employee">Створити співробітника</button>';
         if (!employees || employees.length === 0) {
@@ -317,96 +304,47 @@ export default class Employee {
         employeesToDisplay?.forEach(employee => {
             employeesContainer.append(employee.element || this.createEmployeeElement(employee).element);
         })
-    }
-    // !!! to do
-    static async editInfo(employeeIndex, callback = function () { }) {
+    }*/
+    static async editInfo(employeeElement, callback = function () { }) {
         const oldInfo = {
-            name: employeesToDisplay[employeeIndex].name,
-            phoneNum: employeesToDisplay[employeeIndex].phone_num,
-            email: employeesToDisplay[employeeIndex].email,
-            passportNum: employeesToDisplay[employeeIndex].passport_num,
+            name: employeeElement.querySelector('.name').textContent.split(': ')[1],
+            phoneNum: employeeElement.querySelector('.phone_num').textContent.split(': ')[1],
+            passportNum: employeeElement.querySelector('.passport_num').textContent.split(': ')[1],
+            email: employeeElement.querySelector('.email').textContent.split(': ')[1],
         }
-        const header = createElement({ name: "header", content: 'Редагування даних ' });
-        header.textContent += oldInfo.name !== 'Admin' ? 'співробітника:' : 'адміністратора:';
+        console.log(oldInfo);
+        const header = createElement({ name: "header", content: 'Редагування даних співробітника' });
         let nameLabel = createElement({ name: "header", content: "Введіть нове ім'я співробітника:" });
         let nameInput = createElement({ name: "input", content: oldInfo.name });
         nameInput.setAttribute("autocomplete", "off");
-        if (oldInfo.name === 'Admin') {
-            nameLabel = nameInput = null;// admin can not change his name
-        }
-        const phoneNumberLabel = createElement({ name: "header", content: "Введіть новий номер телефону " });
-        phoneNumberLabel.textContent += oldInfo.name !== 'Admin' ? 'співробітника:' : 'адміністратора:';
-        const phoneNumberInput = createElement({ name: "input", content: oldInfo.phoneNum });
-        phoneNumberInput.setAttribute("autocomplete", "off");
-        phoneNumberInput.setAttribute("type", "tel");
-        const emailLabel = createElement({ name: "header", content: "Введіть новий email " });
-        emailLabel.textContent += oldInfo.name !== 'Admin' ? 'співробітника:' : 'адміністратора:';
+        const phoneNumLabel = createElement({ name: "header", content: "Введіть новий номер телефону співробітника" });
+        const phoneNumInput = createElement({ name: "input", content: oldInfo.phoneNum, attributes: ["type: tel", "autocomplete: off"] });
+        const emailLabel = createElement({ name: "header", content: "Введіть новий email співробітника" });
         const emailInput = createElement({ name: "input", content: oldInfo.email });
         emailInput.setAttribute("autocomplete", "off");
-        const passportNumLabel = createElement({ name: "header", content: "Введіть новий номер паспорту " });
-        passportNumLabel.textContent += oldInfo.name !== 'Admin' ? 'співробітника:' : 'адміністратора:';
+        const passportNumLabel = createElement({ name: "header", content: "Введіть новий номер паспорту співробітника" });
         const passportNumInput = createElement({ name: "input", content: oldInfo.passportNum });
         passportNumInput.setAttribute("autocomplete", "off");
-        let oldPasswordLabel = null, oldPasswordBlock = null, oldPasswordInput = null;
-        let newPasswordLabel = null, newPasswordBlock = null, newPasswordInput = null;
-        let changePasswordBtn = null;
-        if (oldInfo.name === 'Admin') {
-            // admin can change only his password
-            oldPasswordLabel = createElement({ name: "label", content: "Введіть старий пароль:" },);
-            oldPasswordInput = createElement({ name: "input", attributes: ["type: password", "autocomplete: off"] });
-            oldPasswordBlock = createElement({ name: "form", class: "password-block" });
-            oldPasswordBlock.innerHTML = `<label class="show-password">
-    <input type="checkbox">Показати пароль</label>`;
-            oldPasswordBlock.prepend(oldPasswordInput);
-            oldPasswordBlock.addEventListener("change", showPassword);
-
-            newPasswordLabel = createElement({ name: "label", content: "Введіть новий пароль:" },);
-            newPasswordInput = createElement({ name: "input", attributes: ["type: password", "autocomplete: off"] });
-            newPasswordBlock = createElement({ name: "form", class: "password-block" });
-            newPasswordBlock.innerHTML = `<label class="show-password">
-    <input type="checkbox">Показати пароль</label>`;
-            newPasswordBlock.prepend(newPasswordInput);
-            newPasswordBlock.addEventListener("change", showPassword);
-
-            changePasswordBtn = createElement({ name: 'button', content: "Змінити пароль", class: "change-password-btn", style: "background-color: royalblue" });
-            changePasswordBtn.addEventListener("click", event => {
-                [oldPasswordLabel, oldPasswordBlock, newPasswordLabel, newPasswordBlock].forEach(element => changePasswordBtn.before(element));
-                changePasswordBtn.remove();
-            })
-        }
         const confirmChangesBtn = createElement({ name: 'button', content: "Підтвердити зміни", class: "confirm-changes-btn" });
         confirmChangesBtn.addEventListener("click", async event => {
-            setWarningAfterElement(oldPasswordInput, '');
+            // setWarningAfterElement(oldPasswordInput, '');
             setWarningAfterElement(confirmChangesBtn, '');
-            let everythingIsCorrect = oldInfo.name === 'Admin' || nameIsCorrect(nameInput);
-            everythingIsCorrect = phoneNumberIsCorrect(phoneNumberInput) && everythingIsCorrect;
+            let everythingIsCorrect = nameIsCorrect(nameInput);
+            everythingIsCorrect = phoneNumberIsCorrect(phoneNumInput) && everythingIsCorrect;
             everythingIsCorrect = emailIsCorrect(emailInput) && everythingIsCorrect;
             everythingIsCorrect = passportNumIsCorrect(passportNumInput) && everythingIsCorrect;
-            if (newPasswordInput !== null && newPasswordInput.value !== '') {
-                if (oldPasswordInput.value.length === 0) {
-                    setWarningAfterElement(oldPasswordInput, 'Введіть старий пароль');
-                    everythingIsCorrect = false;
-                }
-                everythingIsCorrect = passwordIsCorrect(newPasswordInput) && everythingIsCorrect;
-            }
             if (!everythingIsCorrect) {
                 return;
             }
             try {
                 let requestBody = {
-                    employeeName: localStorage.getItem("employeeName"),
-                    newEmployeeName: nameInput !== null ? nameInput.value : null,
-                    newEmployeePhoneNum: phoneNumberInput.value,
+                    editorName: localStorage.getItem("employeeName"),
+                    newEmployeeName: nameInput.value,
+                    newEmployeePhoneNum: phoneNumInput.value,
                     newEmployeeEmail: emailInput.value,
                     newEmployeePassportNum: passportNumInput.value,
                     oldInfo, // oldInfo: oldInfo
                 };
-                if (oldInfo.name === 'Admin') {
-                    Object.assign(requestBody, {
-                        oldPassword: oldPasswordInput.value,
-                        newPassword: newPasswordInput.value,
-                    })
-                }
                 let response = await fetch(location.origin + "/employees/edit", {
                     method: "PATCH",
                     body: JSON.stringify(requestBody),
@@ -415,12 +353,8 @@ export default class Employee {
                 if (response.ok) {
                     let result = await response.json();
                     if (!result.success) {
-                        if (result.message.includes("name already exists")) {
-                            setWarningAfterElement(confirmChangesBtn, 'Співробітник з таким іменем вже існує');
-                            return;
-                        }
-                        if (result.message.includes("passport number already exists")) {
-                            setWarningAfterElement(confirmChangesBtn, 'Співробітник з таким номером паспорту вже існує');
+                        if (result.message.includes("phone number already exists")) {
+                            setWarningAfterElement(confirmChangesBtn, 'Співробітник з таким номером телефону вже існує');
                             return;
                         }
                         if (result.message.includes("Wrong password")) {
@@ -440,28 +374,22 @@ export default class Employee {
             }
         });
         showModalWindow([header, nameLabel, nameInput,
-            phoneNumberLabel, phoneNumberInput,
+            phoneNumLabel, phoneNumInput,
             emailLabel, emailInput,
             passportNumLabel, passportNumInput,
-            changePasswordBtn, confirmChangesBtn],
+            confirmChangesBtn],
             { className: 'edit-employee-data' });
     }
-    // !!! to do
-    static async delete(employeeIndex) {
+    static async delete(phoneNum) {
         try {
             if (localStorage.getItem("employeeName") !== 'Admin') {
                 throw new Error("Employee is not admin");
             }
-            // ↑ + 1 in the end because admin has not delete button but exist in employees array
-            if (employeesToDisplay[0].name === 'Admin') {
-                ++employeeIndex;
-            }
             let requestBody = {
-                employeeName: localStorage.getItem("employeeName"),
-                employeeToDeleteName: employeesToDisplay[employeeIndex].name,
+                employeeWhoDeletesName: localStorage.getItem("employeeName"),
+                employeeToDeletePhoneNum: phoneNum,
             };
-            console.log(employeeIndex);
-            console.log(requestBody.employeeToDeleteName);
+            // console.log(phoneNum);
             let response = await fetch(location.origin + "/employees/delete", {
                 method: "DELETE",
                 body: JSON.stringify(requestBody),

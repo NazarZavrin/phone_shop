@@ -38,7 +38,6 @@ dateTimeComponents.to.year.value = currentDate.getFullYear();
 
 let orders = new Orders();
 
-
 function updateInterface() {
     content.style.display = "none";
     employeeName.style.display = "none";

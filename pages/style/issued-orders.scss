@@ -17,7 +17,7 @@ button {
   display: flex;
   flex-direction: column;
   width: 100%;
-  // min-width: fit-content;
+  min-width: fit-content;
   // height: fit-content;
   min-height: 100vh;
   font: 20px "Calibri";
@@ -42,11 +42,16 @@ main {
   flex-direction: column;
 }
 main > header {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
   padding: 5px;
   border: 1.5px solid dimgray;
   box-shadow: 0 1px 3px 1px gray;
   border-top: 0;
   border-radius: 0 0 7px 7px;
+  
+  
   & .warning {
     max-width: 100%;
     display: inline-block;
@@ -55,9 +60,6 @@ main > header {
     text-align: center;
     word-wrap: break-word;
   }
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
   & > header {
     text-align: center;
   }
@@ -91,18 +93,21 @@ main > header {
       }
     }
   }
-  & > div:has(#get-issued-orders-btn) {
+  & > div.buttons {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     // justify-content: space-between;
     align-items: center;
-  }
-  & #get-issued-orders-btn {
-    background-color: dodgerblue;
-    margin-bottom: 3px;
-  }
-  & #build-chart-btn {
-    background-color: dimgray;
+    // flex-wrap: wrap;
+    & > #get-issued-orders-btn {
+      background-color: dodgerblue;
+      margin-right: 2px;
+    }
+    & > a > #build-chart-btn {
+      background-color: dimgray;
+      // margin-top: 4px;
+      margin-left: 2px;
+    }
   }
 }
 main > #issued-orders {

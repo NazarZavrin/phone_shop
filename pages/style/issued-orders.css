@@ -289,6 +289,8 @@ button {
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
   min-height: 100vh;
   font: 20px "Calibri";
 }
@@ -316,14 +318,14 @@ main {
 }
 
 main > header {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
   padding: 5px;
   border: 1.5px solid dimgray;
   box-shadow: 0 1px 3px 1px gray;
   border-top: 0;
   border-radius: 0 0 7px 7px;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
 }
 main > header .warning {
   max-width: 100%;
@@ -366,17 +368,18 @@ main > header > #datetime-period > .datetime-component > input[name] {
 main > header > #datetime-period > .datetime-component > input[name=year] {
   width: 60px;
 }
-main > header > div:has(#get-issued-orders-btn) {
+main > header > div.buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }
-main > header #get-issued-orders-btn {
+main > header > div.buttons > #get-issued-orders-btn {
   background-color: dodgerblue;
-  margin-bottom: 3px;
+  margin-right: 2px;
 }
-main > header #build-chart-btn {
+main > header > div.buttons > a > #build-chart-btn {
   background-color: dimgray;
+  margin-left: 2px;
 }
 
 main > #issued-orders {

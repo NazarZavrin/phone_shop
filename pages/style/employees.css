@@ -295,28 +295,15 @@ button {
 .wrapper > header {
   width: 100%;
   min-height: 50px;
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: auto auto 1fr auto;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   padding: 7px;
   color: white;
   background-color: gray;
 }
-.wrapper > header > #account-btn {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background-color: lightgray;
-  margin-right: 5px;
-  cursor: pointer;
-}
-.wrapper > header > #account-btn > img {
-  max-width: 100%;
-}
-.wrapper > header > a {
-  grid-column-start: 4;
-  margin-left: 5px;
+.wrapper > header > a > .to-admin-page-btn {
+  background-color: limegreen;
 }
 
 main {
@@ -335,30 +322,6 @@ main > header {
   box-shadow: 0 1px 3px 1px gray;
   border-top: 0;
   border-radius: 0 0 7px 7px;
-  /*& > .actions-section {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    & > a > #view-report-btn{
-      background-color: royalblue;
-      margin: 3px;
-    }
-    & > #view-receipt-btn{
-      background-color: slateblue;
-      margin: 3px;
-      margin-right: 6px;
-    }
-  }*/
-}
-main > header .warning {
-  max-width: 100%;
-  display: inline-block;
-  font-size: 14px;
-  color: red;
-  text-align: center;
-  word-wrap: break-word;
 }
 main > header > .search-section {
   display: inline-flex;
@@ -368,7 +331,7 @@ main > header > .search-section {
 }
 main > header > .search-section input {
   font: inherit;
-  width: 150px;
+  width: 160px;
   flex-grow: 1;
   max-width: 200px;
   border: 1px solid gray;
@@ -376,8 +339,8 @@ main > header > .search-section input {
   padding: 0 3px;
   margin: 3px;
 }
-main > header > .search-section input[name=customer_phone_num] {
-  min-width: 230px;
+main > header > .search-section input[name=phone_num] {
+  max-width: 300px;
 }
 main > header > .search-section > .search-inputs {
   width: 100%;
@@ -386,32 +349,6 @@ main > header > .search-section > .search-inputs {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-}
-main > header > .search-section > #datetime-period {
-  display: inline-flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  border: 1px solid gray;
-  padding: 5px;
-  padding-top: 3px;
-  margin: 3px;
-  border-radius: 3px;
-}
-main > header > .search-section > #datetime-period > span {
-  width: 100%;
-  text-align: center;
-}
-main > header > .search-section > #datetime-period .datetime-component {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-}
-main > header > .search-section > #datetime-period .datetime-component > input[name] {
-  width: 30px;
-}
-main > header > .search-section > #datetime-period .datetime-component > input[name=year] {
-  width: 60px;
 }
 main > header > .search-section > div.buttons {
   display: flex;
@@ -428,7 +365,13 @@ main > header > .search-section > div.buttons > #refresh-btn {
   margin-left: 2px;
 }
 
-main > #orders {
+main > #add-employee-btn {
+  margin: 10px;
+  margin-bottom: 0;
+  border: 3px solid forestgreen;
+}
+
+main > #employees {
   width: 100%;
   min-width: -moz-fit-content;
   min-width: fit-content;
@@ -437,7 +380,7 @@ main > #orders {
   flex-direction: column;
   align-items: center;
 }
-main > #orders > .order {
+main > #employees > .employee {
   width: 100%;
   min-width: -moz-fit-content;
   min-width: fit-content;
@@ -445,54 +388,51 @@ main > #orders > .order {
   box-shadow: 0 0 3px 1px gray;
   border-radius: 5px;
   margin-bottom: 15px;
-  text-align: left;
   display: grid;
-  grid-template-rows: repeat(6, auto);
+  grid-template-rows: repeat(3, auto);
   grid-template-columns: auto min-content;
-  grid-template-areas: "order_num issuance_btn" "cost delete_order_btn" "order_items order_items" "customer_name customer_name" "customer_phone_num customer_phone_num" "datetime datetime";
+  grid-template-areas: "name edit_info_btn" "phone_num  delete_btn" "passport_num passport_num" "email email";
 }
-main > #orders > .order:last-of-type {
+main > #employees > .employee:last-of-type {
   margin-bottom: 0;
 }
-main > #orders > .order > div {
+main > #employees > .employee > div {
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 3px;
 }
-main > #orders > .order > div.order_num {
-  grid-area: order_num;
+main > #employees > .employee > div.name {
+  grid-area: name;
 }
-main > #orders > .order > div.customer_name {
-  grid-area: customer_name;
+main > #employees > .employee > div.phone_num {
+  grid-area: phone_num;
 }
-main > #orders > .order > div.customer_phone_num {
-  grid-area: customer_phone_num;
+main > #employees > .employee > div.passport_num {
+  grid-area: passport_num;
 }
-main > #orders > .order > div.datetime {
-  grid-area: datetime;
+main > #employees > .employee > div.email {
+  grid-area: email;
 }
-main > #orders > .order > div.cost {
-  grid-area: cost;
-}
-main > #orders > .order > div.order-items {
-  grid-area: order_items;
-  flex-direction: column;
-  align-items: start;
-}
-main > #orders > .order > .issuance-btn {
-  grid-area: issuance_btn;
+main > #employees > .employee > .edit_info_btn {
+  grid-area: edit_info_btn;
   white-space: nowrap;
   margin-left: 5px;
   padding: 3px;
   justify-self: end;
   align-self: center;
 }
-main > #orders > .order > .delete-order-btn {
-  grid-area: delete_order_btn;
+main > #employees > .employee > .delete_btn {
+  grid-area: delete_btn;
   background-color: red;
   white-space: nowrap;
   margin: 5px 0 0 5px;
   padding: 3px;
   justify-self: end;
   align-self: center;
+}
+
+.deleted {
+  transform: scale(0);
+  transition: all 0.75s ease-out;
 }
