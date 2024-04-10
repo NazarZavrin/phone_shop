@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register supply</title>
     <link rel="stylesheet" href="/style/register-supply.css" />
 </head>
+
 <body>
     <div class="wrapper">
         <header>
@@ -14,14 +16,22 @@
             </a>
         </header>
         <main style="display: none;">
-            <section class="upload-file">
-                <div class="input-wrapper">
-                    <span>Перетягніть сюди .csv файл накладної чи натисніть для вибору файлу</span>
-                    <input type="file" accept=".csv" class="consignment-note-input">
-                </div>
-            </section>
+            <output class="storage table" style="display: none;"></output>
+            
         </main>
+        <section class="btns">
+            <button class="load-file-btn">Завантажити .csv файл накладної</button>
+            <button class="refresh-btn">Оновити дані</button>
+        </section>
+        <div class="input-wrapper" style="display: none;">
+            <span>Перетягніть сюди .csv файл накладної чи натисніть для вибору файлу</span>
+            <input type="file" accept=".csv" class="consignment-note-input">
+        </div>
+        <!-- <section class="upload-file" style="display: none;"> 
+            
+        </section>-->
     </div>
     <script src="/script/register-supply.js" type="module"></script>
 </body>
+
 </html>

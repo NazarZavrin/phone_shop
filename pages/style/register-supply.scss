@@ -1,4 +1,5 @@
 @import "./null-style.scss";
+@import "./modal-window.scss";
 
 html,
 body {
@@ -20,6 +21,7 @@ button {
   //   min-width: fit-content;
   //   height: fit-content;
   min-height: 100vh;
+  max-height: 100vh;
   font: 20px "Calibri";
 }
 .wrapper > header {
@@ -37,14 +39,54 @@ button {
 }
 main {
   width: 100%;
-  //   min-width: fit-content;
+  min-width: fit-content;
+  // position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
-  flex: 1 1 auto;
+  flex: 1 1 auto;// ?
+  padding: 5px;
+  overflow: auto;
 }
-.upload-file {
+.table {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-auto-rows: auto;
+  width: 100%;
+  border: 1px solid black;
+  & > div {
+    border: 1px solid black;
+    padding: 1px 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+/*main > output.storage {
+  
+}*/
+
+.btns {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  border: 2px solid dimgray;
+  box-shadow: 0 -1px 3px 1px gray;
+  border-bottom: 0;
+  // border-radius: 7px 7px 0 0;
+  padding: 5px 0;
+  & > .load-file-btn {
+    margin: auto 5px;
+    background-color: dimgray;
+  }
+  & > .refresh-btn {
+    margin: auto 5px;
+  }
+}
+
+/*.upload-file {
   width: fit-content;
   padding: 5px;
   display: flex;
@@ -53,20 +95,42 @@ main {
   margin: 10px;
   border: 3px solid royalblue;
   border-radius: 5px;
+}*/
+
+.load-file-window {
+  & > .input-wrapper {
+    position: relative;
+    width: 400px;
+    max-width: 100%;
+    border: 3px dashed royalblue;
+    border-radius: 5px;
+    padding: 3px;
+    text-align: center;
+  }
+  & input.consignment-note-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /*& > .buttons {
+    display: flex;
+    flex-direction: row;
+  }*/
+  & button.register-supply-btn {
+    background-color: dodgerblue;
+    margin-right: 5px;
+  }
+  & button.cancel-btn {
+    background-color: red;
+    margin-left: 5px;
+  }
+  & > output.table {
+    grid-template-columns: repeat(4, auto);
+  }
 }
-.input-wrapper {
-  position: relative;
-  width: 100%;
-  border: 3px dashed royalblue;
-  border-radius: 5px;
-  padding: 3px;
-  text-align: center;
-}
-.consignment-note-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-}
+
+
+
