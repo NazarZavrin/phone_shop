@@ -4,8 +4,10 @@ import Employee from "./class_Employee.js";
 import Orders from "./class_Orders.js";
 import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
+
 const employeeName = document.getElementById("employee-name");
 const accountBtn = document.getElementById("account-btn");
+const toRegisterSupplyPageBtn = document.getElementById("to-register-supply-page-btn");
 const toAdminPageBtn = document.getElementById("to-admin-page-btn");
 const content = document.getElementsByTagName("main")[0];
 const searchBtn = document.getElementById("search-btn");
@@ -39,25 +41,29 @@ dateTimeComponents.to.year.value = currentDate.getFullYear();
 let orders = new Orders();
 
 function updateInterface() {
-    content.style.display = "none";
-    employeeName.style.display = "none";
-    toAdminPageBtn.style.display = "none";
+    toRegisterSupplyPageBtn.parentElement.style.display = "none";
+    toAdminPageBtn.parentElement.style.display = "none";
     if (localStorage.getItem("employeeName") === null) {
+        content.style.display = "none";
+        employeeName.style.display = "none";
+        // hide deleteOrderBtns
+        Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))
+            ?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "none");
         Employee.showRegistrationWindow(employeeName, {
-            onRegistered: onEmployeeRegistered
+            onRegistered: updateInterface
         });
     } else {
-        onEmployeeRegistered();
-    }
-}
-function onEmployeeRegistered() { // update employeeName, delete buttons and toAdminPageBtn
-    employeeName.textContent = localStorage.getItem("employeeName");
-    content.style.display = "";
-    employeeName.style.display = "";
-    Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "none");
-    if (localStorage.getItem("employeeName") === 'Admin') {
-        toAdminPageBtn.style.display = "";
-        Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "");
+        if (localStorage.getItem("employeeName") === 'Admin') {
+            // show deleteOrderBtns
+            Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))
+                ?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "");
+            toAdminPageBtn.parentElement.style.display = "";
+        } else {
+            toRegisterSupplyPageBtn.parentElement.style.display = "";
+        }
+        employeeName.textContent = localStorage.getItem("employeeName");
+        employeeName.style.display = "";
+        content.style.display = "";
     }
 }
 updateInterface();

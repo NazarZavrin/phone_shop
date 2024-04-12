@@ -15,12 +15,15 @@
                 <img src="/img/avatar.png"
                     onerror="event.target.setAttribute('src', '/img/1x1-transparent.png'); event.target.onerror = null;" />
             </div>
-            <span id="employee-name"></span>
-            <a href="/admin">
+            <span id="employee-name" style="display:none"></span>
+            <a href="/register-supply" style="display:none">
+                <button id="to-register-supply-page-btn">Склад та оформлення поставки</button>
+            </a>
+            <a href="/admin" style="display:none">
                 <button id="to-admin-page-btn">Сторінка адміністратора</button>
             </a>
         </header>
-        <main>
+        <main style="display:none">
             <header>
                 <section class="search-section">
                     <header>Фільтри для пошуку:</header>

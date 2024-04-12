@@ -11,25 +11,24 @@
 <body>
     <div class="wrapper">
         <header>
-            <a href="/admin">
-                <button class="to-admin-page-btn">На сторінку адміністратора</button>
+            <a href="/orders">
+                <button class="to-orders-page-btn">Видача і видалення замовлень</button>
             </a>
         </header>
         <main style="display: none;">
-            <output class="storage table" style="display: none;"></output>
+            <section class="storage-section">
+                <output class="storage table"></output>
+            </section>
             
+            <section class="btns">
+                <button class="load-file-btn">Завантажити .csv файл накладної</button>
+                <button class="refresh-btn">Оновити дані</button>
+            </section>
         </main>
-        <section class="btns">
-            <button class="load-file-btn">Завантажити .csv файл накладної</button>
-            <button class="refresh-btn">Оновити дані</button>
-        </section>
         <div class="input-wrapper" style="display: none;">
             <span>Перетягніть сюди .csv файл накладної чи натисніть для вибору файлу</span>
             <input type="file" accept=".csv" class="consignment-note-input">
         </div>
-        <!-- <section class="upload-file" style="display: none;"> 
-            
-        </section>-->
     </div>
     <script src="/script/register-supply.js" type="module"></script>
 </body>

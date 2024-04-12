@@ -1,12 +1,12 @@
 "use strict";
 
-import { createElement, isInt, redirectUnregistered, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
+import { createElement, isInt, redirectNonAdmin, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
 const employeeName = document.getElementById("employee-name");
 const content = document.getElementsByTagName("main")[0];
 const viewReceiptBtn = document.getElementsByClassName("view-receipt-btn")?.[0];
 
-redirectUnregistered(content, employeeName);
+redirectNonAdmin(content, employeeName);
 
 viewReceiptBtn.addEventListener("click", event => {
     const orderNumLabel = createElement({ name: "header", content: "Введіть номер замовлення:" });

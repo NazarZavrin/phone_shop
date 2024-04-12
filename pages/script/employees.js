@@ -1,7 +1,7 @@
 "use strict";
 
 import Employee from "./class_Employee.js";
-import { createElement, redirectUnregistered } from "./useful-for-client.js";
+import { createElement, redirectNonAdmin } from "./useful-for-client.js";
 
 // const employeeName = document.getElementById("employee-name");
 // const accountBtn = document.getElementById("account-btn");
@@ -12,7 +12,7 @@ const refreshBtn = document.getElementById("refresh-btn");
 const addEmployeeBtn = document.getElementById("add-employee-btn");
 const employeesContainer = document.getElementById("employees");
 
-redirectUnregistered(employeesContainer, null);
+redirectNonAdmin(employeesContainer, null);
 
 const searchInputsContainer = document.getElementsByClassName('search-inputs')[0];
 let searchInputs = {};

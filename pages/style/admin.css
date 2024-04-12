@@ -329,13 +329,13 @@ main > a .to-main-page-btn, main > button .to-main-page-btn {
   background-color: cadetblue;
 }
 main > a .issued-orders-btn, main > button .issued-orders-btn {
-  background-color: royalblue;
+  background-color: dimgray;
 }
 main > a.view-receipt-btn, main > button.view-receipt-btn {
   background-color: slateblue;
 }
 main > a .register-supply-btn, main > button .register-supply-btn {
-  background-color: dimgray;
+  background-color: royalblue;
 }
 main > a .to-customers-page-btn, main > button .to-customers-page-btn {
   background-color: dodgerblue;

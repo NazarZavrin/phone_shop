@@ -284,6 +284,21 @@ button {
   text-align: center;
 }
 
+.table {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-auto-rows: auto;
+  width: 100%;
+  border: 1px solid black;
+}
+.table > div {
+  border: 1px solid black;
+  padding: 1px 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -304,7 +319,7 @@ button {
   color: white;
   background-color: gray;
 }
-.wrapper > header > a > .to-admin-page-btn {
+.wrapper > header > a > .to-orders-page-btn {
   background-color: limegreen;
 }
 
@@ -312,32 +327,18 @@ main {
   width: 100%;
   min-width: -moz-fit-content;
   min-width: fit-content;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  flex: 1 1 auto;
+  align-items: stretch;
+}
+
+main > .storage-section {
+  width: 100%;
   padding: 5px;
   overflow: auto;
 }
 
-.table {
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-auto-rows: auto;
-  width: 100%;
-  border: 1px solid black;
-}
-.table > div {
-  border: 1px solid black;
-  padding: 1px 3px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/*main > output.storage {
-
-}*/
 .btns {
   width: 100%;
   display: flex;

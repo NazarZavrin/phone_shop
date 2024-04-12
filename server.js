@@ -63,6 +63,10 @@ app.get("/products/:product_info", async (req, res, next) => {
     }
 })
 
+app.get('/register-supply', (req, res) => {
+    res.sendFile(path.join(path.resolve(), "pages", "register-supply.html"));
+})
+
 app.get("/get-storage", async (req, res) => {
     try {
         // await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);

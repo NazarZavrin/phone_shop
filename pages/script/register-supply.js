@@ -1,6 +1,6 @@
 "use strict";
 
-import { createElement, redirectUnregistered, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
+import { createElement, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
 const content = document.getElementsByTagName("main")[0];
 const storageOutput = document.querySelector(".storage");
@@ -8,7 +8,9 @@ const loadFileBtn = document.querySelector(".load-file-btn");
 const refreshBtn = document.querySelector(".refresh-btn");
 const consignmentNoteInput = document.querySelector('.consignment-note-input');
 
-redirectUnregistered(content, null);
+if (localStorage.getItem("employeeName") === null) {
+    location.href = location.origin + "/orders";
+}
 
 refreshBtn.addEventListener("click", async event => {
     try {
@@ -39,7 +41,8 @@ refreshBtn.addEventListener("click", async event => {
                     <div>Модель</div>
                     <div>Ціна (грн.)</div>
                     <div>Кількість (штук)</div>`);
-                storageOutput.style.display = '';
+
+                content.style.display = '';
             }
         }
     } catch (error) {
@@ -126,6 +129,10 @@ loadFileBtn.addEventListener('click', event => {
         }
     })
     registerSupplyBtn.addEventListener('click', async event => {
+        if (registerSupplyBtn.style.backgroundColor == "gray") {
+            return;
+        }
+        registerSupplyBtn.style.backgroundColor = "gray";
         try {
             let requestBody = {
                 products,
@@ -146,6 +153,7 @@ loadFileBtn.addEventListener('click', event => {
                     throw new Error(result.message || "Server error.");
                 } else {
                     setWarningAfterElement(buttons, "Поставку оформлено.");
+                    refreshBtn.click();
                     // cancelBtn.click();// close the modal window
                 }
             }

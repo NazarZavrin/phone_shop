@@ -16,10 +16,6 @@ adminRouter.get('/issued-orders', (req, res) => {
     }
 })
 
-adminRouter.get('/register-supply', (req, res) => {
-    res.sendFile(path.join(path.resolve(), "pages", "register-supply.html"));
-})
-
 adminRouter.get('/chart', (req, res) => {
     res.sendFile(path.join(path.resolve(), "pages", "chart.html"));
 })

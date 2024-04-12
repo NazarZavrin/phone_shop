@@ -209,7 +209,7 @@ export function dayAndMonthAreCorrect(daySource, monthSource) {
     return dayIsCorrect && monthIsCorrect;
 }
 
-export function redirectUnregistered(content = null, employeeNameElem = null){
+export function redirectNonAdmin(content = null, employeeNameElem = null) {
     content ? content.style.display = "none" : null;
     employeeNameElem ? employeeNameElem.style.display = "none" : null;
     if (localStorage.getItem("employeeName") === 'Admin') {

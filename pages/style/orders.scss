@@ -42,6 +42,9 @@ button {
   & > a {
     grid-column-start: 4;
     margin-left: 5px;
+    & > button#to-register-supply-page-btn {
+      background-color: royalblue;
+    }
   }
 }
 

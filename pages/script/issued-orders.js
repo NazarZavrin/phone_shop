@@ -1,12 +1,12 @@
 "use strict";
 
-import { createElement, dayAndMonthAreCorrect, isInt, redirectUnregistered, setWarningAfterElement } from "./useful-for-client.js";
+import { createElement, dayAndMonthAreCorrect, isInt, redirectNonAdmin, setWarningAfterElement } from "./useful-for-client.js";
 
 const getIssuedOrdersBtn = document.getElementById("get-issued-orders-btn");
 const buildChartBtn = document.getElementById("build-chart-btn");
 const issuedOrdersContainer = document.getElementById("issued-orders");
 
-redirectUnregistered(issuedOrdersContainer, null);
+redirectNonAdmin(issuedOrdersContainer, null);
 
 let dateTimeComponents = document.querySelectorAll('#datetime-period > .datetime-component');
 dateTimeComponents = {
