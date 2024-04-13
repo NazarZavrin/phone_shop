@@ -49,32 +49,32 @@ function updateInterface() {
         // hide deleteOrderBtns
         Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))
             ?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "none");
-        Employee.showRegistrationWindow(employeeName, {
+        Employee.showRegistrationWindow({
             onRegistered: updateInterface
         });
-    } else {
-        if (localStorage.getItem("employeeName") === 'Admin') {
-            // show deleteOrderBtns
-            Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))
-                ?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "");
-            toAdminPageBtn.parentElement.style.display = "";
-        } else {
-            toRegisterSupplyPageBtn.parentElement.style.display = "";
-        }
-        employeeName.textContent = localStorage.getItem("employeeName");
-        employeeName.style.display = "";
-        content.style.display = "";
+        return;
     }
+    if (localStorage.getItem("employeeName") === 'Admin') {
+        // show deleteOrderBtns
+        Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))
+            ?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "");
+        toAdminPageBtn.parentElement.style.display = "";
+    } else {
+        toRegisterSupplyPageBtn.parentElement.style.display = "";
+    }
+    employeeName.textContent = localStorage.getItem("employeeName");
+    employeeName.style.display = "";
+    content.style.display = "";
 }
 updateInterface();
 
 accountBtn.addEventListener("click", event => {
     if (localStorage.getItem("employeeName") === null) {
-        Employee.showRegistrationWindow(employeeName, {
-            onRegistered: onEmployeeRegistered
+        Employee.showRegistrationWindow({
+            onRegistered: updateInterface
         });
     } else {
-        Employee.showEmployeeProfile(employeeName, {
+        Employee.showEmployeeProfile({
             onExit: updateInterface
         });
     }

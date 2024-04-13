@@ -191,18 +191,6 @@ h1, h2, h3, h4, h5, h6 {
 .modal-window.registration button.create-account-btn {
   background-color: dodgerblue;
 }
-.modal-window.profile {
-  min-width: 200px;
-}
-.modal-window.profile > section {
-  text-align: center;
-  width: 100%;
-  border: 1px solid gray;
-  border-radius: 3px;
-}
-.modal-window.profile .exit-btn {
-  background-color: red;
-}
 .modal-window.basket .warning {
   max-width: 240px;
 }
@@ -498,4 +486,24 @@ main > #orders > .order > .delete-order-btn {
   padding: 3px;
   justify-self: end;
   align-self: center;
+}
+
+.profile {
+  min-width: 200px;
+}
+.profile > section {
+  text-align: center;
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 5px;
+}
+.profile > section > div {
+  margin-bottom: 3px;
+}
+.profile > section > div:last-of-type {
+  margin-bottom: 0;
+}
+.profile .exit-btn {
+  background-color: red;
 }

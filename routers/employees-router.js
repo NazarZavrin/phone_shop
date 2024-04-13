@@ -72,6 +72,40 @@ employeesRouter.get("/get-employees", async (req, res) => {
     }
 })
 
+employeesRouter.propfind("/get-employee-additional-info", (req, res, next) => {
+    express.json({
+        limit: req.get('content-length'),
+    })(req, res, next);
+}, async (req, res) => {
+    try {
+        if (!req.body.phoneNum|| !req.body.name) {
+            throw new Error("Getting employee additional info: req.body doesn't contain some data: : " + JSON.stringify(req.body));
+        }
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;`);
+        let result = await pool.query(`SELECT passport_num, email FROM employees 
+        WHERE phone_num = $1 AND name = $2;`, [req.body.phoneNum, req.body.name]);
+        let message = "";
+        if (result.rowCount === 0) {
+            message = "Employee with such data does not exist.";
+        } else if (result.rowCount > 1) {
+            message = `Found several employees with such data.`;
+        }
+        if (message.length > 0) {
+            await pool.query(`ROLLBACK;`);
+            res.json({ success: false, message: message });
+            return;
+        }
+        await pool.query(`COMMIT;`);
+        res.json({ success: true, employeeData: result.rows[0] });
+    } catch (error) {
+        await pool.query("ROLLBACK;");
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+})
+
 employeesRouter.propfind("/log-in", (req, res, next) => {
     express.json({
         limit: req.get('content-length'),
@@ -183,6 +217,15 @@ employeesRouter.patch("/edit", (req, res, next) => {
             `, [req.body.newEmployeePhoneNum]);
             if (result.rowCount > 0) {
                 res.json({ success: false, message: "Employee with such phone number already exists." });
+                return;
+            }
+        }
+        if (req.body.newEmployeePassportNum !== req.body.oldInfo.passportNum) {
+            result = await pool.query(`
+            SELECT * FROM employees WHERE passport_num = $1 AND is_fired = FALSE;
+            `, [req.body.newEmployeePassportNum]);
+            if (result.rowCount > 0) {
+                res.json({ success: false, message: "Employee with such passport number already exists." });
                 return;
             }
         }

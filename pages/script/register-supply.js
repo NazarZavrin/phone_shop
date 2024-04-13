@@ -41,7 +41,6 @@ refreshBtn.addEventListener("click", async event => {
                     <div>Модель</div>
                     <div>Ціна (грн.)</div>
                     <div>Кількість (штук)</div>`);
-
                 content.style.display = '';
             }
         }

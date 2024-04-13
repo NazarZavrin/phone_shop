@@ -86,7 +86,7 @@ export default class Employee {
             createAccountBtn],
             { className: 'create-account' });
     }
-    static showRegistrationWindow(employeeNameElem, { onRegistered = function () { } }) {
+    static showRegistrationWindow({ onRegistered = function () { } }) {
         const phoneNumLabel = createElement({ name: "header", content: "Введіть ваш номер телефону:" });
         const phoneNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
         const passwordLabel = createElement({ name: "header", content: "Введіть пароль:" });
@@ -155,11 +155,13 @@ export default class Employee {
             logInBtn],
             { className: 'registration' });
     }
-    static showEmployeeProfile(employeeNameElem, { onExit = function () { } } = {}) {
+    static showEmployeeProfile({ onExit = function () { } } = {}) {
         const employeeInfo = createElement({ name: 'section', class: 'info' });
-        employeeInfo.innerHTML = `<div>${localStorage.getItem("employeeName")}</div>
-            <div>${localStorage.getItem("employeePhoneNum")}</div>`;
-        // add employee's passportNum and email here
+        const employeeName = createElement({ class: 'name', content: `Ім'я: ` + localStorage.getItem("employeeName") });
+        employeeInfo.append(employeeName);
+        const employeePhoneNum = createElement({ class: 'phone_num', content: 'Номер телефону: ' + localStorage.getItem("employeePhoneNum") });
+        employeeInfo.append(employeePhoneNum);
+
         const oldPasswordLabel = createElement({ name: "label", content: "Введіть старий пароль:" },);
         const oldPasswordInput = createElement({ name: "input", attributes: ["type: password", "autocomplete: off"] });
         const oldPasswordBlock = createElement({ name: "form", class: "password-block" });
@@ -174,6 +176,14 @@ export default class Employee {
         <input type="checkbox">Показати пароль</label>`;
         newPasswordBlock.prepend(newPasswordInput);
         newPasswordBlock.addEventListener("change", showPassword);
+        let changeAdminInfoBtn = null;
+        if (localStorage.getItem("employeeName") === "Admin") {
+            changeAdminInfoBtn = createElement({ name: 'button', content: "Редагувати інформацію", class: "edit-admin-info-btn", style: "background-color: dodgerblue" });
+            changeAdminInfoBtn.addEventListener("click", async event => {
+                event.target.closest(".modal-window").closeWindow();
+                this.editAdminInfo(employeeInfo, () => this.showEmployeeProfile(...arguments));
+            })
+        }
         const changePasswordBtn = createElement({ name: 'button', content: "Змінити пароль", class: "change-password-btn", style: "background-color: royalblue" });
         changePasswordBtn.addEventListener("click", async event => {
             if (!changePasswordBtn.textContent.includes("Підтвердити")) {
@@ -237,9 +247,34 @@ export default class Employee {
             onExit();
             event.target.closest(".modal-window").closeWindow();
         });
-        showModalWindow([employeeInfo, changePasswordBtn,
-            exitBtn],
-            { className: 'profile' });
+        let requestBody = {
+            phoneNum: localStorage.getItem("employeePhoneNum"),
+            name: localStorage.getItem("employeeName"),
+        };
+        fetch(location.origin + "/employees/get-employee-additional-info", {
+            method: "PROPFIND",
+            body: JSON.stringify(requestBody),
+            headers: { "Content-Type": "application/json" }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        }).then(result => {
+            if (!result.success) {
+                throw new Error(result.message || "Server error.");
+            } else {
+                const employeePassportNum = createElement({ class: 'passport_num', content: 'Номер паспорту: ' + result.employeeData.passport_num });
+                employeeInfo.append(employeePassportNum);
+                const employeeEmail = createElement({ class: 'email', content: 'Email: ' + result.employeeData.email });
+                employeeInfo.append(employeeEmail);
+            }
+        }).catch(error => console.error(error.message))
+            .finally(() => {
+                showModalWindow([employeeInfo, changeAdminInfoBtn, changePasswordBtn,
+                    exitBtn],
+                    { className: 'profile' });
+            });
     }
     static createEmployeeElement(employee) {
         employee.element = createElement({ name: 'div', class: 'employee' });
@@ -357,10 +392,14 @@ export default class Employee {
                             setWarningAfterElement(confirmChangesBtn, 'Співробітник з таким номером телефону вже існує');
                             return;
                         }
-                        if (result.message.includes("Wrong password")) {
-                            setWarningAfterElement(confirmChangesBtn, `Неправильний старий пароль`);
+                        if (result.message.includes("passport number already exists")) {
+                            setWarningAfterElement(confirmChangesBtn, 'Співробітник з таким номером паспорту вже існує');
                             return;
                         }
+                        /*if (result.message.includes("Wrong password")) {
+                            setWarningAfterElement(confirmChangesBtn, `Неправильний старий пароль`);
+                            return;
+                        }*/
                         throw new Error(result.message || "Server error.");
                     } else {
                         event.target.closest(".modal-window").closeWindow();
@@ -379,6 +418,80 @@ export default class Employee {
             passportNumLabel, passportNumInput,
             confirmChangesBtn],
             { className: 'edit-employee-data' });
+    }
+    static async editAdminInfo(employeeElement, callback = function () { }) {
+        const oldInfo = {
+            phoneNum: employeeElement.querySelector('.phone_num').textContent.split(': ')[1],
+            passportNum: employeeElement.querySelector('.passport_num').textContent.split(': ')[1],
+            email: employeeElement.querySelector('.email').textContent.split(': ')[1],
+        }
+        console.log(oldInfo);
+        const header = createElement({ name: "header", content: 'Редагування даних адміністратора' });
+        const phoneNumLabel = createElement({ name: "header", content: "Введіть новий номер телефону адміністратора" });
+        const phoneNumInput = createElement({ name: "input", content: oldInfo.phoneNum, attributes: ["type: tel", "autocomplete: off"] });
+        const emailLabel = createElement({ name: "header", content: "Введіть новий email адміністратора" });
+        const emailInput = createElement({ name: "input", content: oldInfo.email });
+        emailInput.setAttribute("autocomplete", "off");
+        const passportNumLabel = createElement({ name: "header", content: "Введіть новий номер паспорту адміністратора" });
+        const passportNumInput = createElement({ name: "input", content: oldInfo.passportNum });
+        passportNumInput.setAttribute("autocomplete", "off");
+        const confirmChangesBtn = createElement({ name: 'button', content: "Підтвердити зміни", class: "confirm-changes-btn" });
+        confirmChangesBtn.addEventListener("click", async event => {
+            // setWarningAfterElement(oldPasswordInput, '');
+            setWarningAfterElement(confirmChangesBtn, '');
+            let everythingIsCorrect = phoneNumberIsCorrect(phoneNumInput);
+            everythingIsCorrect = emailIsCorrect(emailInput) && everythingIsCorrect;
+            everythingIsCorrect = passportNumIsCorrect(passportNumInput) && everythingIsCorrect;
+            if (!everythingIsCorrect) {
+                return;
+            }
+            try {
+                let requestBody = {
+                    editorName: localStorage.getItem("employeeName"),
+                    newAdminPhoneNum: phoneNumInput.value,
+                    newAdminEmail: emailInput.value,
+                    newAdminPassportNum: passportNumInput.value,
+                    oldInfo, // oldInfo: oldInfo
+                };
+                let response = await fetch(location.origin + "/admin/edit", {
+                    method: "PATCH",
+                    body: JSON.stringify(requestBody),
+                    headers: { "Content-Type": "application/json" }
+                })
+                if (response.ok) {
+                    let result = await response.json();
+                    if (!result.success) {
+                        if (result.message.includes("phone number already exists")) {
+                            setWarningAfterElement(confirmChangesBtn, 'Співробітник з таким номером телефону вже існує');
+                            return;
+                        }
+                        if (result.message.includes("passport number already exists")) {
+                            setWarningAfterElement(confirmChangesBtn, 'Співробітник з таким номером паспорту вже існує');
+                            return;
+                        }
+                        /*if (result.message.includes("Wrong password")) {
+                            setWarningAfterElement(confirmChangesBtn, `Неправильний старий пароль`);
+                            return;
+                        }*/
+                        throw new Error(result.message || "Server error.");
+                    } else {
+                        localStorage.setItem("employeePhoneNum", requestBody.newAdminPhoneNum)
+                        event.target.closest(".modal-window").closeWindow();
+                        callback();
+                    }
+                }
+            } catch (error) {
+                console.error(error.message);
+                alert("Error");
+                return;
+            }
+        });
+        showModalWindow([header,
+            phoneNumLabel, phoneNumInput,
+            emailLabel, emailInput,
+            passportNumLabel, passportNumInput,
+            confirmChangesBtn],
+            { className: 'edit-admin-data' });
     }
     static async delete(phoneNum) {
         try {

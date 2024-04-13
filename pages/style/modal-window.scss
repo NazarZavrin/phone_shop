@@ -136,20 +136,7 @@
     }
   }
 
-  &.profile {
-    min-width: 200px;
-
-    & > section {
-      text-align: center;
-      width: 100%;
-      border: 1px solid gray;
-      border-radius: 3px;
-    }
-
-    & .exit-btn {
-      background-color: red;
-    }
-  }
+  
 
   &.basket {
     & .warning {
