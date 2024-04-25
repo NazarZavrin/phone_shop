@@ -120,6 +120,25 @@
 .modal-window.registration button.create-account-btn {
   background-color: dodgerblue;
 }
+.modal-window.profile {
+  min-width: 200px;
+}
+.modal-window.profile > section {
+  text-align: center;
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 5px;
+}
+.modal-window.profile > section > div {
+  margin-bottom: 3px;
+}
+.modal-window.profile > section > div:last-of-type {
+  margin-bottom: 0;
+}
+.modal-window.profile .exit-btn {
+  background-color: red;
+}
 .modal-window.basket .warning {
   max-width: 240px;
 }

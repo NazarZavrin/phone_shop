@@ -28,7 +28,7 @@ accountBtn.addEventListener("click", event => {
         Customer.showRegistrationWindow(customerName);
     } else {
         Customer.showCustomerProfile(customerName, {
-            onExit: Basket.updateAddToBasketBtn.bind(null, addToBasketBtn, productMainInfo.brand, productMainInfo.model, productMainInfo.amount)
+            onExit: Basket.updateAddToBasketBtn.bind(Basket, addToBasketBtn, productMainInfo.brand, productMainInfo.model, productMainInfo.amount)
         });
     }
 });

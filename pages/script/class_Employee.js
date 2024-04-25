@@ -125,11 +125,11 @@ export default class Employee {
                     let result = await response.json();
                     if (!result.success) {
                         if (result.message.includes("not exist")) {
-                            setWarningAfterElement(logInBtn, `Співробітника з такими даними не існує`);
+                            setWarningAfterElement(logInBtn, `Співробітника з такими даними не знайдено`);
                             return;
                         }
                         if (result.message.includes("several employees")) {
-                            setWarningAfterElement(logInBtn, `Помилка: знайдено декілька співробітників з таким номером телефону.`);
+                            setWarningAfterElement(logInBtn, `Помилка: знайдено декілька співробітників з таким номером телефону`);
                             return;
                         }
                         if (result.message.includes("Wrong password")) {
@@ -360,7 +360,7 @@ export default class Employee {
         const passportNumLabel = createElement({ name: "header", content: "Введіть новий номер паспорту співробітника" });
         const passportNumInput = createElement({ name: "input", content: oldInfo.passportNum });
         passportNumInput.setAttribute("autocomplete", "off");
-        const confirmChangesBtn = createElement({ name: 'button', content: "Підтвердити зміни", class: "confirm-changes-btn" });
+        const confirmChangesBtn = createElement({ name: 'button', content: "Підтвердити зміни", class: "confirm-changes-btn", style: "margin-top: 7px" });
         confirmChangesBtn.addEventListener("click", async event => {
             // setWarningAfterElement(oldPasswordInput, '');
             setWarningAfterElement(confirmChangesBtn, '');

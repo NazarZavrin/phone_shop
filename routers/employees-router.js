@@ -92,10 +92,13 @@ employeesRouter.propfind("/get-employee-additional-info", (req, res, next) => {
         } else if (result.rowCount > 1) {
             message = `Found several employees with such data.`;
         }
-        if (message.length > 0) {
+        /*if (message.length > 0) {
             await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: message });
             return;
+        }*/
+        if (message.length > 0) {
+            throw new Error(message);
         }
         await pool.query(`COMMIT;`);
         res.json({ success: true, employeeData: result.rows[0] });
@@ -131,10 +134,13 @@ employeesRouter.propfind("/log-in", (req, res, next) => {
             console.log("Correct:" + result.rows?.[0].password);*/
             message = `Wrong password.`;
         }
-        if (message.length > 0) {
+        /*if (message.length > 0) {
             await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: message });
             return;
+        }*/
+        if (message.length > 0) {
+            throw new Error(message);
         }
         await pool.query(`COMMIT;`);
         delete result.rows?.[0].password;
@@ -172,10 +178,13 @@ employeesRouter.patch("/change-password", (req, res, next) => {
             console.log("Correct:" + result.rows?.[0].password);*/
             message = `Wrong password.`;
         }
-        if (message.length > 0) {
+        /*if (message.length > 0) {
             await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: message });
             return;
+        }*/
+        if (message.length > 0) {
+            throw new Error(message);
         }
         req.body.newPassword = await bcrypt.hash(req.body.newPassword, Number(process.env.SALT_ROUNDS));
         result = await pool.query(`UPDATE employees SET password = $1 
@@ -207,7 +216,7 @@ employeesRouter.patch("/edit", (req, res, next) => {
             throw new Error("Employee info changing: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
         if (req.body.editorName !== 'Admin') {
-            throw new Error("Employee is not admin");
+            throw new Error("Employee who edits is not admin");
         }
         await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
         let result;

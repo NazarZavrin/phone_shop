@@ -1,0 +1,164 @@
+@import "./null-style.scss";
+@import "./modal-window.scss";
+html,
+body {
+  min-height: 100vh;
+}
+button {
+  background-color: limegreen;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font: inherit;
+  text-align: center;
+}
+.wrapper {
+  width: 100%;
+  min-width: fit-content;
+  min-height: 100vh;
+  font: 20px "Calibri";
+}
+.wrapper > header {
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 7px;
+  color: white;
+  background-color: gray;
+  & > a > .to-admin-page-btn {
+    background-color: limegreen;
+  }
+}
+main {
+  width: 100%;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+main > header {
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  padding: 5px;
+  border: 1.5px solid dimgray;
+  box-shadow: 0 1px 3px 1px gray;
+  border-top: 0;
+  border-radius: 0 0 7px 7px;
+  & > .search-section {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 7px;
+    // margin-bottom: 5px;
+    & input {
+      font: inherit;
+      width: 160px;
+      flex-grow: 1;
+      max-width: 200px;
+      &[name="phone_num"] {
+        max-width: 300px;
+      }
+      border: 1px solid gray;
+      border-radius: 5px;
+      padding: 0 3px;
+      margin: 3px;
+    }
+    & > .search-inputs {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+    & > div.buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2px;
+      & > #search-btn {
+        background-color: dodgerblue;
+        margin-right: 2px;
+      }
+      & > #refresh-btn {
+        margin-left: 2px;
+      }
+    }
+  }
+}
+main > #add-customer-btn {
+  margin: 10px;
+  margin-bottom: 0;
+  border: 3px solid forestgreen;
+}
+main > #customers {
+  width: 100%;
+  min-width: fit-content;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  & > .customer {
+    width: 100%;
+    min-width: fit-content;
+    padding: 10px;
+    box-shadow: 0 0 3px 1px gray;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+    display: grid;
+    grid-template-rows: repeat(3, auto);
+    grid-template-columns: auto min-content;
+    // name, phone_num, passport_num
+    grid-template-areas:
+      "name edit_info_btn"
+      "phone_num  delete_btn"
+      "passport_num passport_num"
+      "email email";
+    & > div {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 3px;
+      &.name {
+        grid-area: name;
+      }
+      &.phone_num {
+        grid-area: phone_num;
+      }
+      &.passport_num {
+        grid-area: passport_num;
+      }
+      &.email {
+        grid-area: email;
+      }
+    }
+    & > .edit_info_btn {
+      grid-area: edit_info_btn;
+      white-space: nowrap;
+      margin-left: 5px;
+      padding: 3px;
+      justify-self: end;
+      align-self: center;
+    }
+    & > .delete_btn {
+      grid-area: delete_btn;
+      background-color: red;
+      white-space: nowrap;
+      margin: 5px 0 0 5px;
+      padding: 3px;
+      justify-self: end;
+      align-self: center;
+    }
+  }
+}
+
+.deleted {
+  transform: scale(0);
+  transition: all 0.75s ease-out;
+}

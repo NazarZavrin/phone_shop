@@ -1,8 +1,13 @@
 import express from 'express';
 import pool from '../connect-to-PostgreSQL.js';
+import path from 'path';
 import bcrypt from 'bcrypt';
 
 export const customersRouter = express.Router();
+
+customersRouter.get('/', (req, res) => {
+    res.sendFile(path.join(path.resolve(), "pages", "customers.html"));
+})
 
 customersRouter.post("/create-account", (req, res, next) => {
     express.json({
@@ -40,6 +45,23 @@ customersRouter.post("/create-account", (req, res, next) => {
     }
 })
 
+customersRouter.get("/get-customers", async (req, res) => {
+    try {
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;`);
+        let result = await pool.query(`
+        SELECT name, phone_num, email FROM customers
+        WHERE is_deleted = FALSE`);
+        await pool.query(`COMMIT;`);
+        res.send({ success: true, customers: result.rows });
+    } catch (error) {
+        await pool.query(`ROLLBACK;`);
+        console.log(error.message);
+        res.send({ success: false, message: error.message });
+    }
+})
+
 customersRouter.propfind("/log-in", (req, res, next) => {
     express.json({
         limit: req.get('content-length'),
@@ -53,8 +75,7 @@ customersRouter.propfind("/log-in", (req, res, next) => {
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
         BEGIN;`);
         let result = await pool.query(`SELECT name, phone_num, password 
-        FROM customers WHERE phone_num = $1 AND is_deleted = FALSE;`
-        , [req.body.phoneNum]);
+        FROM customers WHERE phone_num = $1 AND is_deleted = FALSE;`, [req.body.phoneNum]);
         let message = "";
         if (result.rowCount === 0) {
             message = "Customer with such data does not exist.";
@@ -66,10 +87,13 @@ customersRouter.propfind("/log-in", (req, res, next) => {
             console.log("Correct:" + result.rows?.[0].password);
             message = `Wrong password.`;
         }
-        if (message.length > 0) {
+        /*if (message.length > 0) {
             await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: message });
             return;
+        }*/
+        if (message.length > 0) {
+            throw new Error(message);
         }
         await pool.query(`COMMIT;`);
         delete result.rows?.[0].password;
@@ -107,10 +131,13 @@ customersRouter.patch("/change-password", (req, res, next) => {
             console.log("Correct:" + result.rows?.[0].password);
             message = `Wrong password.`;
         }
-        if (message.length > 0) {
+        /*if (message.length > 0) {
             await pool.query(`ROLLBACK;`);
             res.json({ success: false, message: message });
             return;
+        }*/
+        if (message.length > 0) {
+            throw new Error(message);
         }
         req.body.newPassword = await bcrypt.hash(req.body.newPassword, Number(process.env.SALT_ROUNDS));
         result = await pool.query(`UPDATE customers SET password = $1 
@@ -125,6 +152,82 @@ customersRouter.patch("/change-password", (req, res, next) => {
         res.json({ success: true });
     } catch (error) {
         await pool.query("ROLLBACK;");
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+})
+
+customersRouter.patch("/edit", (req, res, next) => {
+    express.json({
+        limit: req.get('content-length'),
+    })(req, res, next);
+}, async (req, res) => {
+    try {
+        if (!['editorName', 'newCustomerName', 'newCustomerPhoneNum', 'newCustomerEmail',
+            'oldInfo'].every(key => Object.keys(req.body).includes(key))
+            || !['name', 'phoneNum', 'email'].every(key => Object.keys(req.body.oldInfo).includes(key))) {
+            throw new Error("Customer info changing: req.body doesn't contain some data: " + JSON.stringify(req.body));
+        }
+        if (req.body.editorName !== 'Admin') {
+            throw new Error("Employee who edits is not admin");
+        }
+        await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
+        let result;
+        if (req.body.newCustomerPhoneNum !== req.body.oldInfo.phoneNum) {
+            result = await pool.query(`
+            SELECT * FROM customers WHERE phone_num = $1 AND is_deleted = FALSE;
+            `, [req.body.newCustomerPhoneNum]);
+            if (result.rowCount > 0) {
+                res.json({ success: false, message: "Customer with such phone number already exists." });
+                return;
+            }
+        }
+        result = await pool.query(`UPDATE customers 
+        SET name = $1, phone_num = $2, email = $3 
+        WHERE phone_num = $4 AND is_deleted = FALSE;`,
+            [req.body.newCustomerName, req.body.newCustomerPhoneNum,
+            req.body.newCustomerEmail, req.body.oldInfo.phoneNum]);
+        if (result.rowCount !== 1) {
+            await pool.query(`ROLLBACK;`);
+            res.json({ success: false, message: "Server error: customer info edition error." });
+            return;
+        }
+        await pool.query(`COMMIT;`);
+        res.json({ success: true });
+    } catch (error) {
+        await pool.query("ROLLBACK;");
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+})
+
+customersRouter.delete("/delete", (req, res, next) => {
+    express.json({
+        limit: req.get("content-length")
+    })(req, res, next);
+}, async (req, res) => {
+    try {
+        if (!req.body.employeeWhoDeletesName || !req.body.customerToDeletePhoneNum) {
+            throw new Error("Employee deletion: req.body doesn't contain some data: " + JSON.stringify(req.body));
+        }
+        if (req.body.employeeWhoDeletesName !== 'Admin') {
+            throw new Error("Employee who deletes is not admin");
+        }
+        await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
+        let result = await pool.query(`
+        UPDATE customers SET is_deleted = TRUE
+        WHERE phone_num = $1 AND is_deleted = FALSE;`,
+            [req.body.customerToDeletePhoneNum]);
+        if (result.rowCount !== 1) {
+            await pool.query(`ROLLBACK;`);
+            res.json({ success: false, message: "Server error: customer deletion error." });
+            return;
+        }
+        await pool.query(`COMMIT;`);
+        res.json({ success: true });
+
+    } catch (error) {
+        await pool.query(`ROLLBACK;`);
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }

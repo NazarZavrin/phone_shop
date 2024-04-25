@@ -372,13 +372,13 @@ main > header > .search-section > div.buttons > #refresh-btn {
   margin-left: 2px;
 }
 
-main > #add-employee-btn {
+main > #add-customer-btn {
   margin: 10px;
   margin-bottom: 0;
   border: 3px solid forestgreen;
 }
 
-main > #employees {
+main > #customers {
   width: 100%;
   min-width: -moz-fit-content;
   min-width: fit-content;
@@ -387,7 +387,7 @@ main > #employees {
   flex-direction: column;
   align-items: center;
 }
-main > #employees > .employee {
+main > #customers > .customer {
   width: 100%;
   min-width: -moz-fit-content;
   min-width: fit-content;
@@ -400,28 +400,28 @@ main > #employees > .employee {
   grid-template-columns: auto min-content;
   grid-template-areas: "name edit_info_btn" "phone_num  delete_btn" "passport_num passport_num" "email email";
 }
-main > #employees > .employee:last-of-type {
+main > #customers > .customer:last-of-type {
   margin-bottom: 0;
 }
-main > #employees > .employee > div {
+main > #customers > .customer > div {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 3px;
 }
-main > #employees > .employee > div.name {
+main > #customers > .customer > div.name {
   grid-area: name;
 }
-main > #employees > .employee > div.phone_num {
+main > #customers > .customer > div.phone_num {
   grid-area: phone_num;
 }
-main > #employees > .employee > div.passport_num {
+main > #customers > .customer > div.passport_num {
   grid-area: passport_num;
 }
-main > #employees > .employee > div.email {
+main > #customers > .customer > div.email {
   grid-area: email;
 }
-main > #employees > .employee > .edit_info_btn {
+main > #customers > .customer > .edit_info_btn {
   grid-area: edit_info_btn;
   white-space: nowrap;
   margin-left: 5px;
@@ -429,7 +429,7 @@ main > #employees > .employee > .edit_info_btn {
   justify-self: end;
   align-self: center;
 }
-main > #employees > .employee > .delete_btn {
+main > #customers > .customer > .delete_btn {
   grid-area: delete_btn;
   background-color: red;
   white-space: nowrap;

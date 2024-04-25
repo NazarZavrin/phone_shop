@@ -151,6 +151,10 @@ export default class Basket {
                     if (response.ok) {
                         let result = await response.json();
                         if (!result.success) {
+                            if (result.message.includes("not exist")) {
+                                setWarningAfterElement(orderBtn, `Покупця з такими даними не знайдено`);
+                                return;
+                            }
                             const match = result.message.match(/Only (\d+) phones (.+) are available/);
                             if (match) {
                                 setWarningAfterElement(orderBtn, `Кількість смартфонів`
@@ -160,7 +164,7 @@ export default class Basket {
                             }
                             throw new Error(result.message || "Server error.");
                         } else {
-                            setWarningAfterElement(orderBtn, `Замовлення оформлено. Номер чеку: ${result.num || -1}.`);
+                            setWarningAfterElement(orderBtn, `Замовлення оформлено.<br>Номер чеку: ${result.num || -1}.`);                            
                             onOrderCreated(result.newAmount);
                             return;
                         }

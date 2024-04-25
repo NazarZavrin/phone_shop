@@ -22,11 +22,23 @@ ordersRouter.post("/create", (req, res, next) => {
         BEGIN;`);
         let result = await pool.query(`SELECT NOW();`);
         const currentDateTime = result.rows[0].now;
+        result = await pool.query(`SELECT id FROM customers 
+        WHERE phone_num = $1 AND is_deleted = FALSE`,
+            [req.body.customerPhoneNum]);
+        let message = "";
+        if (result.rowCount === 0) {
+            message = "Customer with such data does not exist.";
+        } else if (result.rowCount > 1) {
+            message = `Found several customers with such data.`;
+        }
+        if (message.length > 0) {
+            throw new Error(message);
+        }
         result = await pool.query(`INSERT INTO orders 
         (num, datetime, customer_id) VALUES
-        (DEFAULT, $1, (SELECT id FROM customers WHERE phone_num = $2 AND is_deleted = FALSE)) 
+        (DEFAULT, $1, $2) 
         RETURNING num, datetime;
-        `, [currentDateTime, req.body.customerPhoneNum]);
+        `, [currentDateTime, result.rows[0].id]);
         const orderNum = result.rows[0].num;
         for (const orderItem of req.body.orderItems) {
             result = await pool.query(`WITH brand_info AS (SELECT * FROM brands WHERE name = $1) 
@@ -239,8 +251,10 @@ ordersRouter.propfind("/get-data-for-chart", (req, res, next) => {
         GROUP BY year, month) AS spending_info
         ON income_info.year = spending_info.year AND income_info.month = spending_info.month
         ORDER BY LEAST(income_info.year, spending_info.year), LEAST(income_info.month, spending_info.month) ASC;`// for ORDER BY DESC use GREATEST() instead of LEAST() (https://stackoverflow.com/questions/66231376/sort-full-join-based-on-two-columns-on-two-different-tables)
-        , [req.body.from, req.body.to]);
-        /*let result = await pool.query(`SELECT income_info.year AS year, income_info.month AS month, income, spending
+            , [req.body.from, req.body.to]);
+
+        /* // this query doesn't work correctly with period '2023-12-01' - '2024-3-01' (month gap '12' - '3' and year gap '2023' - '2024')
+        let result = await pool.query(`SELECT COALESCE(income_info.year, spending_info.year) AS year, COALESCE(income_info.month, spending_info.month) AS month, income, spending
         FROM (SELECT EXTRACT(YEAR FROM issuance_datetime) AS year, 
         EXTRACT(MONTH FROM issuance_datetime) AS month, SUM(cost) AS income
         FROM orders WHERE cost > 0 GROUP BY year, month) AS income_info
@@ -248,11 +262,14 @@ ordersRouter.propfind("/get-data-for-chart", (req, res, next) => {
         EXTRACT(MONTH FROM datetime) AS month, SUM(cost) * -1 AS spending
         FROM orders WHERE cost < 0 GROUP BY year, month) AS spending_info
         ON income_info.year = spending_info.year AND income_info.month = spending_info.month
-        WHERE (income_info.month BETWEEN $1 AND $3) AND (income_info.year BETWEEN $2 AND $4) ORDER BY income_info.year, income_info.month;
+        WHERE (income_info.month BETWEEN $1 AND $3) AND (income_info.year BETWEEN $2 AND $4) 
+        OR (spending_info.month BETWEEN $1 AND $3) AND (spending_info.year BETWEEN $2 AND $4) 
+        ORDER BY LEAST(income_info.year, spending_info.year), 
+        LEAST(income_info.month,spending_info.month) ASC;
         `, [...dateBounds]);
         console.log(...dateBounds);*/
-        res.json({success: true, dataForChart: result.rows});
+        res.json({ success: true, dataForChart: result.rows });
     } catch (error) {
-        res.json({success: false, message: error.message});
+        res.json({ success: false, message: error.message });
     }
 })

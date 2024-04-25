@@ -135,7 +135,27 @@
       }
     }
   }
-
+  &.profile {
+    min-width: 200px;
+  
+    & > section {
+      text-align: center;
+      width: 100%;
+      border: 1px solid gray;
+      border-radius: 3px;
+      padding: 5px;
+      & > div {
+        margin-bottom: 3px;
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+      }
+    }
+  
+    & .exit-btn {
+      background-color: red;
+    }
+  }
   
 
   &.basket {

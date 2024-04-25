@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers</title>
+    <link rel="stylesheet" href="/style/customers.css" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <a href="/admin">
+                <button id="to-admin-page-btn">На сторінку адміністратора</button>
+            </a>
+        </header>
+        <main>
+            <header>
+                <section class="search-section">
+                    <header>Фільтри для пошуку:</header>
+                    <div class="search-inputs">
+                        <input name="name" placeholder="Ім'я покупця" autocomplete="off" />
+                        <input name="phone_num" type="tel" placeholder="Номер телефону покупця"
+                            autocomplete="off" />
+                    </div>
+                    <div class="buttons">
+                        <button id="search-btn">Шукати</button>
+                        <button id="refresh-btn">Оновити дані</button>
+                    </div>
+                </section>
+            </header>
+            <button id="add-customer-btn">Додати покупця</button>
+            <section id="customers"></section>
+        </main>
+    </div>
+    <script src="/script/customers.js" type="module"></script>
+</body>
+
+</html>
