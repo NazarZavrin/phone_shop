@@ -1,6 +1,6 @@
 "use strict";
 
-import { createElement, setWarningAfterElement, showModalWindow, isFloat } from "./useful-for-client.js";
+import { createElement, setWarningAfterElement, showModalWindow, isFloat, formatPrice } from "./useful-for-client.js";
 
 export default class Orders {
     #orders
@@ -30,7 +30,7 @@ export default class Orders {
                 23, 59, 59, 999 // hours, minutes, seconds and milliseconds
             )) || Infinity;
         if (fromTimestamp > toTimestamp) {
-            setWarningAfterElement(searchBtn, 'У діапазоні дат початок більше ніж кінець.');
+            setWarningAfterElement(searchBtn.parentElement, 'У діапазоні дат початок більше ніж кінець.');
             return;
         } else {
             this.#ordersToDisplay = this.#ordersToDisplay.filter(order => {
@@ -58,7 +58,7 @@ export default class Orders {
         order.element.append(customerPhoneNum);
         const datetime = createElement({ class: 'datetime', content: 'Дата замовлення: ' + new Date(order.datetime).toLocaleString() });
         order.element.append(datetime);
-        const cost = createElement({ class: 'cost', content: 'Вартість: ' + order.cost + ' грн.' });
+        const cost = createElement({ class: 'cost', content: 'Вартість: ' + formatPrice(order.cost) + ' грн.' });
         order.element.append(cost);
         const orderItems = createElement({ class: 'order-items' });
         order.orderItems.forEach(orderItem => {
@@ -93,10 +93,9 @@ export default class Orders {
     }
     async issueOrder(orderIndex, {onComplete = () => {}}) {
         const header = createElement({ name: "header", content: 'Видача замовлення №' + this.#ordersToDisplay[orderIndex].num });
-        const сostElem = createElement({ class: 'cost', content: 'Вартість: ' + this.#ordersToDisplay[orderIndex].cost + ' грн.' });
-        const paidLabel = createElement({ name: "header", content: "Заплачено (грн.):" });
-        const paidInput = createElement({ name: "input" });
-        paidInput.setAttribute("autocomplete", "off");
+        const сostElem = createElement({ class: 'cost', content: 'Вартість: ' + formatPrice(this.#ordersToDisplay[orderIndex].cost) + ' грн.' });
+        const paidLabel = createElement({ name: "header", content: "Сплачено (грн.):" });
+        const paidInput = createElement({ name: "input", attributes: ["title: Наприклад, 2500.50", "autocomplete: off"] });
         const changeLabel = createElement({ name: "header" });
         const issueBtn = createElement({ name: 'button', content: "Видати", class: "issue-btn" });
         issueBtn.style.display = "none";
@@ -104,13 +103,13 @@ export default class Orders {
             issueBtn.style.display = "none";
             let warningText = "";
             if (paidInput.value.length === 0) {
-                warningText = 'Введіть заплачену суму';
+                warningText = 'Введіть сплачену суму';
             } else {
                 let numWarning = isFloat(paidInput.value);
                 if (numWarning.includes("more than once")) {
                     warningText = "Десяткова крапка не може зустрічатися у числі більш ніж 1 раз!";
                 } else if (numWarning.includes("Incorrect")) {
-                    warningText = 'Некоретне значення заплаченої суми';
+                    warningText = 'Некоретне значення сплаченої суми';
                 }
             }
             if (warningText.length > 0) {
@@ -119,22 +118,22 @@ export default class Orders {
                 return;
             }
             setWarningAfterElement(paidInput, '');
-            let change = Number(paidInput.value.split(",").join(".")) - this.#ordersToDisplay[orderIndex].cost;
+            let change = Number(paidInput.value.split(",").join(".").split(" ").join("")) - this.#ordersToDisplay[orderIndex].cost;
             if (change < 0) {
                 changeLabel.textContent = 'Сплачено недостатньо';
             } else {
-                changeLabel.textContent = `Решта: ${change.toFixed(2)} грн.`;
+                changeLabel.textContent = `Решта: ${formatPrice(change.toFixed(2))} грн.`;
                 issueBtn.style.display = "";
             }
         })
         issueBtn.addEventListener('click', async event => {
             paidInput.dispatchEvent(new Event('input'));
-            if (changeLabel.textContent.match(/Решта: [\d.,]+ грн./)) {
+            if (changeLabel.textContent.match(/Решта: [\d\s.,]+ грн./)) {
                 try {
                     let requestBody = {
                         num: this.#ordersToDisplay[orderIndex].num,
                         employeePhoneNum: localStorage.getItem("employeePhoneNum"),
-                        paid: Number(paidInput.value.split(",").join("."))
+                        paid: Number(paidInput.value.split(",").join(".").split(" ").join(""))
                     };
                     let response = await fetch(location.origin + "/orders/issue", {
                         method: "PATCH",
@@ -158,7 +157,7 @@ export default class Orders {
             } else {
                 alert(paidInput.nextElementSibling.textContent
                     || changeLabel.textContent ||
-                    "Введіть коректне і достатнє значення заплаченої суми");
+                    "Введіть коректне і достатнє значення сплаченої суми");
             }
         })
         showModalWindow([header, сostElem,

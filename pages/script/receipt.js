@@ -1,9 +1,13 @@
 "use strict";
 
-import { redirectNonAdmin } from "./useful-for-client.js";
+import { formatPrice, redirectNonAdmin } from "./useful-for-client.js";
 
 (async () => {
-    redirectNonAdmin(document.body, null);
+    // redirectNonAdmin(document.body, null);
+    // when employee issues order he must be able to access the receipt
+    if (localStorage.getItem("employeeName") === null) {
+        location.href = location.origin + "/orders";
+    }
     try {
         let response = await fetch(location.href, {
             method: "PROPFIND",
@@ -39,14 +43,14 @@ import { redirectNonAdmin } from "./useful-for-client.js";
                     let text = orderItem.brand + ' ' + orderItem.model + ' (' + orderItem.amount + ' шт.)';
                     document.querySelector(".receipt_body").insertAdjacentHTML("beforeend",
                         `<div class="order-item">${text}</div>
-                    <div class="order-item-cost">${orderItem.cost} грн.</div>`);
+                    <div class="order-item-cost">${formatPrice(orderItem.cost)} грн.</div>`);
                 })
                 const change = Number(order.paid) - Number(order.cost);
                 document.querySelector(".change").textContent += change.toFixed(change % 1 === 0 ? 0 : 2);
                 // ↑ if change is integer number (change % 1 === 0) then we will not output fraction digits, otherwise we will output 2 fraction digits
                 for (const item in labels) {
                     let elem = document.getElementsByClassName(item)[0];
-                    elem.textContent += " грн.";
+                    elem.textContent = formatPrice(elem.textContent) + " грн.";
                     elem.insertAdjacentHTML("beforebegin",
                         `<div>${labels[item]}</div>`);
                 }

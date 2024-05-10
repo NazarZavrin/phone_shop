@@ -1,12 +1,8 @@
 "use strict";
 
 import Customer from "./class_Customer.js";
-import { createElement, redirectNonAdmin } from "./useful-for-client.js";
+import { redirectNonAdmin } from "./useful-for-client.js";
 
-// const customerName = document.getElementById("customer-name");
-// const accountBtn = document.getElementById("account-btn");
-// const toAdminPageBtn = document.getElementById("to-admin-page-btn");
-// const content = document.getElementsByTagName("main")[0];
 const searchBtn = document.getElementById("search-btn");
 const refreshBtn = document.getElementById("refresh-btn");
 const addCustomerBtn = document.getElementById("add-customer-btn");
@@ -34,10 +30,8 @@ refreshBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                // console.log(result.customers);
                 customers = result.customers;
                 searchBtn.click();
-                // customersReceived = true;
             }
         }
     } catch (error) {
@@ -50,13 +44,13 @@ refreshBtn.click();
 
 searchBtn.addEventListener('click', async event => {
     if (customers.length == 0) {
-        customersContainer.textContent = "Співробітники відсутні.";
+        customersContainer.textContent = "Покупці відсутні.";
         return;
     }
     customersToDisplay = customers.filter(customer => customer.name.includes(searchInputs.name.value))
         .filter(customer => customer.phone_num.includes(searchInputs.phone_num.value));
     if (customersToDisplay.length === 0) {
-        customersContainer.textContent = "Немає співробітників, що задовільняють фільтри.";
+        customersContainer.textContent = "Немає покупців, що задовільняють фільтри.";
         return;
     }
     customersContainer.innerHTML = '';
@@ -73,7 +67,6 @@ customersContainer.addEventListener('click', async event => {
     // customer deletion logic
     const deleteBtn = event.target.closest('.delete_btn');
     if (deleteBtn) {
-        // console.log(deleteBtn);
         const customerElement = deleteBtn.closest(".customer");
         const phoneNum = customerElement.getAttribute('id');
         if (await Customer.delete(phoneNum) === "success") {
@@ -91,7 +84,6 @@ customersContainer.addEventListener('click', async event => {
     // customer info edition logic
     const editInfoBtn = event.target.closest('.edit_info_btn');
     if (editInfoBtn) {
-        // console.log(editInfoBtn);
         const customerElement = editInfoBtn.closest(".customer");
         await Customer.editInfo(customerElement, () => refreshBtn.click());
     }

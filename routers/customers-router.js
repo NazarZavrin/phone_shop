@@ -62,6 +62,39 @@ customersRouter.get("/get-customers", async (req, res) => {
     }
 })
 
+customersRouter.propfind("/get-customer-additional-info", (req, res, next) => {
+    express.json({
+        limit: req.get('content-length'),
+    })(req, res, next);
+}, async (req, res) => {
+    try {
+        if (!req.body.phoneNum || !req.body.name) {
+            throw new Error("Getting customer additional info: req.body doesn't contain some data: : " + JSON.stringify(req.body));
+        }
+        await pool.query(`
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+        BEGIN;`);
+        let result = await pool.query(`SELECT email FROM customers 
+        WHERE phone_num = $1 AND name = $2 AND is_deleted = FALSE;`, 
+        [req.body.phoneNum, req.body.name]);
+        let message = "";
+        if (result.rowCount === 0) {
+            message = "Customer with such data does not exist.";
+        } else if (result.rowCount > 1) {
+            message = `Found several customers with such data.`;
+        }
+        if (message.length > 0) {
+            throw new Error(message);
+        }
+        await pool.query(`COMMIT;`);
+        res.json({ success: true, customerData: result.rows[0] });
+    } catch (error) {
+        await pool.query("ROLLBACK;");
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+})
+
 customersRouter.propfind("/log-in", (req, res, next) => {
     express.json({
         limit: req.get('content-length'),
@@ -82,16 +115,8 @@ customersRouter.propfind("/log-in", (req, res, next) => {
         } else if (result.rowCount > 1) {
             message = `Found several customers with such data.`;
         } else if (await bcrypt.compare(req.body.password, result.rows?.[0].password) != true) {
-            console.log(result.rows?.[0].name);
-            console.log("Wrong:" + req.body.password);
-            console.log("Correct:" + result.rows?.[0].password);
             message = `Wrong password.`;
         }
-        /*if (message.length > 0) {
-            await pool.query(`ROLLBACK;`);
-            res.json({ success: false, message: message });
-            return;
-        }*/
         if (message.length > 0) {
             throw new Error(message);
         }
@@ -126,16 +151,8 @@ customersRouter.patch("/change-password", (req, res, next) => {
         } else if (result.rowCount > 1) {
             message = `Found several customers with such data.`;
         } else if (await bcrypt.compare(req.body.oldPassword, result.rows?.[0].password) != true) {
-            console.log(result.rows?.[0].name);
-            console.log("Wrong:" + req.body.oldPassword);
-            console.log("Correct:" + result.rows?.[0].password);
             message = `Wrong password.`;
         }
-        /*if (message.length > 0) {
-            await pool.query(`ROLLBACK;`);
-            res.json({ success: false, message: message });
-            return;
-        }*/
         if (message.length > 0) {
             throw new Error(message);
         }

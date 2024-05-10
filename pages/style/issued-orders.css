@@ -395,17 +395,21 @@ main > #issued-orders {
   min-width: fit-content;
   padding: 10px;
   text-align: center;
+  /*& > #general-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 0.5px solid black;
+    & > div {
+      flex: 1 1 auto;
+      padding: 3px 7px;
+      border: 0.5px solid black;
+    }
+  }*/
 }
-main > #issued-orders > #general-info {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  border: 0.5px solid black;
-}
-main > #issued-orders > #general-info > div {
-  flex: 1 1 auto;
+main > #issued-orders > #income {
+  border: 2px solid gray;
   padding: 3px 7px;
-  border: 0.5px solid black;
 }
 main > #issued-orders > .order {
   width: 100%;
@@ -416,4 +420,7 @@ main > #issued-orders > .order {
   box-shadow: 0 0 3px 1px gray;
   border-radius: 5px;
   margin-top: 15px;
+  /*&:first-of-type {
+    margin-top: 0;
+  }*/
 }

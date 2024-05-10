@@ -398,7 +398,7 @@ main > #customers > .customer {
   display: grid;
   grid-template-rows: repeat(3, auto);
   grid-template-columns: auto min-content;
-  grid-template-areas: "name edit_info_btn" "phone_num  delete_btn" "passport_num passport_num" "email email";
+  grid-template-areas: "name edit_info_btn" "phone_num  delete_btn" "email email";
 }
 main > #customers > .customer:last-of-type {
   margin-bottom: 0;
@@ -414,9 +414,6 @@ main > #customers > .customer > div.name {
 }
 main > #customers > .customer > div.phone_num {
   grid-area: phone_num;
-}
-main > #customers > .customer > div.passport_num {
-  grid-area: passport_num;
 }
 main > #customers > .customer > div.email {
   grid-area: email;

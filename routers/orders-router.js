@@ -268,6 +268,7 @@ ordersRouter.propfind("/get-data-for-chart", (req, res, next) => {
         LEAST(income_info.month,spending_info.month) ASC;
         `, [...dateBounds]);
         console.log(...dateBounds);*/
+        console.log(result.rows);
         res.json({ success: true, dataForChart: result.rows });
     } catch (error) {
         res.json({ success: false, message: error.message });

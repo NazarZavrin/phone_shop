@@ -178,7 +178,7 @@ export default class Employee {
         newPasswordBlock.addEventListener("change", showPassword);
         let changeAdminInfoBtn = null;
         if (localStorage.getItem("employeeName") === "Admin") {
-            changeAdminInfoBtn = createElement({ name: 'button', content: "Редагувати інформацію", class: "edit-admin-info-btn", style: "background-color: dodgerblue" });
+            changeAdminInfoBtn = createElement({ name: 'button', content: "Змінити дані", class: "edit-admin-info-btn", style: "background-color: dodgerblue" });
             changeAdminInfoBtn.addEventListener("click", async event => {
                 event.target.closest(".modal-window").closeWindow();
                 this.editAdminInfo(employeeInfo, () => this.showEmployeeProfile(...arguments));
@@ -287,7 +287,7 @@ export default class Employee {
         employee.element.append(employeePassportNum);
         const employeeEmail = createElement({ class: 'email', content: 'Email: ' + employee.email });
         employee.element.append(employeeEmail);
-        const editInfoBtn = createElement({ name: 'button', class: 'edit_info_btn', content: 'Редагувати' });
+        const editInfoBtn = createElement({ name: 'button', class: 'edit_info_btn', content: 'Змінити дані' });
         employee.element.append(editInfoBtn);
         const deleteBtn = createElement({ name: 'button', class: 'delete_btn', content: 'Видалити' });
         employee.element.append(deleteBtn);

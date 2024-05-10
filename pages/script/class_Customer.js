@@ -4,7 +4,7 @@ import Basket from "./class_Basket.js";
 import { createElement, emailIsCorrect, phoneNumberIsCorrect, setWarningAfterElement, showModalWindow, nameIsCorrect, showPassword, passwordIsCorrect } from "./useful-for-client.js";
 
 export default class Customer {
-    constructor(callback = function () { }, { creator = "customer" }) {
+    constructor(callback = function () { }, { creator = "customer" } = {}) {
         const header = createElement({ name: "header", content: `Створення акаунту${creator === "customer" ? "" : " покупця"}` });
         const nameLabel = createElement({ name: "header", content: `Введіть ${creator === "customer" ? "ваше ім'я" : "ім'я покупця"}:` });
         const nameInput = createElement({ name: "input" });
@@ -83,8 +83,6 @@ export default class Customer {
         passwordBlock.addEventListener("change", showPassword);
         const logInBtn = createElement({ name: 'button', content: "Увійти", class: "log-in-btn" });
         logInBtn.addEventListener("click", async event => {
-            /*setWarningAfterElement(phoneNumInput, '');
-            // phoneNumberIsCorrect() will erase the warning after this input */
             setWarningAfterElement(passwordInput, '');
             setWarningAfterElement(logInBtn, '');
             // for login you must enter phone number and password
@@ -155,8 +153,11 @@ export default class Customer {
     }
     static showCustomerProfile(customerNameElem, { onExit = function () { } } = {}) {
         const customerInfo = createElement({ name: 'section', class: 'info' });
-        customerInfo.innerHTML = `<div>${localStorage.getItem("customerName")}</div>
-            <div>${localStorage.getItem("customerPhoneNum")}</div>`;
+        const customerName = createElement({ class: 'name', content: `Ім'я: ` + localStorage.getItem("customerName") });
+        customerInfo.append(customerName);
+        const customerPhoneNum = createElement({ class: 'phone_num', content: 'Номер телефону: ' + localStorage.getItem("customerPhoneNum") });
+        customerInfo.append(customerPhoneNum);
+        
         const oldPasswordLabel = createElement({ name: "label", content: "Введіть старий пароль:" },);
         const oldPasswordInput = createElement({ name: "input", attributes: ["type: password", "autocomplete: off"] });
         const oldPasswordBlock = createElement({ name: "form", class: "password-block" });
@@ -236,9 +237,32 @@ export default class Customer {
             onExit();
             event.target.closest(".modal-window").closeWindow();
         });
-        showModalWindow([customerInfo, changePasswordBtn,
-            exitBtn],
-            { className: 'profile' });
+        let requestBody = {
+            phoneNum: localStorage.getItem("customerPhoneNum"),
+            name: localStorage.getItem("customerName"),
+        };
+        fetch(location.origin + "/customers/get-customer-additional-info", {
+            method: "PROPFIND",
+            body: JSON.stringify(requestBody),
+            headers: { "Content-Type": "application/json" }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        }).then(result => {
+            if (!result.success) {
+                throw new Error(result.message || "Server error.");
+            } else {
+                const customerEmail = createElement({ class: 'email', content: 'Email: ' + result.customerData.email });
+                customerInfo.append(customerEmail);
+            }
+        }).catch(error => console.error(error.message))
+            .finally(() => {
+                showModalWindow([customerInfo, changePasswordBtn,
+                    exitBtn],
+                    { className: 'profile' });
+            });
     }
     static createCustomerElement(customer) {
         customer.element = createElement({ name: 'div', class: 'customer' });
@@ -249,7 +273,7 @@ export default class Customer {
         customer.element.append(customerPhoneNum);
         const customerEmail = createElement({ class: 'email', content: 'Email: ' + customer.email });
         customer.element.append(customerEmail);
-        const editInfoBtn = createElement({ name: 'button', class: 'edit_info_btn', content: 'Редагувати' });
+        const editInfoBtn = createElement({ name: 'button', class: 'edit_info_btn', content: 'Змінити дані' });
         customer.element.append(editInfoBtn);
         const deleteBtn = createElement({ name: 'button', class: 'delete_btn', content: 'Видалити' });
         customer.element.append(deleteBtn);
@@ -262,18 +286,17 @@ export default class Customer {
             email: customerElement.querySelector('.email').textContent.split(': ')[1],
         }
         console.log(oldInfo);
-        const header = createElement({ name: "header", content: 'Редагування даних співробітника' });
-        let nameLabel = createElement({ name: "header", content: "Введіть нове ім'я співробітника:" });
+        const header = createElement({ name: "header", content: 'Редагування даних покупця' });
+        let nameLabel = createElement({ name: "header", content: "Введіть нове ім'я покупця:" });
         let nameInput = createElement({ name: "input", content: oldInfo.name });
         nameInput.setAttribute("autocomplete", "off");
-        const phoneNumLabel = createElement({ name: "header", content: "Введіть новий номер телефону співробітника" });
+        const phoneNumLabel = createElement({ name: "header", content: "Введіть новий номер телефону покупця" });
         const phoneNumInput = createElement({ name: "input", content: oldInfo.phoneNum, attributes: ["type: tel", "autocomplete: off"] });
-        const emailLabel = createElement({ name: "header", content: "Введіть новий email співробітника" });
+        const emailLabel = createElement({ name: "header", content: "Введіть новий email покупця" });
         const emailInput = createElement({ name: "input", content: oldInfo.email });
         emailInput.setAttribute("autocomplete", "off");
         const confirmChangesBtn = createElement({ name: 'button', content: "Підтвердити зміни", class: "confirm-changes-btn", style: "margin-top: 7px" });
         confirmChangesBtn.addEventListener("click", async event => {
-            // setWarningAfterElement(oldPasswordInput, '');
             setWarningAfterElement(confirmChangesBtn, '');
             let everythingIsCorrect = nameIsCorrect(nameInput);
             everythingIsCorrect = phoneNumberIsCorrect(phoneNumInput) && everythingIsCorrect;
@@ -301,10 +324,6 @@ export default class Customer {
                             setWarningAfterElement(confirmChangesBtn, 'Покупець з таким номером телефону вже існує');
                             return;
                         }
-                        /*if (result.message.includes("Wrong password")) {
-                            setWarningAfterElement(confirmChangesBtn, `Неправильний старий пароль`);
-                            return;
-                        }*/
                         throw new Error(result.message || "Server error.");
                     } else {
                         event.target.closest(".modal-window").closeWindow();

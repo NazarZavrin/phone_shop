@@ -78,14 +78,15 @@ employeesRouter.propfind("/get-employee-additional-info", (req, res, next) => {
     })(req, res, next);
 }, async (req, res) => {
     try {
-        if (!req.body.phoneNum|| !req.body.name) {
+        if (!req.body.phoneNum || !req.body.name) {
             throw new Error("Getting employee additional info: req.body doesn't contain some data: : " + JSON.stringify(req.body));
         }
         await pool.query(`
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
         BEGIN;`);
         let result = await pool.query(`SELECT passport_num, email FROM employees 
-        WHERE phone_num = $1 AND name = $2;`, [req.body.phoneNum, req.body.name]);
+        WHERE phone_num = $1 AND name = $2 AND is_fired = FALSE;`, 
+        [req.body.phoneNum, req.body.name]);
         let message = "";
         if (result.rowCount === 0) {
             message = "Employee with such data does not exist.";
@@ -129,9 +130,6 @@ employeesRouter.propfind("/log-in", (req, res, next) => {
         } else if (result.rowCount > 1) {
             message = `Found several employees with such data.`;
         } else if (await bcrypt.compare(req.body.password, result.rows?.[0].password) != true) {
-            /*console.log(result.rows?.[0].name);
-            console.log("Wrong:" + req.body.password);
-            console.log("Correct:" + result.rows?.[0].password);*/
             message = `Wrong password.`;
         }
         /*if (message.length > 0) {
@@ -173,9 +171,6 @@ employeesRouter.patch("/change-password", (req, res, next) => {
         } else if (result.rowCount > 1) {
             message = `Found several employees with such data.`;
         } else if (await bcrypt.compare(req.body.oldPassword, result.rows?.[0].password) != true) {
-            /*console.log(result.rows?.[0].name);
-            console.log("Wrong:" + req.body.oldPassword);
-            console.log("Correct:" + result.rows?.[0].password);*/
             message = `Wrong password.`;
         }
         /*if (message.length > 0) {

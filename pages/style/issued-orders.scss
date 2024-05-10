@@ -115,7 +115,7 @@ main > #issued-orders {
   min-width: fit-content;
   padding: 10px;
   text-align: center;
-  & > #general-info {
+  /*& > #general-info {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -125,6 +125,10 @@ main > #issued-orders {
       padding: 3px 7px;
       border: 0.5px solid black;
     }
+  }*/
+  & > #income {
+    border: 2px solid gray;
+    padding: 3px 7px;
   }
   & > .order {
     width: 100%;
@@ -134,5 +138,8 @@ main > #issued-orders {
     box-shadow: 0 0 3px 1px gray;
     border-radius: 5px;
     margin-top: 15px;
+    /*&:first-of-type {
+      margin-top: 0;
+    }*/
   }
 }

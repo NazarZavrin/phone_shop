@@ -1,7 +1,7 @@
 "use strict";
 
 import Customer from "./class_Customer.js";
-import { createElement, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
+import { createElement, formatPrice, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
 export default class Basket {
     static #storageLabel = "product: ";
@@ -11,8 +11,8 @@ export default class Basket {
             price: price,
             amount: amount
         }));
-        console.log("setProductInfo");
-        console.log(localStorage);
+        /*console.log("setProductInfo");
+        console.log(localStorage);*/
     }
     addProduct(brand, model, price) {
         this.setProductInfo(brand, model, price, 1);
@@ -65,8 +65,8 @@ export default class Basket {
         const totalCostElem = createElement({ class: 'total-cost' });
         const orderBtn = createElement({ name: 'button', content: "Замовити", class: "order-btn" });
         function updateTotalCost() {
-            totalCostElem.textContent = `Сума замовлення: ${products.reduce(
-                (totalCost, orderItem) => totalCost + Number.parseFloat(orderItem.price * orderItem.amount), 0)
+            totalCostElem.textContent = `Сума замовлення: ${formatPrice(products.reduce(
+                (totalCost, orderItem) => totalCost + Number.parseFloat(orderItem.price * orderItem.amount), 0))
             } грн.`;
             if (totalCostElem.textContent.includes(": 0 грн")) {
                 orderItems.innerHTML = "<p style='padding: 50px'>Кошик пустий</p>";
@@ -100,7 +100,7 @@ export default class Basket {
                 <button class="increase">+</button>`;
                 orderItem.cost = orderItem.price * orderItem.amount;
                 const costElem = amountElem.parentElement.querySelector('.order-item_cost');
-                costElem.innerHTML = `<div class='order-item-cost'>${orderItem.cost} грн.</div>`;
+                costElem.innerHTML = `<div class='order-item-cost'>${formatPrice(orderItem.cost)} грн.</div>`;
                 this.setProductInfo(orderItem.brand, orderItem.model, orderItem.price, orderItem.amount);
                 updateTotalCost();
             }

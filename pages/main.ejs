@@ -41,7 +41,7 @@
                             <%= product.model %>
                     </div>
                     <div class="product__price">
-                        Ціна: <%= product.price %> грн.
+                        Ціна: <%= formatPrice(product.price) %> грн.
                     </div>
                     <% if(product.amount == 0) { %>
                         <div class="product__availability">

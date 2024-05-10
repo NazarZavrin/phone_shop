@@ -1,12 +1,11 @@
 "use strict";
 
-import { createElement, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
+import { createElement, formatPrice, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
 
 const content = document.getElementsByTagName("main")[0];
 const storageOutput = document.querySelector(".storage");
 const loadFileBtn = document.querySelector(".load-file-btn");
 const refreshBtn = document.querySelector(".refresh-btn");
-const consignmentNoteInput = document.querySelector('.consignment-note-input');
 
 if (localStorage.getItem("employeeName") === null) {
     location.href = location.origin + "/orders";
@@ -33,7 +32,7 @@ refreshBtn.addEventListener("click", async event => {
                     storageOutput.insertAdjacentHTML('beforeend',
                         `<div>${product.brand}</div>
                         <div>${product.model}</div>
-                        <div>${product.price}</div>
+                        <div>${formatPrice(product.price)}</div>
                         <div>${product.amount}</div>`);
                 })
                 storageOutput.insertAdjacentHTML('afterbegin',
@@ -57,7 +56,11 @@ refreshBtn.click();
 let products = [];
 
 loadFileBtn.addEventListener('click', event => {
-    consignmentNoteInput.parentElement.style.display = "";
+    const consignmentNoteInputWrapper = createElement({ name: "div", class: 'input-wrapper' });
+    consignmentNoteInputWrapper.innerHTML = `<span>
+    Перетягніть сюди .csv файл накладної чи натисніть для вибору файлу</span>    
+    <input type="file" accept=".csv" class="consignment-note-input"></div>`;
+    const consignmentNoteInput = consignmentNoteInputWrapper.querySelector('.consignment-note-input');
     const output = createElement({ name: "output", class: 'table', style: "display: none" });
     const registerSupplyBtn = createElement({ name: 'button', content: "Оформити поставку", class: "register-supply-btn", style: "display: none" });
     const cancelBtn = createElement({ name: 'button', content: "Скасувати", class: "cancel-btn", style: "margin-left: 0;" });
@@ -70,6 +73,7 @@ loadFileBtn.addEventListener('click', event => {
         event.target.closest(".modal-window").closeWindow();
     })
     consignmentNoteInput.addEventListener("change", event => {
+        // console.log(consignmentNoteInput.files[0]);
         let file = consignmentNoteInput.files[0];
         let reader = new FileReader();
         reader.readAsText(file, "windows-1251");
@@ -104,6 +108,10 @@ loadFileBtn.addEventListener('click', event => {
                     continue;
                 }
                 for (const key in productInfo) {
+                    if (key === "cost") {
+                        output.insertAdjacentHTML('beforeend', `<div>${formatPrice(productInfo[key])}</div>`);
+                        continue;
+                    }
                     output.insertAdjacentHTML('beforeend', `<div>${productInfo[key]}</div>`);
                 }
                 products.push(productInfo);
@@ -120,7 +128,7 @@ loadFileBtn.addEventListener('click', event => {
                 <div>Ціна (грн.)</div>`);
             output.insertAdjacentHTML('afterend',
                 `<div style="margin-top: 3px">
-                Плата за поставку: ${supplyCost} грн.</div>`);
+                Плата за поставку: ${formatPrice(supplyCost)} грн.</div>`);
             consignmentNoteInput.parentElement.remove();
             registerSupplyBtn.style.display = "";
             cancelBtn.style = "";
@@ -153,6 +161,7 @@ loadFileBtn.addEventListener('click', event => {
                 } else {
                     setWarningAfterElement(buttons, "Поставку оформлено.");
                     refreshBtn.click();
+                    cancelBtn.textContent = "Закрити вікно";
                     // cancelBtn.click();// close the modal window
                 }
             }

@@ -1,6 +1,6 @@
 "use strict";
 
-import { createElement, dayAndMonthAreCorrect, isInt, redirectNonAdmin, setWarningAfterElement } from "./useful-for-client.js";
+import { createElement, dayAndMonthAreCorrect, formatPrice, isInt, redirectNonAdmin, setWarningAfterElement } from "./useful-for-client.js";
 
 const getIssuedOrdersBtn = document.getElementById("get-issued-orders-btn");
 const buildChartBtn = document.getElementById("build-chart-btn");
@@ -111,9 +111,8 @@ getIssuedOrdersBtn.addEventListener('click', async event => {
     setWarningAfterElement(getIssuedOrdersBtn.parentElement, '');
     renderOrders();
     if (ordersToDisplay.length > 0) {
-        issuedOrdersContainer.insertAdjacentHTML('afterbegin', `<section id="general-info">
-        <div>Кількість проданих товарів: ${ordersToDisplay.reduce((prev, cur) => prev + cur.orderItems.length, 0)}</div>
-        <div>Загальна вартість: ${ordersToDisplay.reduce((prev, cur) => prev + Number(cur.cost), 0)}</div>
+        issuedOrdersContainer.insertAdjacentHTML('afterbegin', `<section id="income">
+        <div>Прибуток за вказаний період: ${formatPrice(ordersToDisplay.reduce((prev, cur) => prev + Number(cur.cost), 0))} грн.</div>
         </section>`);
     }
 })
@@ -163,7 +162,7 @@ function createOrderElement(order) {
     order.element.append(datetime);
     const issuanceDatetime = createElement({ class: 'issuance_datetime', content: 'Дата видачі: ' + new Date(order.issuance_datetime).toLocaleString() });
     order.element.append(issuanceDatetime);
-    const cost = createElement({ class: 'cost', content: 'Вартість: ' + order.cost + ' грн.' });
+    const cost = createElement({ class: 'cost', content: 'Вартість: ' + formatPrice(order.cost) + ' грн.' });
     order.element.append(cost);
     const orderItems = createElement({ class: 'order-items' });
     order.orderItems.forEach(orderItem => {

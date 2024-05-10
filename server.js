@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from './connect-to-PostgreSQL.js';
 import path from 'path';
+import { formatPrice } from "./pages/script/useful-for-client.js";
 import { customersRouter } from './routers/customers-router.js';
 import { employeesRouter } from './routers/employees-router.js';
 import { ordersRouter } from './routers/orders-router.js';
@@ -29,6 +30,7 @@ app.get('/', async (req, res) => {
         res.render('main', {
             products: result.rows,
             brands: brands,
+            formatPrice: formatPrice
         });
     } catch (error) {
         // throw new Error(error);
@@ -50,7 +52,8 @@ app.get("/products/:product_info", async (req, res, next) => {
                 [productInfo.brand, productInfo.model]);
             if (result.rows.length === 1) {
                 res.render('product', {
-                    productInfo: result.rows[0]
+                    productInfo: result.rows[0],
+                    formatPrice: formatPrice
                 });
                 return;
             }

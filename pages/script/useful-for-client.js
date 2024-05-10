@@ -56,7 +56,7 @@ export function showPassword(event) {
 }
 export function setWarningAfterElement(element, warningText) {
     if (element.nextElementSibling?.matches('.warning')) {
-        element.nextElementSibling.textContent = warningText;
+        element.nextElementSibling.innerHTML = warningText;
     } else {
         element.insertAdjacentHTML("afterend", `<b class="warning">${warningText}</b>`);
     }
@@ -220,5 +220,23 @@ export function redirectNonAdmin(content = null, employeeNameElem = null) {
         content ? content.style.display = "" : null;
     } else {
         location.href = location.origin + "/orders";
+    }
+}
+
+export function formatPrice(price) {
+    try {
+        return String(price).split(".").reduce((accumulator, item, index) => {
+            if (index == 0) {
+                if (item.length >= 4) { // the number of thousands is present
+                    return item.slice(0, -3) + " " + item.slice(-3);
+                } else {
+                    return item;
+                }
+            }
+            return accumulator + "." + item;
+        }, "");
+    } catch (error) {
+        console.error(error);
+        return price;
     }
 }

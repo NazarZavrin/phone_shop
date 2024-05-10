@@ -38,7 +38,7 @@
         </div>
         <div class="color">Колір: <%= productInfo.color %>
         </div>
-        <div class="price">Ціна: <%= productInfo.price %>
+        <div class="price">Ціна: <%= formatPrice(productInfo.price) %> грн.
         </div>
         <button type="button" id="add-to-basket-btn" style="background-color: transparent;"
           data-product_main_info="<%= productInfo.brand + "|" + productInfo.model + "|" 

@@ -178,10 +178,10 @@ searchBtn.addEventListener('click', event => {
         }
     }
     if (everythingIsCorrect === false) {
-        setWarningAfterElement(searchBtn, message);
+        setWarningAfterElement(searchBtn.parentElement, message);
         return;
     }
-    setWarningAfterElement(searchBtn, '');
+    setWarningAfterElement(searchBtn.parentElement, '');
     orders.filterAndRenderOrders(ordersContainer, searchInputs, dateTimeComponents, searchBtn);
     // Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "none");
 })

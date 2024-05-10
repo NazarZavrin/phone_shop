@@ -11,8 +11,8 @@ if (localStorage.getItem("employeeName") !== "Admin") {
 try {
     let dataForChart = JSON.parse(localStorage.getItem("dataForChart"));
     const dateBoundsForChart = localStorage.getItem("dateBoundsForChart");
-    localStorage.removeItem("dataForChart");
-    localStorage.removeItem("dateBoundsForChart");
+    /*localStorage.removeItem("dataForChart");
+    localStorage.removeItem("dateBoundsForChart");*/
     // console.log(...dataForChart);
 
     const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень",
@@ -20,8 +20,7 @@ try {
     dataForChart = dataForChart.map(item => Object.assign(item, {
         monthAndYear: months[Number(item.month) - 1] + " " + item.year
     }));
-    // console.log(...dataForChart);
-
+    console.log(...dataForChart);
     new Chart(canvas, {
         type: 'line',
         data: {
@@ -89,7 +88,7 @@ try {
     });
 } catch (error) {
     console.error(error.message);
-    alert("Could not build chart. Try again.");
+    alert("Не вдалося побудувати графік. Спробуйте ще раз.");
     window.close();
 }
 

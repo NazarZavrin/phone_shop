@@ -40,7 +40,6 @@ main {
 main > header {
   display: flex;
   flex-direction: column;
-  // align-items: center;
   padding: 5px;
   border: 1.5px solid dimgray;
   box-shadow: 0 1px 3px 1px gray;
@@ -51,7 +50,6 @@ main > header {
     flex-direction: column;
     align-items: center;
     padding: 0 7px;
-    // margin-bottom: 5px;
     & input {
       font: inherit;
       width: 160px;
@@ -114,11 +112,10 @@ main > #customers {
     display: grid;
     grid-template-rows: repeat(3, auto);
     grid-template-columns: auto min-content;
-    // name, phone_num, passport_num
+    // name, phone_num, email
     grid-template-areas:
       "name edit_info_btn"
       "phone_num  delete_btn"
-      "passport_num passport_num"
       "email email";
     & > div {
       display: flex;
@@ -130,9 +127,6 @@ main > #customers {
       }
       &.phone_num {
         grid-area: phone_num;
-      }
-      &.passport_num {
-        grid-area: passport_num;
       }
       &.email {
         grid-area: email;
