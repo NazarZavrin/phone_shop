@@ -108,9 +108,7 @@ app.post("/register-supply", (req, res, next) => {
             message = `Found several employees with such data.`;
         }
         if (message.length > 0) {
-            await pool.query(`ROLLBACK;`);
-            res.json({ success: false, message: message });
-            return;
+            throw new Error(message);
         }
         result = await pool.query(`INSERT INTO orders 
         (num, datetime, employee_id) VALUES
@@ -119,18 +117,21 @@ app.post("/register-supply", (req, res, next) => {
         `, [currentDateTime, result.rows[0].id]);
         const orderNum = result.rows[0].num;
         let supplyCost = 0;
+        // console.log("Supply registration");
         for (const product of req.body.products) {
+            // console.log(`Adding ${product.amount} items of ${product.brand} ${product.model}`);
             supplyCost = supplyCost + Number(product.cost);
             result = await pool.query(`WITH brand_info AS (SELECT * FROM brands WHERE name = $1) 
             UPDATE products SET amount = amount + $2 FROM brand_info
             WHERE model = $3 AND brand_id = brand_info.id
-            RETURNING products.id AS product_id, model, brand_info.name, amount;
+            RETURNING products.id AS product_id, model, brand_info.name AS brand_name, amount;
             `, [product.brand, product.amount, product.model]);
             if (result.rowCount == 0) {
                 await pool.query(`ROLLBACK;`);
                 res.json({ success: false, message: `Некоректні дані про телефон: бренд: ${product.brand}, модель: ${product.model}.` });
                 return;
             }
+            // console.log(`New amount of ${result.rows[0].brand_name} ${result.rows[0].model}: ${result.rows[0].amount}`);
             result = await pool.query(`INSERT INTO order_items 
                 (product_id, order_num, amount) VALUES
                 ($1, $2, $3);

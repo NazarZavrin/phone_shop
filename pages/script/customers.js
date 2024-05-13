@@ -47,7 +47,7 @@ searchBtn.addEventListener('click', async event => {
         customersContainer.textContent = "Покупці відсутні.";
         return;
     }
-    customersToDisplay = customers.filter(customer => customer.name.includes(searchInputs.name.value))
+    customersToDisplay = customers.filter(customer => customer.name.toLocaleLowerCase().includes(searchInputs.name.value.toLocaleLowerCase()))
         .filter(customer => customer.phone_num.includes(searchInputs.phone_num.value));
     if (customersToDisplay.length === 0) {
         customersContainer.textContent = "Немає покупців, що задовільняють фільтри.";

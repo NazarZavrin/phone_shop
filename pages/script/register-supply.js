@@ -74,6 +74,7 @@ loadFileBtn.addEventListener('click', event => {
     })
     consignmentNoteInput.addEventListener("change", event => {
         // console.log(consignmentNoteInput.files[0]);
+        products = [];
         let file = consignmentNoteInput.files[0];
         let reader = new FileReader();
         reader.readAsText(file, "windows-1251");

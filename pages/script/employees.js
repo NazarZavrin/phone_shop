@@ -56,7 +56,7 @@ searchBtn.addEventListener('click', async event => {
         employeesContainer.textContent = "Співробітники відсутні.";
         return;
     }
-    employeesToDisplay = employees.filter(employee => employee.name.includes(searchInputs.name.value))
+    employeesToDisplay = employees.filter(employee => employee.name.toLocaleLowerCase().includes(searchInputs.name.value.toLocaleLowerCase()))
         .filter(employee => employee.phone_num.includes(searchInputs.phone_num.value));
     if (employeesToDisplay.length === 0) {
         employeesContainer.textContent = "Немає співробітників, що задовільняють фільтри.";
