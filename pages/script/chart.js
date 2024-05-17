@@ -32,9 +32,9 @@ try {
                     pointRadius: 3,
                     pointHoverRadius: 5,
                     borderColor: 'dodgerblue',
-                    backgroundColor: 'royalblue',
+                    backgroundColor: '#0077cc',
                     segment: {
-                        borderColor: (ctx) => ctx.p0.parsed.y > ctx.p1.parsed.y ? 'darkblue' : undefined, // when values decline, color of line must be darkblue
+                        borderColor: (ctx) => ctx.p0.parsed.y > ctx.p1.parsed.y ? 'royalblue' : undefined, // when values decline, color of line must be royalblue
                     },
                 },
                 {
@@ -42,10 +42,10 @@ try {
                     data: dataForChart.map(item => item.spending), // data for Y axis
                     pointRadius: 3,
                     pointHoverRadius: 5,
-                    borderColor: '#FF0800',
-                    backgroundColor: 'red',
+                    borderColor: 'red',// #d00000
+                    backgroundColor: '#d00000',
                     segment: {
-                        borderColor: (ctx) => ctx.p0.parsed.y > ctx.p1.parsed.y ? 'maroon' : undefined, // when values decline, color of line must be maroon
+                        borderColor: (ctx) => ctx.p0.parsed.y > ctx.p1.parsed.y ? 'firebrick' : undefined, // when values decline, color of line must be maroon
                     },
                 },
             ]
