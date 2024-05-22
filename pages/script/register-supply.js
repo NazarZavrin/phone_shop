@@ -22,7 +22,6 @@ refreshBtn.addEventListener("click", async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                // console.log(result.products);
                 if (result.products.length === 0) {
                     storageOutput.textContent = "Немає товарів у базі даних.";
                     return;
@@ -73,12 +72,11 @@ loadFileBtn.addEventListener('click', event => {
         event.target.closest(".modal-window").closeWindow();
     })
     consignmentNoteInput.addEventListener("change", event => {
-        // console.log(consignmentNoteInput.files[0]);
         products = [];
         let file = consignmentNoteInput.files[0];
         let reader = new FileReader();
         reader.readAsText(file, "windows-1251");
-        reader.onload = function (event) { // when the file finish load
+        reader.onload = function (event) { // when the file loads
             let textCsv = event.target.result;
             let supplyCost = 0, errorMessage = "";
             let rows = textCsv.split('\n');
@@ -163,7 +161,6 @@ loadFileBtn.addEventListener('click', event => {
                     setWarningAfterElement(buttons, "Поставку оформлено.");
                     refreshBtn.click();
                     cancelBtn.textContent = "Закрити вікно";
-                    // cancelBtn.click();// close the modal window
                 }
             }
         } catch (error) {
@@ -172,5 +169,4 @@ loadFileBtn.addEventListener('click', event => {
             alert("Error");
         }
     })
-
 })

@@ -9,11 +9,11 @@ const viewBasketBtn = document.getElementsByClassName("view-basket-btn")[0];
 const addToBasketBtn = document.getElementById("add-to-basket-btn");
 let splitResult = addToBasketBtn.dataset.product_main_info.split("|");
 const productMainInfo = {
-    brand: splitResult[0], 
-    model: splitResult[1], 
-    price: splitResult[2], 
-    amount: splitResult[3], 
-} 
+    brand: splitResult[0],
+    model: splitResult[1],
+    price: splitResult[2],
+    amount: splitResult[3],
+}
 
 Basket.updateAddToBasketBtn(addToBasketBtn, productMainInfo.brand, productMainInfo.model, productMainInfo.amount);
 
@@ -44,7 +44,6 @@ viewBasketBtn.addEventListener('click', event => {
 });
 
 addToBasketBtn.addEventListener("click", event => {
-    //console.log(productMainInfo);
     basket.addProduct(productMainInfo.brand, productMainInfo.model, productMainInfo.price);
     Basket.updateAddToBasketBtn(addToBasketBtn, productMainInfo.brand, productMainInfo.model);
 })

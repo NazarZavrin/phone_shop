@@ -64,7 +64,8 @@ addCustomerBtn.addEventListener('click', event => {
 })
 
 customersContainer.addEventListener('click', async event => {
-    // customer deletion logic
+    // 1: customer deletion logic, 2: customer info edition logic
+    // 1: customer deletion logic
     const deleteBtn = event.target.closest('.delete_btn');
     if (deleteBtn) {
         const customerElement = deleteBtn.closest(".customer");
@@ -81,7 +82,7 @@ customersContainer.addEventListener('click', async event => {
             }
         }
     }
-    // customer info edition logic
+    // 2: customer info edition logic
     const editInfoBtn = event.target.closest('.edit_info_btn');
     if (editInfoBtn) {
         const customerElement = editInfoBtn.closest(".customer");

@@ -40,7 +40,9 @@ employeesRouter.post("/create-account", (req, res, next) => {
             res.json({ success: false, message: "Employee with such passport number already exists." });
             return;
         }
+        // hash the password
         req.body.password = await bcrypt.hash(req.body.password, Number(process.env.SALT_ROUNDS));
+        // add the employee
         result = await pool.query(`
             INSERT INTO employees (phone_num, name, email, passport_num, password) 
             VALUES ($1, $2, $3, $4, $5) RETURNING name, phone_num;
@@ -85,19 +87,14 @@ employeesRouter.propfind("/get-employee-additional-info", (req, res, next) => {
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
         BEGIN;`);
         let result = await pool.query(`SELECT passport_num, email FROM employees 
-        WHERE phone_num = $1 AND name = $2 AND is_fired = FALSE;`, 
-        [req.body.phoneNum, req.body.name]);
+        WHERE phone_num = $1 AND name = $2 AND is_fired = FALSE;`,
+            [req.body.phoneNum, req.body.name]);
         let message = "";
         if (result.rowCount === 0) {
             message = "Employee with such data does not exist.";
         } else if (result.rowCount > 1) {
             message = `Found several employees with such data.`;
         }
-        /*if (message.length > 0) {
-            await pool.query(`ROLLBACK;`);
-            res.json({ success: false, message: message });
-            return;
-        }*/
         if (message.length > 0) {
             throw new Error(message);
         }
@@ -132,11 +129,6 @@ employeesRouter.propfind("/log-in", (req, res, next) => {
         } else if (await bcrypt.compare(req.body.password, result.rows?.[0].password) != true) {
             message = `Wrong password.`;
         }
-        /*if (message.length > 0) {
-            await pool.query(`ROLLBACK;`);
-            res.json({ success: false, message: message });
-            return;
-        }*/
         if (message.length > 0) {
             throw new Error(message);
         }
@@ -173,11 +165,6 @@ employeesRouter.patch("/change-password", (req, res, next) => {
         } else if (await bcrypt.compare(req.body.oldPassword, result.rows?.[0].password) != true) {
             message = `Wrong password.`;
         }
-        /*if (message.length > 0) {
-            await pool.query(`ROLLBACK;`);
-            res.json({ success: false, message: message });
-            return;
-        }*/
         if (message.length > 0) {
             throw new Error(message);
         }

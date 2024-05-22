@@ -33,7 +33,6 @@ app.get('/', async (req, res) => {
             formatPrice: formatPrice
         });
     } catch (error) {
-        // throw new Error(error);
         try {
             await pool.query("ROLLBACK;");
         } catch (anotherError) { }
@@ -45,6 +44,7 @@ app.get('/', async (req, res) => {
 app.get("/products/:product_info", async (req, res, next) => {
     const productInfo = req.params.product_info.match(/^(?<brand>.{1,20})\|(?<model>.{1,30})$/)?.groups;
     try {
+        // we don't need to start a transaction because there is only one request to the database
         if (productInfo) {
             let result = await pool.query(`SELECT products.*, brands.name AS brand FROM products 
             INNER JOIN brands ON brand_id = brands.id 
@@ -72,14 +72,12 @@ app.get('/register-supply', (req, res) => {
 
 app.get("/get-storage", async (req, res) => {
     try {
-        // await pool.query(`BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;`);
+        // we don't need to start a transaction because there is only one request to the database
         let result = await pool.query(`SELECT brands.name AS brand, model, price, amount 
         FROM products INNER JOIN brands ON brand_id = brands.id 
         ORDER BY amount ASC`);
-        // await pool.query("COMMIT;");
         res.json({ success: true, products: result.rows });
     } catch (error) {
-        // await pool.query("ROLLBACK;");
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
@@ -117,9 +115,7 @@ app.post("/register-supply", (req, res, next) => {
         `, [currentDateTime, result.rows[0].id]);
         const orderNum = result.rows[0].num;
         let supplyCost = 0;
-        // console.log("Supply registration");
         for (const product of req.body.products) {
-            // console.log(`Adding ${product.amount} items of ${product.brand} ${product.model}`);
             supplyCost = supplyCost + Number(product.cost);
             result = await pool.query(`WITH brand_info AS (SELECT * FROM brands WHERE name = $1) 
             UPDATE products SET amount = amount + $2 FROM brand_info
@@ -131,7 +127,6 @@ app.post("/register-supply", (req, res, next) => {
                 res.json({ success: false, message: `Некоректні дані про телефон: бренд: ${product.brand}, модель: ${product.model}.` });
                 return;
             }
-            // console.log(`New amount of ${result.rows[0].brand_name} ${result.rows[0].model}: ${result.rows[0].amount}`);
             result = await pool.query(`INSERT INTO order_items 
                 (product_id, order_num, amount) VALUES
                 ($1, $2, $3);

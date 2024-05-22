@@ -11,16 +11,11 @@ if (localStorage.getItem("employeeName") !== "Admin") {
 try {
     let dataForChart = JSON.parse(localStorage.getItem("dataForChart"));
     const dateBoundsForChart = localStorage.getItem("dateBoundsForChart");
-    /*localStorage.removeItem("dataForChart");
-    localStorage.removeItem("dateBoundsForChart");*/
-    // console.log(...dataForChart);
-
     const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень",
         "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
     dataForChart = dataForChart.map(item => Object.assign(item, {
         monthAndYear: months[Number(item.month) - 1] + " " + item.year
     }));
-    console.log(...dataForChart);
     new Chart(canvas, {
         type: 'line',
         data: {
@@ -42,10 +37,10 @@ try {
                     data: dataForChart.map(item => item.spending), // data for Y axis
                     pointRadius: 3,
                     pointHoverRadius: 5,
-                    borderColor: 'red',// #d00000
+                    borderColor: 'red',
                     backgroundColor: '#d00000',
                     segment: {
-                        borderColor: (ctx) => ctx.p0.parsed.y > ctx.p1.parsed.y ? 'firebrick' : undefined, // when values decline, color of line must be maroon
+                        borderColor: (ctx) => ctx.p0.parsed.y > ctx.p1.parsed.y ? 'firebrick' : undefined, // when values decline, color of line must be of firebrick color
                     },
                 },
             ]
@@ -66,7 +61,6 @@ try {
                         bottom: 5
                     }
                 },
-
             },
             scales: {
                 x: {
@@ -91,34 +85,3 @@ try {
     alert("Не вдалося побудувати графік. Спробуйте ще раз.");
     window.close();
 }
-
-
-/*
-(async function() {
-  const data = [
-    { year: 2010, count: 10 },
-    { year: 2011, count: 20 },
-    { year: 2012, count: 15 },
-    { year: 2013, count: 25 },
-    { year: 2014, count: 22 },
-    { year: 2015, count: 30 },
-    { year: 2016, count: 28 },
-  ];
-
-  new Chart(
-    canvas,
-    {
-      type: 'bar',
-      data: {
-        labels: data.map(row => row.year),
-        datasets: [
-          {
-            label: 'Acquisitions by year',
-            data: data.map(row => row.count)
-          }
-        ]
-      }
-    }
-  );
-})(); */
-

@@ -42,6 +42,7 @@ export function createElement({ name: elemName = "div", style = "", content = ""
     attributes.forEach(attribute => element.setAttribute(...attribute.split(/\s*:\s*/)));
     return element;
 }
+
 export function showPassword(event) {
     const checkbox = event.target.closest('input[type="checkbox"]');
     const passwordInput = this.querySelector('input:not([type="checkbox"])');
@@ -54,6 +55,7 @@ export function showPassword(event) {
         passwordInput.type = "password";
     }
 }
+
 export function setWarningAfterElement(element, warningText) {
     if (element.nextElementSibling?.matches('.warning')) {
         element.nextElementSibling.innerHTML = warningText;
@@ -227,7 +229,7 @@ export function formatPrice(price) {
     try {
         return String(price).split(".").reduce((accumulator, item, index) => {
             if (index == 0) {
-                if (item.length >= 4) { // the number of thousands is present
+                if (item.length >= 4) { // if the number of thousands is present
                     return item.slice(0, -3) + " " + item.slice(-3);
                 } else {
                     return item;

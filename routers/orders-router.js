@@ -99,7 +99,6 @@ ordersRouter.get("/get-orders", async (req, res) => {
             INNER JOIN products ON products.id = product_id 
             INNER JOIN brands ON brands.id = brand_id 
             WHERE order_num = $1`, [order.num]);
-            // console.log(result.rows);
             order.orderItems = result.rows;
         }
         await pool.query("COMMIT;");
@@ -118,7 +117,6 @@ ordersRouter.patch("/issue", (req, res, next) => {
 }, async (req, res) => {
     try {
         if (!req.body.num || !req.body.employeePhoneNum || !req.body.paid) {
-            // !req.body.customerPhoneNum <- we don't need the customer's phone number
             throw new Error("Order issuance: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
         await pool.query(`
@@ -126,7 +124,6 @@ ordersRouter.patch("/issue", (req, res, next) => {
         BEGIN;`);
         let result = await pool.query(`SELECT NOW();`);
         const currentDateTime = result.rows[0].now;
-        // (num, datetime, customer_id UPDATE orders SET cost
         result = await pool.query(`UPDATE orders 
         SET issuance_datetime = $1, paid = $2, 
         employee_id = (SELECT id FROM employees WHERE phone_num = $3 AND is_fired = FALSE) 
@@ -150,6 +147,7 @@ ordersRouter.delete("/delete", (req, res, next) => {
         if (!req.body.num) {
             throw new Error("Order deletion: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
+        // we don't need to start a transaction because there is only one request to the database
         await pool.query(`DELETE FROM orders WHERE num = $1;`,
             [req.body.num]);
         res.json({ success: true });
@@ -235,11 +233,6 @@ ordersRouter.propfind("/get-data-for-chart", (req, res, next) => {
         if (!req.body.from || !req.body.to) {
             throw new Error("Receiving data for chart: req.body doesn't contain some data: " + JSON.stringify(req.body));
         }
-        /*let dateBounds = req.body.from.split(".").concat(req.body.to.split(".")).map(str => Number(str));
-        if (dateBounds.some(item => !Number.isFinite(item))) {
-            throw new Error("Receiving data for chart: not all date bounds are numbers" + JSON.stringify(dateBounds));
-        }*/
-        // console.log(req.body);
         let result = await pool.query(`SELECT *
         FROM (SELECT EXTRACT(YEAR FROM issuance_datetime) AS year, 
         EXTRACT(MONTH FROM issuance_datetime) AS month, SUM(cost) AS income
@@ -252,23 +245,6 @@ ordersRouter.propfind("/get-data-for-chart", (req, res, next) => {
         ON income_info.year = spending_info.year AND income_info.month = spending_info.month
         ORDER BY LEAST(income_info.year, spending_info.year), LEAST(income_info.month, spending_info.month) ASC;`// for ORDER BY DESC use GREATEST() instead of LEAST() (https://stackoverflow.com/questions/66231376/sort-full-join-based-on-two-columns-on-two-different-tables)
             , [req.body.from, req.body.to]);
-
-        /* // this query doesn't work correctly with period '2023-12-01' - '2024-3-01' (month gap '12' - '3' and year gap '2023' - '2024')
-        let result = await pool.query(`SELECT COALESCE(income_info.year, spending_info.year) AS year, COALESCE(income_info.month, spending_info.month) AS month, income, spending
-        FROM (SELECT EXTRACT(YEAR FROM issuance_datetime) AS year, 
-        EXTRACT(MONTH FROM issuance_datetime) AS month, SUM(cost) AS income
-        FROM orders WHERE cost > 0 GROUP BY year, month) AS income_info
-        FULL JOIN (SELECT EXTRACT(YEAR FROM datetime) AS year, 
-        EXTRACT(MONTH FROM datetime) AS month, SUM(cost) * -1 AS spending
-        FROM orders WHERE cost < 0 GROUP BY year, month) AS spending_info
-        ON income_info.year = spending_info.year AND income_info.month = spending_info.month
-        WHERE (income_info.month BETWEEN $1 AND $3) AND (income_info.year BETWEEN $2 AND $4) 
-        OR (spending_info.month BETWEEN $1 AND $3) AND (spending_info.year BETWEEN $2 AND $4) 
-        ORDER BY LEAST(income_info.year, spending_info.year), 
-        LEAST(income_info.month,spending_info.month) ASC;
-        `, [...dateBounds]);
-        console.log(...dateBounds);*/
-        console.log(result.rows);
         res.json({ success: true, dataForChart: result.rows });
     } catch (error) {
         res.json({ success: false, message: error.message });

@@ -88,10 +88,12 @@ export default class Orders {
             let result = await response.json();
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
+            } else {
+                return "success";
             }
         }
     }
-    async issueOrder(orderIndex, {onComplete = () => {}}) {
+    async issueOrder(orderIndex, { onComplete = () => { } }) {
         const header = createElement({ name: "header", content: 'Видача замовлення №' + this.#ordersToDisplay[orderIndex].num });
         const сostElem = createElement({ class: 'cost', content: 'Вартість: ' + formatPrice(this.#ordersToDisplay[orderIndex].cost) + ' грн.' });
         const paidLabel = createElement({ name: "header", content: "Сплачено (грн.):" });

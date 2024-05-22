@@ -28,11 +28,6 @@ dateTimeComponents.to.year.value = currentDate.getFullYear();
 
 let orders = [];
 let ordersToDisplay = [];
-// let ordersReceived = false;
-
-/*(async () => {
-    
-})();*/
 
 getIssuedOrdersBtn.addEventListener('click', async event => {
     try {
@@ -45,9 +40,7 @@ getIssuedOrdersBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                // console.log(result.orders);
                 orders = result.orders;
-                // ordersReceived = true;
             }
         }
     } catch (error) {
@@ -56,10 +49,6 @@ getIssuedOrdersBtn.addEventListener('click', async event => {
             alert("Error");
         }
     }
-    /*if (!ordersReceived) {
-        alert("Замовлення не завантажені. Спробуйте пізніше чи оновіть сторінку.");
-        return;
-    }*/
     let everythingIsCorrect = true, message = '';
     for (const dateTimeComponentKey in dateTimeComponents) {
         const dateTimeComponent = dateTimeComponents[dateTimeComponentKey];
@@ -125,17 +114,17 @@ function getTimestamps() {
             0, 0, 0, 0 // hours, minutes, seconds and milliseconds
         )) || 0;
     let toTimestamp = dateTimeComponents.to.day.value === '' ?
-            Date.parse(new Date(9999, 0, 1)) : Date.parse(new Date(
+        Date.parse(new Date(9999, 0, 1)) : Date.parse(new Date(
             Number(dateTimeComponents.to.year.value),
             Number(dateTimeComponents.to.month.value) - 1,
             Number(dateTimeComponents.to.day.value),
             23, 59, 59, 999 // hours, minutes, seconds and milliseconds
         )) || Date.parse(new Date(9999, 0, 1));
-    return {fromTimestamp, toTimestamp}
+    return { fromTimestamp, toTimestamp }
 }
 
 function renderOrders() {
-    let {fromTimestamp, toTimestamp} = getTimestamps();
+    let { fromTimestamp, toTimestamp } = getTimestamps();
     if (fromTimestamp > toTimestamp) {
         setWarningAfterElement(getIssuedOrdersBtn.parentElement, 'У діапазоні дат початок більше ніж кінець.');
     } else {
@@ -180,12 +169,11 @@ buildChartBtn.addEventListener('click', async event => {
         return;
     }
     try {
-        let {fromTimestamp, toTimestamp} = getTimestamps();
+        let { fromTimestamp, toTimestamp } = getTimestamps();
         let requestBody = {
             from: new Date(fromTimestamp),
             to: new Date(toTimestamp)
         };
-        // console.log(requestBody);
         let response = await fetch(location.origin + "/orders/get-data-for-chart", {
             method: "PROPFIND",
             body: JSON.stringify(requestBody),
@@ -196,7 +184,6 @@ buildChartBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                // console.log(result);
                 localStorage.setItem("dataForChart", JSON.stringify(result.dataForChart));
                 localStorage.setItem("dateBoundsForChart", `від ${requestBody.from.toLocaleDateString()} до ${requestBody.to.toLocaleDateString()}`);
                 buildChartBtn.parentElement.click();// follow the link only now

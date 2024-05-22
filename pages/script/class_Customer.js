@@ -157,7 +157,7 @@ export default class Customer {
         customerInfo.append(customerName);
         const customerPhoneNum = createElement({ class: 'phone_num', content: 'Номер телефону: ' + localStorage.getItem("customerPhoneNum") });
         customerInfo.append(customerPhoneNum);
-        
+
         const oldPasswordLabel = createElement({ name: "label", content: "Введіть старий пароль:" },);
         const oldPasswordInput = createElement({ name: "input", attributes: ["type: password", "autocomplete: off"] });
         const oldPasswordBlock = createElement({ name: "form", class: "password-block" });

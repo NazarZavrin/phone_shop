@@ -32,7 +32,7 @@ button {
     display: inline-block;
     margin-right: 7px;
   }
-  button.back{
+  button.back {
     background-color: dodgerblue;
     width: 35px;
     height: 35px;
@@ -85,7 +85,6 @@ main {
   & > .main-info {
     grid-area: main_info;
     width: fit-content;
-    // border: 1px solid #000;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -111,7 +110,7 @@ main {
     display: grid;
     grid-auto-rows: auto;
     grid-template-columns: 1fr max-content;
-    & > div:not([class]){
+    & > div:not([class]) {
       text-align: right;
       margin-bottom: 7px;
     }

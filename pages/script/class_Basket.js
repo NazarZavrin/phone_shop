@@ -11,8 +11,6 @@ export default class Basket {
             price: price,
             amount: amount
         }));
-        /*console.log("setProductInfo");
-        console.log(localStorage);*/
     }
     addProduct(brand, model, price) {
         this.setProductInfo(brand, model, price, 1);
@@ -164,7 +162,7 @@ export default class Basket {
                             }
                             throw new Error(result.message || "Server error.");
                         } else {
-                            setWarningAfterElement(orderBtn, `Замовлення оформлено.<br>Номер чеку: ${result.num || -1}.`);                            
+                            setWarningAfterElement(orderBtn, `Замовлення оформлено.<br>Номер чека: ${result.num || -1}.`);                            
                             onOrderCreated(result.newAmount);
                             return;
                         }
@@ -190,7 +188,6 @@ export default class Basket {
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.startsWith(`${Basket.#storageLabel}`)) {
-                console.log(key);
                 localStorage.removeItem(key);
                 --i;
             }

@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Phone shop | <%= productInfo.brand %> <%= productInfo.model %></title>
+  <title>Phone shop | <%= productInfo.brand %>
+      <%= productInfo.model %>
+  </title>
   <link rel="stylesheet" href="/style/product.css" />
   <meta name="Author" content="Nazar Zavrin" />
   <meta name="Copyright" content="Nazar Zavrin" />
@@ -41,8 +43,8 @@
         <div class="price">Ціна: <%= formatPrice(productInfo.price) %> грн.
         </div>
         <button type="button" id="add-to-basket-btn" style="background-color: transparent;"
-          data-product_main_info="<%= productInfo.brand + "|" + productInfo.model + "|" 
-          + productInfo.price + "|" + productInfo.amount %>">
+          data-product_main_info="<%= productInfo.brand + "|" + productInfo.model + "|" + productInfo.price + "|" +
+          productInfo.amount %>">
         </button>
       </section>
       <header id="other-info-header">Інші характеристики</header>

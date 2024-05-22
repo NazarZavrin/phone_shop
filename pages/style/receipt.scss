@@ -1,46 +1,47 @@
 @import "./null-style.scss";
 
-html, body {
-    width: fit-content;
+html,
+body {
+  width: fit-content;
 }
 .wrapper {
-    font: 18px "Arial";
-    padding: 5px;
-    border: 1px solid gray;
+  font: 18px "Arial";
+  padding: 5px;
+  border: 1px solid gray;
 }
 header {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 3px;
-} 
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
 .receipt_num {
-    text-align: center;
-    border-bottom: 1px dashed black;
-    margin-bottom: 5px;
-    padding-bottom: 5px;
+  text-align: center;
+  border-bottom: 1px dashed black;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 .receipt_body {
-    display: grid;
-    grid-template-columns: max-content max-content;
-    grid-auto-rows: auto;
-    & > .order-item-cost {
-        justify-self: end;
-        align-self: end;
-        margin-left: 10px;
-    }
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-auto-rows: auto;
+  & > .order-item-cost {
+    justify-self: end;
+    align-self: end;
+    margin-left: 10px;
+  }
 }
 .receipt_payment {
-    display: grid;
-    grid-template-columns: auto max-content;
-    grid-auto-rows: auto;
-    border: 1px dashed black;
-    border-left: 0;
-    border-right: 0;
-    margin: 5px 0;
-    padding: 5px 0;
-    & > div[class]{
-        justify-self: end;
-        align-self: end;
-    }
+  display: grid;
+  grid-template-columns: auto max-content;
+  grid-auto-rows: auto;
+  border: 1px dashed black;
+  border-left: 0;
+  border-right: 0;
+  margin: 5px 0;
+  padding: 5px 0;
+  & > div[class] {
+    justify-self: end;
+    align-self: end;
+  }
 }

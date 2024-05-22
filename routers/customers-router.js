@@ -75,8 +75,8 @@ customersRouter.propfind("/get-customer-additional-info", (req, res, next) => {
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
         BEGIN;`);
         let result = await pool.query(`SELECT email FROM customers 
-        WHERE phone_num = $1 AND name = $2 AND is_deleted = FALSE;`, 
-        [req.body.phoneNum, req.body.name]);
+        WHERE phone_num = $1 AND name = $2 AND is_deleted = FALSE;`,
+            [req.body.phoneNum, req.body.name]);
         let message = "";
         if (result.rowCount === 0) {
             message = "Customer with such data does not exist.";

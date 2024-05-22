@@ -1,12 +1,8 @@
 "use strict";
 
 import Employee from "./class_Employee.js";
-import { createElement, redirectNonAdmin } from "./useful-for-client.js";
+import { redirectNonAdmin } from "./useful-for-client.js";
 
-// const employeeName = document.getElementById("employee-name");
-// const accountBtn = document.getElementById("account-btn");
-// const toAdminPageBtn = document.getElementById("to-admin-page-btn");
-// const content = document.getElementsByTagName("main")[0];
 const searchBtn = document.getElementById("search-btn");
 const refreshBtn = document.getElementById("refresh-btn");
 const addEmployeeBtn = document.getElementById("add-employee-btn");
@@ -34,10 +30,8 @@ refreshBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                // console.log(result.employees);
                 employees = result.employees;
                 searchBtn.click();
-                // employeesReceived = true;
             }
         }
     } catch (error) {
@@ -73,10 +67,10 @@ addEmployeeBtn.addEventListener('click', event => {
 })
 
 employeesContainer.addEventListener('click', async event => {
-    // employee deletion logic
+    // 1: employee deletion logic, 2: employee info edition logic
+    // 1: employee deletion logic
     const deleteBtn = event.target.closest('.delete_btn');
     if (deleteBtn) {
-        // console.log(deleteBtn);
         const employeeElement = deleteBtn.closest(".employee");
         const phoneNumber = employeeElement.getAttribute('id');
         if (await Employee.delete(phoneNumber) === "success") {
@@ -91,10 +85,9 @@ employeesContainer.addEventListener('click', async event => {
             }
         }
     }
-    // employee info edition logic
+    // 2: employee info edition logic
     const editInfoBtn = event.target.closest('.edit_info_btn');
     if (editInfoBtn) {
-        // console.log(editInfoBtn);
         const employeeElement = editInfoBtn.closest(".employee");
         await Employee.editInfo(employeeElement, () => refreshBtn.click());
     }

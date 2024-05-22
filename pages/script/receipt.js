@@ -1,10 +1,8 @@
 "use strict";
 
-import { formatPrice, redirectNonAdmin } from "./useful-for-client.js";
+import { formatPrice } from "./useful-for-client.js";
 
 (async () => {
-    // redirectNonAdmin(document.body, null);
-    // when employee issues order he must be able to access the receipt
     if (localStorage.getItem("employeeName") === null) {
         location.href = location.origin + "/orders";
     }
@@ -17,7 +15,7 @@ import { formatPrice, redirectNonAdmin } from "./useful-for-client.js";
             let result = await response.json();
             if (!result.success) {
                 if (result.message.includes("Non-existent")) {
-                    document.body.children[0].textContent = `Неіснуючий номер чеку.`;
+                    document.body.children[0].textContent = `Неіснуючий номер чека.`;
                 } else {
                     throw new Error(result.message || "Server error.");
                 }

@@ -24,4 +24,3 @@ viewReceiptBtn.addEventListener("click", event => {
     showModalWindow([orderNumLabel, orderNumInput, toReceiptPageBtn],
         { className: 'view-receipt' });
 })
-

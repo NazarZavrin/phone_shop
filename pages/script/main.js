@@ -9,12 +9,12 @@ const viewBasketBtn = document.getElementsByClassName("view-basket-btn")[0];
 const brandFilter = document.getElementById("brand-filter");
 const content = document.querySelector(".wrapper > main");
 
-
 if (localStorage.getItem("customerName") === null) {
     customerName.style.display = "none";
 } else {
     customerName.textContent = localStorage.getItem("customerName");
 }
+
 accountBtn.addEventListener("click", event => {
     if (localStorage.getItem("customerName") === null) {
         Customer.showRegistrationWindow(customerName);
@@ -24,7 +24,7 @@ accountBtn.addEventListener("click", event => {
 });
 
 content.addEventListener("click", async event => {
-    // view detail info about product
+    // view detailed information about the product
     const productContainer = event.target.closest("section.product");
     if (!productContainer) {
         return;

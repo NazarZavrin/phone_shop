@@ -2,8 +2,7 @@
 
 import Employee from "./class_Employee.js";
 import Orders from "./class_Orders.js";
-import { createElement, dayAndMonthAreCorrect, isInt, setWarningAfterElement, showModalWindow } from "./useful-for-client.js";
-
+import { dayAndMonthAreCorrect, isInt, setWarningAfterElement } from "./useful-for-client.js";
 
 const employeeName = document.getElementById("employee-name");
 const accountBtn = document.getElementById("account-btn");
@@ -11,7 +10,6 @@ const toRegisterSupplyPageBtn = document.getElementById("to-register-supply-page
 const toAdminPageBtn = document.getElementById("to-admin-page-btn");
 const content = document.getElementsByTagName("main")[0];
 const searchBtn = document.getElementById("search-btn");
-// const viewReceiptBtn = document.getElementById("view-receipt-btn");
 const refreshBtn = document.getElementById("refresh-btn");
 const ordersContainer = document.getElementById("orders");
 
@@ -91,7 +89,6 @@ refreshBtn.addEventListener('click', async event => {
             if (!result.success) {
                 throw new Error(result.message || "Server error.");
             } else {
-                console.log(result.orders);
                 orders = new Orders(result.orders);
                 searchBtn.click();
             }
@@ -106,28 +103,10 @@ refreshBtn.addEventListener('click', async event => {
 
 refreshBtn.click();
 
-/*// !!! delete
-viewReceiptBtn.addEventListener("click", event => {
-    const orderNumLabel = createElement({ name: "header", content: "Введіть номер замовлення:" });
-    const orderNumInput = createElement({ name: "input", attributes: ["type: tel", "autocomplete: off"] });
-    const toReceiptPageBtn = createElement({ name: 'button', content: "Переглянути чек" });
-    toReceiptPageBtn.addEventListener("click", event => {
-        setWarningAfterElement(toReceiptPageBtn, '');
-        if (isInt(orderNumInput.value).length === 0 && Number(orderNumInput.value) > 0) {
-            const link = createElement({ name: "a", attributes: [`href: ${'/orders/receipt/' + orderNumInput.value}`, `target: _blank`] });
-            link.click();
-            return;
-        }
-        setWarningAfterElement(toReceiptPageBtn, "Некоректний номер замовлення");
-    });
-    showModalWindow([orderNumLabel, orderNumInput, toReceiptPageBtn],
-        { className: 'view-receipt' });
-})
-*/
 searchBtn.addEventListener('click', event => {
     let everythingIsCorrect = true, message = '';
     if (searchInputs.num.value.length > 0 && isInt(searchInputs.num.value).length > 0) {
-        message = 'Номер чеку повинен складатися лише з цифр.';
+        message = 'Номер чека повинен складатися лише з цифр.';
         everythingIsCorrect = false;
     }
     if (searchInputs.customer_phone_num.value.length > 0 && isInt(searchInputs.customer_phone_num.value).length > 0) {
@@ -183,22 +162,27 @@ searchBtn.addEventListener('click', event => {
     }
     setWarningAfterElement(searchBtn.parentElement, '');
     orders.filterAndRenderOrders(ordersContainer, searchInputs, dateTimeComponents, searchBtn);
-    // Array.from(ordersContainer.getElementsByClassName('delete-order-btn'))?.forEach(deleteOrderBtn => deleteOrderBtn.style.display = "none");
 })
 
-ordersContainer.addEventListener('click', event => {
+ordersContainer.addEventListener('click', async event => {
     // 1: order deletion logic, 2: order issuance logic
     // 1: order deletion logic
     const deleteOrderBtn = event.target.closest('.delete-order-btn');
     if (deleteOrderBtn && localStorage.getItem("employeeName") === 'Admin') {
         try {
             let orderIndex = [...ordersContainer.querySelectorAll('.delete-order-btn')].findIndex(btn => btn === deleteOrderBtn);
-            orders.deleteOrder(orderIndex);
             const orderElement = deleteOrderBtn.closest(".order");
-            if (orderElement) {
-                orderElement.remove();
+            if (await orders.deleteOrder(orderIndex) === "success") {
+                if (!orderElement) {
+                    refreshBtn.click();
+                } else {
+                    orderElement.classList.add("deleted");
+                    orderElement.addEventListener("transitionend", event => {
+                        orderElement.remove();
+                        refreshBtn.click();
+                    })
+                }
             }
-            refreshBtn.click();
         } catch (error) {
             console.error(error.message);
             alert("Error");

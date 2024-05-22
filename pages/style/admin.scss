@@ -44,7 +44,8 @@ main {
   flex-wrap: wrap;
   justify-content: center;
 }
-main > a, main > button {
+main > a,
+main > button {
   display: inline-block;
   margin: 3px;
   .to-main-page-btn {
